@@ -1,0 +1,64 @@
+{% trans_default_domain 'front_default' %}
+
+{% if entities %}
+
+    {% set zone = block.col.zone %}
+    {% set defaultTemplate = 'front/' ~ websiteTemplate ~ '/actions/portfolio/teaser/default.html.twig' %}
+    {% set blockTemplate = block.template ? 'front/' ~ websiteTemplate ~ '/actions/portfolio/teaser/' ~ block.template ~ '.html.twig' : defaultTemplate %}
+    {% set template = (blockTemplate)|fileExist ? blockTemplate : defaultTemplate %}
+
+    {% set posts = [] %}
+    {% set loopIndex = 0 %}
+
+    {% for categoryId, categoryEntities in entities %}
+        {% for entity in categoryEntities %}
+
+            {% set layout = entity.layout %}
+            {% set hasCustomLayout = entity.customLayout is defined and entity.customLayout
+                and layout.zones is defined and layout.zones|length > 0 %}
+            {% set i18n = hasCustomLayout ? layout|layoutBlockType('text')|i18n : entity|i18n %}
+
+            {% if i18n %}
+
+                {% set mediaRelation = hasCustomLayout ? layout|layoutBlockType('media')|mainMedia : entity|mainMedia %}
+                {% set mediaConfig = mediaRelation|thumbConfiguration(thumbConfiguration, true) %}
+                {% set title = hasCustomLayout ? layout|mainLayoutTitle(app.request.locale, true) : i18n.title %}
+
+                {% set posts = posts|merge({(loopIndex): {
+                    "entity": entity,
+                    "title": title.title is defined ? title.title : title,
+                    "subTitle": title.subTitle is defined ? title.subTitle : i18n.subTitle,
+                    "titleForce": 2,
+                    "titleAlignment": i18n.titleAlignment ? i18n.titleAlignment : 'text-start',
+                    "intro": i18n.introduction,
+                    "introAlignment": i18n.introductionAlignment ? i18n.introductionAlignment : 'text-start',
+                    "body": i18n.body,
+                    "bodyAlignment": i18n.bodyAlignment ? i18n.bodyAlignment : 'text-start',
+                    "mediaRelation": mediaRelation,
+                    "mediaConfig": mediaConfig,
+                    "url": website|i18nUrl(entity),
+                    "pageUrl": urlsIndex[entity.id] is defined and urlsIndex[entity.id] ? urlsIndex[entity.id] : null
+                }}) %}
+
+                {% set loopIndex = loopIndex + 1 %}
+
+            {% endif %}
+
+        {% endfor %}
+    {% endfor %}
+
+    <!-- .teaser-news-container -->
+    <div id="teaser-news-container-{{ teaser.slug }}" class="teaser-news-container">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer le teaser"|trans([], 'front_webmaster'),
+            'role': 'ROLE_PORTFOLIO',
+            'path': path('admin_portfolioteaser_edit', {'website': teaser.website.id, 'portfolioteaser': teaser.id})
+        } only %}
+
+        {% include template %}
+
+    </div>
+    <!-- \.teaser-news-container -->
+
+{% endif %}

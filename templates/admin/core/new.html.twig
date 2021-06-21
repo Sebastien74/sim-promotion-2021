@@ -1,0 +1,87 @@
+{% trans_default_domain 'admin' %}
+
+{% if form is defined and form %}
+
+    {% set args = {'website': websiteId()} %}
+    {% if interface.masterField is defined and interface.masterField != 'configuration' and interface.masterField != 'website' %}
+        {% set args = args|merge({(interface.masterField): interface.masterFieldId}) %}
+    {% endif %}
+    {% if interface.parentMasterField is defined and interface.parentMasterField and interface.parentMasterFieldId is defined and interface.parentMasterFieldId %}
+        {% set args = args|merge({(interface.parentMasterField): interface.parentMasterFieldId}) %}
+    {% endif %}
+
+    {% set transDomain = interface.name is defined and interface.name
+        ? 'entity_' ~ interface.name : NULL %}
+
+    {% set addLabel = 'add'|trans([], transDomain) and 'add'|trans([], transDomain) != 'add'
+        ? 'add'|trans([], transDomain) : (interface.name is defined ? 'Ajouter'|trans ~ " " ~ interface.name : 'Ajouter'|trans)  %}
+
+    {% set excludes = ['i18ns', 'save', 'saveEdit'] %}
+
+    {% if formAction is defined %}
+        {% set formAction = formAction %}
+    {% else %}
+        {% set formAction = app.request.uri %}
+        {% if interface['name'] is defined and routeExist('admin_' ~ interface['name'] ~ '_index') %}
+            {% set formAction = path('admin_' ~ interface['name'] ~ '_index', args) %}
+        {% elseif interface['name'] is defined and routeExist('admin_' ~ interface['name'] ~ '_tree') %}
+            {% set args = args|merge({(interface.masterField): interface.masterFieldId}) %}
+            {% set formAction = path('admin_' ~ interface['name'] ~ '_tree', args) %}
+        {% elseif interface['name'] is defined and routeExist('admin_' ~ interface['name'] ~ '_new') %}
+            {% set formAction = path('admin_' ~ interface['name'] ~ '_new', args) %}
+        {% endif %}
+    {% endif %}
+
+    {% set modalId = modalId is defined ? modalId : (interface.name is defined ? interface.name : uniqId()) %}
+
+    <span data-toggle="modal" data-target="#new-modal-{{ modalId }}">
+        <button class="btn btn-info">
+            {{ 'fal fa-plus'|fontawesome(15, 15, 'white mr-2') }}<span class="hidden-xs">{{ addLabel|unescape|raw }}</span>
+        </button>
+    </span>
+
+    <div class="modal fade" id="new-modal-{{ modalId }}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content border refer-preloader text-left pb-5 pt-3">
+                {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'modal-preloader', 'preloaderClass': 'radius-preloader', 'full': true} only %}
+                <div class="modal-header">
+                    <h5 class="modal-title text-center w-100">{{ 'fal fa-plus'|fontawesome(50, 50, 'dark') }}</h5>
+                    <button class="close position-absolute" data-dismiss="modal" aria-label="{{ "Fermer"|trans }}">
+                        {{ 'fal fa-times'|fontawesome(20, 20, 'dark') }}
+                    </button>
+                </div>
+                <div class="modal-body pr-4 pl-4">
+                    {% set hasAjax = form.save.vars.attr.class is defined and 'ajax-post' in form.save.vars.attr.class %}
+                    <div class="container my-auto{% if hasAjax %} ajax-content{% endif %}">
+                        <h2 class="main-title text-dark text-center font-weight-bold mb-5">{{ addLabel }}</h2>
+                        {{ form_start(form, {"attr": {"novalidate": "novalidate", "action": formAction, "id": "new-form-" ~ modalId}}) }}
+                            <div class="row">
+                                {% include 'admin/core/form/edit-fields-base.html.twig' with {'form': form, 'hasNews': true, 'disableTitle': true} only %}
+                            </div>
+                            <div id="password-generator-result" class="btn-copy btn btn-dark w-100 text-center refer-copy position-relative d-none cursor">
+                                <div class="to-copy"></div>
+                                <div class="copy-link position-absolute" data-toggle="tooltip" data-title="{{ "Copier"|trans|striptags }}">
+                                    <div class="inner h-100">{{ 'far fa-copy'|fontawesome(12, 14, 'dark') }}</div>
+                                </div>
+                            </div>
+                            {% if alertError is defined and alertError %}
+                                {% include 'admin/include/alert.html.twig' with {"alert": 'error', "message": alertError } only %}
+                            {% endif %}
+                            <div class="w-100 text-center modal-buttons mt-4">
+                                {% if form.save is defined %}
+                                    {{ form_row(form.save) }}
+                                {% else %}
+                                    <button type="submit" class="btn btn-outline-white">{{ "Enregistrer"|trans }}</button>
+                                {% endif %}
+                                {% if form.saveEdit is defined %}
+                                    {{ form_row(form.saveEdit) }}
+                                {% endif %}
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endif %}

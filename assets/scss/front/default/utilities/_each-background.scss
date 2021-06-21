@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-03-03, 2:37 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT EACH BACKGROUND :
+    =======================
+
+------------------------------------------------------------------ */
+
+@each $suffix, $color in $app-colors {
+
+    @if not index($default-colors, $suffix) {
+        .bg-#{$suffix} {
+            background-color: $color;
+        }
+    }
+}

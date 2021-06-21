@@ -1,0 +1,2 @@
+monolog:
+    channels: ['cache_helper']

@@ -1,0 +1,122 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% block title %}{{ "Redirections"|trans }}{% endblock %}
+{% block pageTitle %}{{ "Redirections"|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {{ render_esi(controller('App\\Controller\\Admin\\Seo\\RedirectionController::import', {"website": websiteId()} )) }}
+
+    {{ form_start(form, {"attr": {"novalidate": "novalidate", 'id': 'seo-form-redirection'}}) }}
+
+        <div class="card">
+
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{{ asset('build/admin/docs/redirections.xlsx') }}" class="btn btn-outline-dark" download="redirection.xlsx">
+                            {{ "fal fa-upload"|fontawesome(null, 14, 'mr-2') }}{{ "Télécharger le modèle XLS"|trans }}
+                        </a>
+                        <span class="btn btn-outline-dark cursor" data-toggle="modal" data-target="#import-modal">
+                            {{ "fal fa-download"|fontawesome(null, 14, 'mr-2') }}{{ "Importer"|trans }}
+                        </span>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button class="index-delete-show btn btn-outline-dark" data-toggle="tooltip"
+                                title="{{ "Afficher les cases à cocher de suppression"|trans|striptags }}"
+                                data-display="{{ "Afficher les cases à cocher de suppression"|trans|striptags }}"
+                                data-hide="{{ "Masquer"|trans|striptags }}">{{ "fas fa-trash"|fontawesome(null, 14) }}</button>
+                        <button class="index-delete-submit btn btn-danger d-none" data-toggle="tooltip" title="{{ "Supprimer la sélection"|trans|striptags }}">
+                            {{ "fas fa-trash"|fontawesome(null, 14, 'white') }}
+                        </button>
+                        <button type="submit" class="btn-info btn">{{ "Enregistrer"|trans }}</button>
+                        <button role="button" class="add-collection btn btn-success"
+                                data-type="table"
+                                data-collection-target="prepend"
+                                data-target="#redirections-collection">
+                            {{ "fal fa-plus"|fontawesome(11, 15, 'white mr-2') }}{{ "Ajouter une redirection"|trans }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {% import _self as macro %}
+
+            {% set configuration = website().configuration %}
+            {% set defaultLocale = configuration.locale %}
+            {% set allLocales = configuration.allLocales %}
+
+            {% macro redirection_prototype(redirection) %}
+
+                {% set allLocales = website().configuration.allLocales %}
+                {% set isNew = redirection.vars.data.id is defined and redirection.vars.data.id ? false : true %}
+                {% set entityId = redirection.vars.data.id is defined and redirection.vars.data.id ? redirection.vars.data.id : redirection.vars.id %}
+                {% set locale = redirection.vars.data.locale is defined and redirection.vars.data.locale ? redirection.vars.data.locale : null %}
+
+                <tr id="refer-col-domain-{{ entityId }}" class="prototype">
+                    <td class="col-locale{% if allLocales|length <= 1 %} d-none{% endif %}">
+                        <span class="d-none">{{ locale }}</span>
+                        {{ form_widget(redirection.locale) }}
+                    </td>
+                    <td class="align-middle">
+                        {{ form_widget(redirection.old) }}
+                        {{ form_errors(redirection.old) }}
+                    </td>
+                    <td class="align-middle">
+                        {{ form_widget(redirection.new) }}
+                        {{ form_errors(redirection.new) }}
+                    </td>
+                    <td class="align-middle text-right actions">
+                        {% include 'admin/core/form/modal-delete-collection.html.twig' with {
+                            'isNew': redirection.vars.data.id is defined and redirection.vars.data.id ? false : true,
+                            'entityId': isNew ? uniqId() : redirection.vars.data.id,
+                            'interfaceName': 'redirection'
+                        } %}
+                        <div class="custom-control custom-checkbox delete-input-index-wrap d-none">
+                            <input type="checkbox" class="custom-control-input delete-input-index" id="delete-input-{{ entityId }}"
+                                   data-path="{{ path('admin_redirection_delete', {"website": websiteId(), 'redirection': entityId}) }}">
+                            <label class="custom-control-label" for="delete-input-{{ entityId }}"></label>
+                        </div>
+                    </td>
+                </tr>
+
+            {% endmacro %}
+
+            <table class="table editable-table table-bordered table-striped mb-0">
+                <thead>
+                    <th class="col-locale{% if allLocales|length <= 1 %} d-none{% endif %}">{{ "Langue"|trans }}</th>
+                    <th>{{ "URL"|trans }} <small class="text-info ml-1">({{ "Ancienne URI / URL"|trans }})</small></th>
+                    <th class="text-center">{{ "Nouvelle URL"|trans }} <small class="text-info ml-1">({{ "Avec protocol"|trans }})</small></th>
+                    <th class="text-right">
+                        <div class="delete-index-all-wrap custom-control custom-checkbox float-right ml-3 d-none" data-toggle="tooltip"
+                             title="{{ "Tout cocher"|trans|striptags }}"
+                             data-checked="{{ "Tout cocher"|trans|striptags }}"
+                             data-unchecked="{{ "Tout décocher"|trans|striptags }}">
+                            <input type="checkbox" class="custom-control-input delete-index-all" id="delete-index-all">
+                            <label class="custom-control-label" for="delete-index-all"></label>
+                        </div>
+                        {{ "Actions"|trans }}
+                    </th>
+                </thead>
+                <tbody id="redirections-collection" data-index="{{ form.redirections|length }}" class="collection" data-prototype="{{ macro.redirection_prototype(form.redirections.vars.prototype)|e('html_attr') }}">
+                    {% for redirection in form.redirections %}
+                        {{ macro.redirection_prototype(redirection) }}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+    {{ form_end(form) }}
+
+{% endblock %}

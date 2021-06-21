@@ -1,0 +1,97 @@
+{% trans_default_domain 'front_default' %}
+
+{% set zone = block.col.zone %}
+{% set pause = slider.pause ? 'hover' : false %}
+
+<div id="carousel-{{ slider.slug }}"
+     class="carousel slide{% if slider.effect == 'fade' %} carousel-fade{% endif %}"
+     data-bs-interval="{{ slider.intervalDuration }}"
+     data-bs-autoplay="{{ slider.autoplay }}"
+     data-bs-pause="{{ pause }}"
+     data-bs-ride="carousel"
+     data-component="carousel-bootstrap">
+
+    {% if medias|length > 1 and slider.indicators %}
+        <ol class="carousel-indicators">
+            {% for media in medias %}
+                <li data-bs-target="#carousel-{{ slider.slug }}" data-bs-slide-to="{{ loop.index - 1 }}"{% if loop.first %} class="active"{% endif %}></li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+
+    {% set mediaCount = 0 %}
+    {% for media in medias %}
+        {% set i18nMedia = media.i18n %}
+        {% if i18nMedia %}
+            {% set mediaCount = mediaCount + 1 %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="carousel-inner">
+
+        {% set isFirst = true %}
+
+        {% for media in medias %}
+
+            {% set i18nMedia = media.i18n %}
+            {% set mediaConfig = media|thumbConfiguration(thumbConfiguration, true) %}
+            {% set popup = slider.popup or media.popup %}
+            {% set lazyLoad = zone.position is defined and zone.position > 1 or not isFirst ? true : false %}
+
+            {% if media.media.filename is defined and media.media.filename %}
+
+                <div class="carousel-item{% if isFirst %} active{% endif %}">
+
+                    {{ media|thumb(mediaConfig, {
+                        "btn_link": false,
+                        'popupGallery': popup,
+                        'fullPopup': popup,
+                        'placeholder': true,
+                        'colSize': colSize,
+                        'lazyLoad': lazyLoad,
+                        'class': 'w-100' }) }}
+
+                    {% if i18nMedia %}
+
+                        {% set mediaTitle = i18nMedia.title %}
+                        {% set mediaTitleForce = i18nMedia.titleForce ? i18nMedia.titleForce : 2 %}
+                        {% set mediaTitleAlignment = i18nMedia.titleAlignment ? i18nMedia.titleAlignment : 'text-start' %}
+                        {% set mediaIntro = i18nMedia.introduction %}
+                        {% set mediaIntroAlignment = i18nMedia.introductionAlignment ? i18nMedia.introductionAlignment : 'text-start' %}
+                        {% set mediaBody = i18nMedia.body %}
+                        {% set mediaBodyAlignment = i18nMedia.bodyAlignment ? i18nMedia.bodyAlignment : 'text-start' %}
+
+                        {% if mediaTitle|striptags|length > 0 or mediaIntro|striptags|length > 0 or mediaBody|striptags|length > 0 %}
+                            <div class="carousel-caption">
+                                {% if mediaTitle|striptags|length > 0 %}
+                                    <h{{ mediaTitleForce }} class="{{ mediaTitleAlignment }} caption-title">{{ mediaTitle|unescape|raw }}</h{{ mediaTitleForce }}>
+                                {% endif %}
+                                {% if mediaIntro|striptags|length > 0 %}
+                                    <p class="introduction text-bold {{ mediaIntroAlignment }}">{{ mediaIntro|unescape|raw|nl2br }}</p>
+                                {% endif %}
+                                {% include 'front/' ~ websiteTemplate ~ '/blocks/link/default.html.twig' with {'i18n': i18nMedia} %}
+                            </div>
+                        {% endif %}
+
+                    {% endif %}
+
+                </div>
+
+                {% set isFirst = false %}
+
+            {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+    {% if medias|length > 1 and slider.control %}
+        <a class="carousel-control-prev cursor" href="#carousel-{{ slider.slug }}" role="button" data-bs-slide="prev" aria-label="{{ "Précédent"|trans }}">
+            {{ 'fal fa-arrow-left'|fontawesome(26, 30, 'white') }}
+        </a>
+        <a class="carousel-control-next cursor" href="#carousel-{{ slider.slug }}" role="button" data-bs-slide="next" aria-label="{{ "Suivant"|trans }}">
+            {{ 'fal fa-arrow-right'|fontawesome(26, 30, 'white') }}
+        </a>
+    {% endif %}
+
+</div>

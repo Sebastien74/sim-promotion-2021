@@ -1,0 +1,53 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = i18n is defined ? i18n : block|i18n %}
+
+{% if i18n %}
+
+    {% set link = i18n|i18nLink %}
+    {% set alignment = linkAlignment is defined and linkAlignment ? linkAlignment : (link and link.alignment ? link.alignment : null) %}
+    {% set style = linkStyle is defined ? linkStyle : (link.style ? link.style : 'link') %}
+    {% set url = link.link %}
+    {% set uriInfos = url|uriInfos %}
+    {% set uriRequestInfos = masterRequest().uri|uriInfos %}
+    {% set samePage = uriInfos and uriInfos.uri == uriRequestInfos.uri %}
+    {% set label = linkLabel is defined and linkLabel ? linkLabel : (link.label ? link.label : null) %}
+
+    {% if url %}
+
+        <!-- .link-block -->
+        <div class="link-block w-100 {{ alignment }}">
+
+            {% if link.isEmail %}
+                <div class="{{ style }}{% if 'btn' in style %} hbtn hb-fill-right{% endif %}">
+                    {{ url|email(website) }}
+                </div>
+            {% elseif link.isPhone %}
+                <div class="{{ style }}{% if 'btn' in style %} hbtn hb-fill-right{% endif %}">
+                    {{ link|phone(website) }}
+                </div>
+            {% else %}
+                <a {% if samePage %}data-href{% else %}href{% endif %}="{{ url }}"
+                   class="{{ style }}{% if 'btn' in style %} hbtn hb-fill-right{% endif %}{% if samePage %} scroll-link{% endif %}"
+                   {% if link.targetBlank %} target="_blank"{% elseif '#' not in url %} data-toggle="preloader"{% endif %}
+                   {% if samePage %} data-target="#{{ uriInfos.anchor }}"{% endif %}
+                   {% if link.externalLink %} rel="noopener noreferrer"{% endif %}>
+                    {% if label %}
+                        {{ label|unescape|raw }}
+                    {% else %}
+                        {{ emt('En savoir plus'|trans|raw) }}
+                    {% endif %}
+                    {{ "fal fa-chevron-right"|fontawesome(null, 11, 'ms-2') }}
+                </a>
+            {% endif %}
+
+            {% if block.script is defined and block.script|striptags|length > 0 %}
+                {{ block.script|raw }}
+            {% endif %}
+
+        </div>
+        <!-- .link-block -->
+
+    {% endif %}
+
+{% endif %}

@@ -1,0 +1,59 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18nMedia = block|i18nMedia %}
+{% set zone = block.col.zone %}
+{% set lazyLoad = zone.position != 1 %}
+
+{% if i18nMedia %}
+
+    {% set mediaTransition = 'block-media'|transitionAttributes(blockTransitions) %}
+    {% set imageTitle = i18nMedia.i18n.title is defined and i18nMedia.displayTitle ? i18nMedia.i18n.title : null %}
+    {% set titlePosition = i18nMedia.media.titlePosition is defined ? i18nMedia.media.titlePosition : 'bottom' %}
+    {% set displayTitle = imageTitle and i18nMedia.displayTitle is defined and i18nMedia.displayTitle %}
+
+    {% set alignment = i18nMedia.i18n.targetAlignment is defined and i18nMedia.i18n.targetAlignment
+        ? i18nMedia.i18n.targetAlignment : null %}
+    {% set fullSize = zone.fullSize %}
+
+    <!-- .media-block -->
+    <div class="media-block d-inline-block w-100 {{ alignment }}{{ mediaTransition.class|raw }}"{{ mediaTransition.attr|raw }}>
+
+        {% if displayTitle and titlePosition == 'top' %}
+            <span class="img-title d-inline-block text-uppercase w-100">{{ imageTitle|raw }}</span>
+        {% endif %}
+
+        {% if displayTitle and titlePosition == 'left' or displayTitle and titlePosition == 'right' %}
+            <div class="row">
+                {% if titlePosition == 'left' %}
+                    <div class="col-lg-6">
+                        <span class="img-title d-inline-block text-uppercase w-100">{{ imageTitle|raw }}</span>
+                    </div>
+                    <div class="col-lg-6">
+                {% elseif titlePosition == 'right' %}
+                    <div class="col-lg-6">
+                {% endif %}
+        {% endif %}
+
+        {% set mediaConfig = i18nMedia|thumbConfiguration(thumbConfiguration) %}
+        {{ i18nMedia|thumb(mediaConfig, {'lazyLoad': lazyLoad, 'maxWidth': mediaWidth, 'maxHeight': mediaHeight, 'colSize': block.col.size, 'zoneFullSize': fullSize, 'parentEntity': block}) }}
+
+        {% if displayTitle and titlePosition == 'left' or displayTitle and titlePosition == 'right' %}
+                {% if titlePosition == 'left' %}
+                    </div>
+                {% elseif titlePosition == 'right' %}
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="img-title d-inline-block text-uppercase w-100">{{ imageTitle|raw }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if displayTitle and titlePosition == 'bottom' %}
+            <span class="img-title d-inline-block text-uppercase w-100">{{ imageTitle|raw }}</span>
+        {% endif %}
+
+    </div>
+    <!-- \.media-block -->
+
+{% endif %}

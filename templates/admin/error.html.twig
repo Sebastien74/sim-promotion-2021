@@ -1,0 +1,11 @@
+{% trans_default_domain 'admin' %}
+
+<section id="exception-block">
+    <div id="errorStatus">
+        <div class="errorStatus">
+            <div class="errorStatus-code"></div>
+            {% include 'bundles/TwigBundle/Exception/messages.html.twig' %}
+            <a href="{{ path('admin_dashboard', {"website": websiteId}) }}">{{ "Retourner au tableau de bord"|trans }}</a>
+        </div>
+    </div>
+</section>

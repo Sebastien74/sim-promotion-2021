@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-10-23, 9:40 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FOOTER LAYOUT :
+    =====================
+
+------------------------------------------------------------------ */
+
+#footer {
+
+    .socials-list {
+        svg {
+            height: 40px;
+        }
+    }
+
+    #footer-menu-footer {
+        .link {
+            font-size: rem(12px);
+        }
+    }
+}

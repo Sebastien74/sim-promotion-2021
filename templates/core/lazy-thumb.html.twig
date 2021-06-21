@@ -1,0 +1,38 @@
+{% set renderSrc = runtimeConfig and src != '/' ? src|imagine_filter('media' ~ quality, runtimeConfig) : src %}
+
+{% if not '.svg' in src and lazy %}
+    <div class="position-relative d-inline-block loader-image-wrapper">
+
+        <div class="vertical-align spinner-wrap">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">{{ "Chargement..."|trans|raw }}</span>
+            </div>
+        </div>
+{% endif %}
+
+    {% if devMode %}
+
+        <img data-src="{{ src }}"
+             src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+             {% if id %}id="{{ id }}"{% endif %}
+             class="img-fluid{% if lazy %} lazyload{% endif %}{% if class %} {{ class }}{% endif %}"
+             title="{{ title|striptags }}"
+             alt="{{ title|striptags }}" />
+
+    {% else %}
+
+        <img {% if lazy %}data-{% endif %}src="{{ renderSrc }}"
+             {% if lazy %}src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"{% endif %}
+             {% if id %}id="{{ id }}"{% endif %}
+             class="img-fluid{% if lazy %} lazyload{% endif %}{% if class %} {{ class }}{% endif %}"
+             title="{{ title|striptags }}"
+             alt="{{ title|striptags }}"
+             {% if lazy %}data-sizes="auto"{% endif %}
+             {% if width %}width="{{ width }}"{% endif %}
+             {% if height %}height="{{ height }}"{% endif %} />
+
+    {% endif %}
+
+{% if not '.svg' in src and lazy %}
+    </div>
+{% endif %}

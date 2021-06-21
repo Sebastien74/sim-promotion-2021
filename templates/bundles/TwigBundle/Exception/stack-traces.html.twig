@@ -1,0 +1,160 @@
+{% trans_default_domain 'exception' %}
+
+{% block before_html %}{% endblock %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set status_code = status_code is defined ? status_code : null %}
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="{{ _charset }}" />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>{{ status_code }} Error - {{ "Agence Félix CMS"|trans }}</title>
+        <meta name="description" content="{{ "Agence Félix CMS"|trans }}" />
+        <meta name="author" content="{{ "Agence Félix"|trans }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('build/admin/images/theme/favicon.ico', 'admin') }}" />
+        <style>{{ include('@Twig/exception.css.twig') }}</style>
+        {% block head %}{% endblock %}
+    </head>
+
+    <body>
+
+        <header>
+            <div class="container">
+                <h1 class="logo">
+                    <img src="{{ asset('build/exception/images/symfony.png', 'exception') }}" height="25" width="25" alt="Symfony" class="img-fluid header-logo" />
+                    Symfony Exception
+                </h1>
+                <div class="help-link">
+                    <a href="https://symfony.com/doc/{{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}/index.html" target="_blank">
+                        <span class="icon">
+                            <img src="{{ asset('build/exception/images/documentation.png', 'exception') }}" height="25" width="25" alt="Symfony" class="img-fluid header-logo" />
+                        </span>
+                        <span class="hidden-xs-down">Symfony</span> Docs
+                    </a>
+                </div>
+                <div class="help-link">
+                    <a href="https://symfony.com/support" target="_blank">
+                        <span class="icon">
+                            <img src="{{ asset('build/exception/images/interrogation.png', 'exception') }}" height="25" width="25" alt="Symfony" class="img-fluid header-logo" />
+                        </span>
+                        <span class="hidden-xs-down">Symfony</span> Support
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="exception-summary {{ exception.message is empty ? 'exception-without-message' }}">
+            <div class="exception-metadata">
+                <div class="container">
+                    <h2 class="exception-hierarchy">
+                        {% for previousException in exception.allPrevious|reverse %}
+                            <a href="#trace-box-{{ loop.revindex + 1 }}" target="_blank">{{ previousException.class|abbr_class }}</a>
+                            <span class="icon">{{ include('@Twig/images/chevron-right.svg') }}</span>
+                        {% endfor %}
+                        <a href="#trace-box-1" target="_blank">{{ exception.class|abbr_class }}</a>
+                    </h2>
+                    <h2 class="exception-http">
+                        <strong>HTTP {{ status_code }}</strong>
+                    </h2>
+                </div>
+            </div>
+            <div class="exception-message-wrapper">
+                <div class="container">
+                    <h1 class="break-long-words exception-message {{ exception.message|length > 180 ? 'long' }}">
+                        {{- exception.message|nl2br|format_file_from_text -}}
+                    </h1>
+                    <div class="exception-illustration hidden-xs-down">
+                        {{ include('@Twig/images/symfony-ghost.svg') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if getEnv('APP_EXCEPTION_MESSAGE') %}
+            <div class="container">
+                <div id="flo-error" class="content">OOOOOOH PUNAISE !!!! SI C'EST TOI FLORIAN, C'EST PAS BON... JE VAIS SÉVIR !!!!! SINON, CA DOIT ÊTRE UN IF CLARA !! <br> OU ALORS C'EST MOI POUR TESTER LA PAGE D'ERREUR... C'EST BON ELLE FONCTIONNE, PARFAIT !!</div>
+            </div>
+        {% endif %}
+
+        <div class="container">
+            <div class="sf-tabs">
+                <div class="tab">
+                    {% set exception_as_array = exception.toarray %}
+                    {% set _exceptions_with_user_code = [] %}
+                    {% for i, e in exception_as_array %}
+                        {% for trace in e.trace %}
+                            {% if (trace.file is not empty) and ('/vendor/' not in trace.file) and ('/var/cache/' not in trace.file) and not loop.last %}
+                                {% set _exceptions_with_user_code = _exceptions_with_user_code|merge([i]) %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    <h3 class="tab-title">
+                        {% if exception_as_array|length > 1 %}
+                            Exceptions <span class="badge">{{ exception_as_array|length }}</span>
+                        {% else %}
+                            Exception
+                        {% endif %}
+                    </h3>
+
+                    <div class="tab-content">
+                        {% for i, e in exception_as_array %}
+                            {{ include('@Twig/Exception/traces.html.twig', { exception: e, index: loop.index, expand: i in _exceptions_with_user_code or (_exceptions_with_user_code is empty and loop.first) }, with_context = false) }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if logger %}
+                    <div class="tab {{ logger.logs is empty ? 'disabled' }}">
+                        <h3 class="tab-title">
+                            Logs
+                            {% if logger.counterrors ?? false %}<span class="badge status-error">{{ logger.counterrors }}</span>{% endif %}
+                        </h3>
+
+                        <div class="tab-content">
+                            {% if logger.logs %}
+                                {{ include('@Twig/Exception/logs.html.twig', { logs: logger.logs }, with_context = false)  }}
+                            {% else %}
+                                <div class="empty">
+                                    <p>No log messages</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="tab">
+                    <h3 class="tab-title">
+                        {% if exception_as_array|length > 1 %}
+                            Stack Traces <span class="badge">{{ exception_as_array|length }}</span>
+                        {% else %}
+                            Stack Trace
+                        {% endif %}
+                    </h3>
+
+                    <div class="tab-content">
+                        {% for e in exception_as_array %}
+                            {{ include('@Twig/Exception/traces_text.html.twig', { exception: e, index: loop.index, num_exceptions: loop.length }, with_context = false) }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if currentContent is not empty %}
+                    <div class="tab">
+                        <h3 class="tab-title">Output content</h3>
+                        <div class="tab-content">{{ currentContent }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {{ include('@Twig/base_js.html.twig') }}
+
+    </body>
+</html>
+
+{% block after_html %}{% endblock %}

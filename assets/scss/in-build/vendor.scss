@@ -1,0 +1,124 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-11-12, 4:10 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    BUILD :
+    ======
+
+    1 ) Import
+    2 ) Core
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Breakpoints
+-----------------------------------*/
+
+$xs: 320px;
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$xxl: 1600px;
+
+/*-----------------------------------
+   2 ) Import
+-----------------------------------*/
+
+@import "./bootstrap";
+
+/*-----------------------------------
+   3 ) Core
+-----------------------------------*/
+
+$primary-color: #535e79;
+$info-color: #0081ac;
+$primary-color-admin-theme: #410c2c;
+$info-color-admin-theme: #793a65;
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.vertical-align {
+    margin-top: 50vh;
+    transform: translateY(-50%);
+}
+
+a {
+    text-decoration: none !important;
+}
+
+svg.white {
+    fill: #fff;
+}
+
+#build-page {
+
+    #header {
+
+        img {
+            max-height: 100px;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-top: 45px;
+            font-weight: 700;
+        }
+    }
+
+    #support-info {
+        img {
+            max-width: 50px;
+        }
+    }
+
+    .column {
+
+        color: #fff;
+        min-height: 100vh;
+
+        .card-body {
+            position: relative;
+        }
+
+        &.left {
+            background-color: $primary-color;
+            border: 0 solid transparent;
+            border-radius: 0;
+            box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+
+        &.right {
+            &.right {
+                background-size: cover !important;
+                background-position: center center !important;
+                background: url("../../medias/images/in-build/background.jpg") no-repeat;
+            }
+        }
+    }
+}
+
+body.admin-theme {
+
+    #build-page {
+
+        .column {
+
+            &.left {
+                background-color: $primary-color-admin-theme;
+            }
+
+            &.right {
+                background-size: cover !important;
+                background-repeat: no-repeat;
+                background-position: center center;
+            }
+        }
+    }
+}

@@ -1,0 +1,104 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="form-ajax-container">
+
+    <div class="form-loader-container">
+
+        <div class="form-loader row m-0 text-center d-none">
+            <div class="col-12 my-auto">
+                <span class="spinner-border" role="status"></span>
+            </div>
+        </div>
+
+        {#            {% if forum.login and not app.user %}#}
+
+        {#                <h2 class="mb-4">{{ emt("Connectez-vous"|trans|raw) }}</h2>#}
+        {#                {{ render_esi(controller('App\\Controller\\Security\\Front\\SecurityController::login', {'tpl-form': true} )) }}#}
+
+        {#            {% else %}#}
+
+
+        {% if not forumCookieActive %}
+
+            {% include 'front/' ~ websiteTemplate ~ '/actions/forum/include/gdpr-placeholder.html.twig' %}
+
+        {% else %}
+
+            {{ form_start(form, {
+                'attr': {
+                    "id": "forum-form-" ~ forum.id,
+                    "class": forum.recaptcha ? 'recaptcha forum-form' : 'forum-form',
+                    "action": path('front_forum_view', {"request": app.request, 'filter': forum.slug, 'website': website.id}),
+                    "novalidate": "novalidate"
+                }}) }}
+
+                <div class="row">
+
+                    {% include "front/" ~ websiteTemplate ~ "/include/recaptcha-fields.html.twig" with {'form': form, 'entity': forum} only %}
+
+                    {% for field in form.children %}
+                        {{ form_row(form[field.vars.name]) }}
+                    {% endfor %}
+
+                    <div class="col-12">
+                        {% set messages = app.session.flashbag.all %}
+                        {% set messageSuccess = messages['success_form'][0] is defined ? messages['success_form'][0] : null %}
+                        {% set messageError = messages['error_form'][0] is defined ? messages['error_form'][0] : null %}
+                        {% if messageSuccess or messageError %}
+                            {% set alert = messageSuccess ? "success" : "error" %}
+                            {% set message = messageSuccess ? messageSuccess : messageError %}
+                            {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": alert, "message": message} only %}
+                        {% endif %}
+                    </div>
+
+                    <div class="col-12 text-center text-lg-end">
+                        <span class="forum-submit btn btn-outline-primary hbtn hb-fill-right">{{ emt("Poster"|trans|raw) }}</span>
+                    </div>
+
+                </div>
+
+            {{ form_end(form) }}
+
+        {% endif %}
+
+        {#            {% endif %}#}
+
+    </div>
+
+    <div id="comments" class="mt-5 position-relative">
+
+        <div class="alert alert-info mb-4">
+            {% set count = comments|length %}
+            {% if count == 0 %}
+                {{ emt("Aucun commentaire"|trans|raw) }}
+            {% elseif count == 1 %}
+                {{ count ~ " " ~ emt("commentaire"|trans|raw) }}
+            {% else %}
+                {{ count ~ " " ~ emt("commentaires"|trans|raw) }}
+            {% endif %}
+        </div>
+
+        {% set haveComments = comments|length > 0 %}
+
+        <div id="comments-wrap" class="position-relative{% if haveComments %} active{% endif %}">
+
+            <ul id="comments-data" class="d-none">
+                {% for comment in comments %}
+                    <li data-id="{{ comment.id }}"></li>
+                {% endfor %}
+            </ul>
+
+            <div id="comments-loaders" class="row text-center pt-5 pb-5{% if haveComments %} position-absolute{% endif %}">
+                <div class="col-12">
+                    <span class="spinner-border" role="status"></span> <br>
+                    {{ emt("Chargement en cours..."|trans|raw) }}
+                </div>
+            </div>
+
+            <div id="result"></div>
+
+        </div>
+
+    </div>
+
+</div>

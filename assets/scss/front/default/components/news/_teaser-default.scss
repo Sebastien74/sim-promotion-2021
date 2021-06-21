@@ -1,0 +1,91 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 7:53 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT NEWS TEASER :
+    ===================
+
+------------------------------------------------------------------ */
+
+@import '../../variables';
+
+.newscasts-teaser-default {
+
+    max-width: 100%;
+
+    .left {
+        padding: 30px 25px;
+    }
+
+    .loader-image-wrapper, img {
+        height: 100%;
+    }
+
+    .box-hover-block > div.row {
+        height: 100%;
+    }
+
+    .card-block {
+
+        border: 0;
+
+        .content-box,
+        [data-component="hover-effect"] {
+
+            height: 100%;
+
+            img, picture {
+                object-fit: cover;
+                object-position: 50% 50%;
+                height: 100%;
+            }
+        }
+    }
+
+    //.cards > div, .carousel-item {
+    //
+    //    .title {
+    //        font-family: $font-primary;
+    //        font-weight: 300;
+    //        font-size: rem(25px);
+    //        text-transform: initial;
+    //    }
+    //
+    //    .sub-title {
+    //        font-family: $font-secondary;
+    //        font-size: rem(25px);
+    //        line-height: rem(20px);
+    //        font-weight: 500;
+    //        display: inherit;
+    //    }
+    //
+    //    .main-sub-title {
+    //        font-size: rem(18px) !important;
+    //        font-weight: 100 !important;
+    //    }
+    //}
+    //
+    //.carousel-item {
+    //
+    //    .bg-secondary {
+    //
+    //        padding: 30px 30px;
+    //
+    //        .title {
+    //            max-width: 80%;
+    //            font-size: rem(30px);
+    //            line-height: rem(40px);
+    //        }
+    //    }
+    //
+    //    .carousel-control-next, .carousel-control-prev {
+    //        img {
+    //            filter: brightness(0) invert(1);
+    //        }
+    //    }
+    //}
+}

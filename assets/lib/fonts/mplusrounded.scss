@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-11-06, 9:30 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS MPLUS ROUNDED 1C :
+    =============================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Roundedmplus1c", sans-serif;
+
+$fonts: (
+    'RoundedMplus1c-Black': ('weight': 900, 'style': normal),
+    'RoundedMplus1c-ExtraBold': ('weight': 800, 'style': normal),
+    'RoundedMplus1c-Bold': ('weight': 700, 'style': normal),
+    'RoundedMplus1c-Medium': ('weight': 500, 'style': normal),
+    'RoundedMplus1c-Regular': ('weight': 400, 'style': normal),
+    'RoundedMplus1c-Light': ('weight': 300, 'style': normal),
+    'RoundedMplus1c-Thin': ('weight': 100, 'style': normal),
+);
+
+@include font-face("Roundedmplus1c", $fonts);

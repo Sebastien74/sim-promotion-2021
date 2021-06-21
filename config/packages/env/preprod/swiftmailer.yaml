@@ -1,0 +1,7 @@
+swiftmailer:
+    spool: { type: 'memory' }
+    transport: '%env(SWIFT_TRANSPORT_PREPROD)%'
+    username: '%env(SWIFT_USERNAME_PREPROD)%'
+    password: '%env(SWIFT_PASSWORD_PREPROD)%'
+    host: '%env(SWIFT_HOST_PREPROD)%'
+    port: '%env(SWIFT_PORT_PREPROD)%'

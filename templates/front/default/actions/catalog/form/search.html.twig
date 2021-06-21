@@ -1,0 +1,76 @@
+{% trans_default_domain 'front_default' %}
+
+{% set masterRequest = masterRequest() %}
+{% set requestUri = masterRequest.pathInfo|trim('/', 'left') %}
+
+{% if listing.display != 'disable' %}
+
+    <div id="search-products-filters-container" class="mb-4 position-relative">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer le listing"|trans([], 'front_webmaster'),
+            'role': 'ROLE_CATALOG',
+            'path': path('admin_cataloglisting_edit', {'website': website.id, 'cataloglisting': listing.id})
+        } only %}
+
+        {% if initialProducts %}
+
+            {% if listing.searchText %}
+                <div id="search-text-container" class="mb-4">
+                    {{ form_start(formText, {"attr": {"id": "search-text-form"}}) }}
+                        <strong class="d-inline-block mb-3">{{ "Recherchez par mot clé :"|trans }}</strong>
+                        {{ form_widget(formText.text) }}
+                    {{ form_end(formText) }}
+                </div>
+            {% endif %}
+
+            <div id="search-text-container" class="mb-4">
+                <strong class="d-inline-block">{{ emt("Filtrez :"|trans) }}</strong>
+                {% if formFilters.children|length > 0 %}
+                    {{ form_start(formFilters, {"attr": {"id": "search-filter-form"}}) }}
+                        {% set catalogsExisting = false %}
+                        {% for field in formFilters.children %}
+                            {% if field.vars.name == 'catalogs' %}
+                                {% set catalogsExisting = true %}
+                            {% endif %}
+                        {% endfor %}
+                        {% set featuresKey = catalogsExisting ? 3 : 2 %}
+                        {% for field in formFilters.children %}
+                            <div class="group">
+                                {% if field.vars.name == 'categories' %}
+                                    <span class="text-primary d-inline-block mt-3 mb-4">{{ emt("Catégories"|trans) }}</span>
+                                {% elseif field.vars.name == 'catalogs' %}
+                                    <span class="text-primary d-inline-block mt-3 mb-4">{{ emt("Catalogues"|trans) }}</span>
+                                {% elseif field.vars.name == 'values' or loop.index == featuresKey %}
+                                    <span class="text-primary d-inline-block mt-3 mb-4">{{ emt("Caractéristiques"|trans) }}</span>
+                                {% endif %}
+                                {{ form_row(formFilters[field.vars.name]) }}
+                            </div>
+                        {% endfor %}
+                        <div class="input-group-append">
+                            <button type="submit" id="search_filter_search">{{ emt("Rechercher"|trans|raw) }}</button>
+                        </div>
+                    {{ form_end(formFilters) }}
+                {% endif %}
+                {% if listing.searchCategories == 'links' and categories|length > 0 %}
+                    <ul>
+                        <li>
+                            <a href="{{ path('front_index', {'url': requestUri}) }}">{{ emt("Voir tout les produits"|trans|raw) }}</a>
+                        </li>
+                        {% for category in categories %}
+                            {% set categoryI18n = category|i18n %}
+                            <li>
+                                <a href="{{ path('front_index', {'url': requestUri, 'category': category.slug}) }}">
+                                    {% if categoryI18n.title is defined and categoryI18n.title %}{{ categoryI18n.title }}{% else %}{{ category.adminName }}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}

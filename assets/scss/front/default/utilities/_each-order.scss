@@ -1,0 +1,38 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2021
+    Created on : 2021-01-7, 5:21 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT EACH ORDER :
+    =================
+
+------------------------------------------------------------------ */
+
+@for $i from 1 through $orders-limit {
+
+    /** 5 is Bootstrap limit */
+
+    @if ($i > 5) {
+        .order-#{$i} {
+            order: $i;
+        }
+        .order-sm-#{$i} {
+            order: $i;
+        }
+        .order-md-#{$i} {
+            order: $i;
+        }
+        .order-lg-#{$i} {
+            order: $i;
+        }
+        .order-xl-#{$i} {
+            order: $i;
+        }
+        .order-xxl-#{$i} {
+            order: $i;
+        }
+    }
+}

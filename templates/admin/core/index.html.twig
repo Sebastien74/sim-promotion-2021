@@ -1,0 +1,348 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set transDomain = interface.name is defined and interface.name
+    ? 'entity_' ~ interface.name : NULL %}
+
+{% set title = 'plural'|trans([], transDomain) and 'plural'|trans([], transDomain) != 'plural'
+    ? 'plural'|trans([], transDomain) : 'Index'|trans ~ " " ~ interface.name  %}
+
+{% if pageTitle %}
+    {% set title = pageTitle %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block pageTitle %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% set havePagination = pagination.getTotalItemCount is defined and (pagination.getTotalItemCount / pagination.itemNumberPerPage) > 1 %}
+    {% set haveExport = interface.configuration.exports is defined and interface.configuration.exports %}
+    {% set noSwitcher = interface.noSwitcher is defined and interface.noSwitcher ? interface.noSwitcher : [] %}
+    {% set orderBy = interface.configuration.orderBy is defined ? interface.configuration.orderBy : 'id' %}
+    {% set infosFields = ['startDate', 'endDate', 'publishedAt', 'publicationStart', 'publicationEnd', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'lastLogin', 'infos', 'locale'] %}
+    {% set haveInfos = false %}
+    {% for column in columns %}
+        {% if column in infosFields %}
+            {% set haveInfos = true %}
+        {% endif %}
+    {% endfor %}
+    {% set labels = interface.labels is defined ? interface.labels : [] %}
+    {% set entityBase = interface.entity is defined and interface.entity ? interface.entity : null %}
+    {% set entityArray = entityBase|objectToArray %}
+    {% set args = {'website': websiteId()} %}
+    {% if interface.masterField is defined and interface.masterField != 'configuration' and interface.masterField != 'website' %}
+        {% set args = args|merge({(interface.masterField): interface.masterFieldId}) %}
+    {% endif %}
+    {% set haveParentMasterField = interface.parentMasterField is defined and interface.parentMasterField and interface.parentMasterFieldId is defined and interface.parentMasterFieldId %}
+    {% if haveParentMasterField %}
+        {% set args = args|merge({(interface.parentMasterField): interface.parentMasterFieldId}) %}
+    {% endif %}
+    {% if interface.configuration.uniqueLocale is defined and interface.configuration.uniqueLocale %}
+        {% set args = args|merge({"entitylocale": interface.website.configuration.locale}) %}
+    {% endif %}
+
+    <div id="entities-index" class="card d-inline-block w-100">
+
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-8 my-auto">
+                    {% if searchFiltersForm is defined and searchFiltersForm %}
+                        {% include 'admin/core/form/filters.html.twig' with {'form': searchFiltersForm} %}
+                    {% endif %}
+                    {% if searchForm %}
+                        {% include 'admin/core/form/index-search-form.html.twig' with {'form': searchForm} %}
+                    {% endif %}
+                </div>
+                <div class="col-md-4 text-right my-auto">
+                    <span data-toggle="preloader">
+                        <a href="{{ lastRoute() }}" class="btn btn-white text-info"
+                           data-toggle="tooltip" title="{{ "Retourner à la page précédente"|trans|striptags }}"
+                           aria-label="{{ "Retourner à la page précédente"|trans|striptags }}">
+                            {{ 'fas fa-reply'|fontawesome(14, 14, 'info') }}
+                        </a>
+                    </span>
+                    {% if 'delete'|moduleActive(allModules) and routeExist('admin_' ~ interface['name'] ~ '_delete') %}
+                        <button class="index-delete-show btn btn-outline-dark" data-toggle="tooltip"
+                                title="{{ "Afficher les cases à cocher de suppression"|trans|striptags }}"
+                                data-display="{{ "Afficher les cases à cocher de suppression"|trans|striptags }}"
+                                data-hide="{{ "Masquer"|trans|striptags }}">{{ 'fas fa-trash'|fontawesome(12, 14, 'dark') }}</button>
+                        <button class="index-delete-submit btn btn-danger d-none" data-toggle="tooltip" title="{{ "Supprimer la sélection"|trans }}">{{ 'fas fa-trash'|fontawesome(12, 14, 'white') }}</button>
+                    {% endif %}
+                    {% if haveExport in interface.configuration.exports and routeExist('admin_' ~ interface['name'] ~ '_export') and 'edit'|moduleActive(allModules) %}
+                        {{ render_esi(controller(namespace ~ "::export", args)) }}
+                    {% endif %}
+                    {% if routeExist('admin_' ~ interface['name'] ~ '_new') and not disableFormNew %}
+{#                        <a href="{{ path('admin_' ~ interface['name'] ~ '_new', args) }}">Go</a>#}
+                        {% if is_granted('ROLE_ADD') %}
+                            {{ render_esi(controller(namespace ~ "::new", args)) }}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div id="result" class="position-relative">
+
+            {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'index-preloader', 'full': true} only %}
+
+            <table class="table table-striped mb-0{% if pagination|length == 0 or not havePagination %} no-pagination{% endif %}">
+                <thead>
+                    <tr>
+                        <th class="d-none"></th>
+
+                        {% if 'media' in columns %}
+                            <th></th>
+                        {% endif %}
+
+                        {% set haveActiveColumn = false %}
+                        {% set activeColumnTitle = false %}
+                        {% for column in columns %}
+                            {% if entityArray[column] is defined and column not in infosFields and column != 'active' %}
+                                {% set fieldValue = entityValue(interface.entity, column) %}
+                                {% set columnTitle = column|trans([], transDomain) and column|trans([], transDomain) != 'plural'
+                                    ? column|trans([], transDomain) : column  %}
+                                <th{% if fieldValue|isBool or column == 'locale' or 'status' in column|lower %} class="text-center"{% endif %}>{{ columnTitle|removeBetween(['(', ')']) }}</th>
+                            {% endif %}
+                            {% if column == 'active' %}
+                                {% set haveActiveColumn = true %}
+                                {% set activeColumnTitle = column|trans([], transDomain) and column|trans([], transDomain) != 'plural'
+                                    ? column|trans([], transDomain) : column  %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if haveActiveColumn %}
+                            <th class="text-center">{{ activeColumnTitle }}</th>
+                        {% endif %}
+
+                        {% if haveInfos %}
+                            <th>{{ "Infos"|trans }}</th>
+                        {% endif %}
+
+                        {% if routeExist('admin_' ~ interface['name'] ~ '_position') and 'edit'|moduleActive(allModules) %}
+                            <th class="text-center">{{ "Position"|trans }}</th>
+                        {% endif %}
+
+                        {% set disabledButtons = interface.disabledButtons is defined and haveParentMasterField %}
+                        {% if interface.buttons is defined and interface.buttons and not disabledButtons %}
+                            <th class="text-right"></th>
+                        {% endif %}
+
+                        {% if interface.count is defined and interface.count %}
+                            {% set columnTitle = interface.count|trans([], transDomain) ? interface.count|trans([], transDomain) : interface.count  %}
+                            <th class="text-center text-capitalize">{{ columnTitle }}</th>
+                        {% endif %}
+
+                        <th class="text-right">
+                            <div class="delete-index-all-wrap custom-control custom-checkbox float-right ml-3 d-none" data-toggle="tooltip"
+                                 title="{{ "Tout cocher"|trans|striptags }}"
+                                 data-checked="{{ "Tout cocher"|trans|striptags }}"
+                                 data-unchecked="{{ "Tout décocher"|trans|striptags }}">
+                                <input type="checkbox" class="custom-control-input delete-index-all" id="delete-index-all">
+                                <label class="custom-control-label" for="delete-index-all"></label>
+                            </div>
+                            {{ "Actions"|trans }}
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for entity in pagination %}
+
+                        {% set disabledRow = not entity|indexAllowed(is_granted('ROLE_INTERNAL')) %}
+                        {% set args = args|merge({(interface['name']): entity.id}) %}
+
+                        {% if not disabledRow %}
+                            <tr id="entity-row-{{ entity.id }}" data-id="{{ entity.id }}">
+
+                                <td class="d-none">
+                                    {% set orderBy = entity|methodInit(orderBy) %}
+                                    {% if attribute(entity, orderBy) %}
+                                        {% set orderValue = attribute(entity, orderBy) %}
+                                        {% include 'core/data-formater.html.twig' with {'dataValue': orderValue, 'property': orderBy, 'view': 'index'} %}
+                                    {% endif %}
+                                </td>
+
+                                {% if 'media' in columns %}
+                                    <td class="align-middle">
+                                        {% if entity.mediaRelations is defined %}
+                                            {% set filePath = entity|mainMedia|thumb(null, {'path': true, 'placeholder': true}) %}
+                                            <a class="image-popup d-inline-block" href="{{ asset(filePath) }}">
+                                                {{ imgRender({'src': asset(filePath), 'width': 30, 'height': 30}) }}
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+
+                                {% for property in columns %}
+                                    {% if entityArray[property] is defined and property not in infosFields and property != 'active' %}
+                                        {% set haveProperty = entityArray[property] is defined %}
+                                        {% set fieldValue = haveProperty ? entityValue(entity, property) : null %}
+                                        <td class="align-middle{% if fieldValue|isBool or property == 'locale' or 'status' in property|lower %} text-center{% endif %}">
+                                            {% if fieldValue|isBool and 'edit'|moduleActive(allModules) and property not in noSwitcher %}
+                                                {% include 'admin/core/form/boolean-switcher.html.twig' %}
+                                            {% elseif '.' in property %}
+                                                {% include 'core/data-formater.html.twig' with {'dataValue': entity, 'property': property, 'view': 'index', 'truncate': 50} %}
+                                            {% elseif fieldValue or fieldValue == false %}
+                                                {% include 'core/data-formater.html.twig' with {'dataValue': fieldValue, 'property': property, 'view': 'index', 'truncate': 50} %}
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if haveActiveColumn %}
+                                    {% set property = 'active' %}
+                                    {% set fieldValue = entityValue(entity, property) %}
+                                    <td class="text-center align-middle">{% include 'admin/core/form/boolean-switcher.html.twig' %}</td>
+                                {% endif %}
+
+                                {% if haveInfos %}
+                                    <td class="align-middle">
+                                        {% if ('admin/core/include/informations/' ~ interface.name ~ '.html.twig')|fileExist %}
+                                            {% include 'admin/core/include/informations/' ~ interface.name ~ '.html.twig' %}
+                                        {% else %}
+                                            {% include 'admin/core/include/informations/general.html.twig' %}
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+
+                                {% if routeExist('admin_' ~ interface['name'] ~ '_position') and 'edit'|moduleActive(allModules) %}
+                                    <td class="text-center align-middle">{{ render_esi(controller(namespace ~ "::position", args)) }}</td>
+                                {% endif %}
+
+                                {% if interface.buttons is defined and interface.buttons and not disabledButtons %}
+                                    <td class="text-right align-middle">
+                                        {% for buttonsProperty, route in interface.buttons %}
+                                            {% if route|routeExist and route|buttonChecker(entity, interface) and route|buttonRoleChecker(interface) %}
+                                                {% set label = labels[route] is defined ? labels[route] : route %}
+                                                {% set paramValue = route == "admin_medias_downloader" ? entityValue(entity, buttonsProperty) : null %}
+                                                {% set routeArgs = route == "admin_medias_downloader" and paramValue
+                                                    ? {"website": websiteId(), 'fileDirname': paramValue|url_encode}
+                                                    : (route != "admin_medias_downloader" ? {"website": websiteId(), (interface['name']): entity.id} : null) %}
+                                                {% if routeArgs %}
+                                                    <a href="{{ path(route, routeArgs) }}" class="btn btn-info"
+                                                       {% if route != 'admin_medias_downloader' %} data-toggle="preloader"{% endif %}>
+                                                        {% set disableCount = interface.disableCount is defined and buttonsProperty in interface.disableCount %}
+                                                        {% set counter = entity|countCollection(buttonsProperty) %}
+                                                        {{ label }}{% if counter|isInt and counter and not disableCount %}<span class="badge badge-info-darken ml-2">{{ counter }}</span>{% endif %}
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+
+                                {% if interface.count is defined and interface.count %}
+                                    <td class="text-center align-middle">
+                                        <span class="btn btn-info">{{ attribute(entity, interface.count)|length }}</span>
+                                    </td>
+                                {% endif %}
+
+                                <td class="text-right align-middle">
+
+                                    {% if entity.urls is defined and is_granted('ROLE_EDIT') %}
+                                        {% include 'admin/core/include/urls-status.html.twig' with {"allLocales": allLocales} %}
+                                    {% endif %}
+
+                                    {% if routeExist('admin_' ~ interface['name'] ~ '_edit') and 'edit'|moduleActive(allModules) %}
+                                        <span data-toggle="preloader" class="btn-circle-wrap">
+                                            <a href="{{ path('admin_' ~ interface['name'] ~ '_edit', args) }}"
+                                               data-toggle="tooltip" title="{{ "Éditer"|trans|striptags }}" class="btn btn-info btn-circle">
+                                                {{ 'fas fa-pencil-alt'|fontawesome(14, 17, 'white') }}
+                                            </a>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if routeExist('admin_' ~ interface['name'] ~ '_layout') and 'edit'|moduleActive(allModules) and entity.customLayout is not defined %}
+                                        <span data-toggle="preloader" class="btn-circle-wrap">
+                                            <a href="{{ path('admin_' ~ interface['name'] ~ '_layout', args) }}"
+                                               data-toggle="tooltip" title="{{ "Mise en page"|trans|striptags }}" class="btn btn-info btn-circle">
+                                                {{ 'fas fa-pencil-alt'|fontawesome(14, 17, 'white') }}
+                                            </a>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if routeExist('admin_' ~ interface['name'] ~ '_tree') and 'edit'|moduleActive(allModules) %}
+                                        <span data-toggle="preloader" class="btn-circle-wrap">
+                                            <a href="{{ path('admin_' ~ interface['name'] ~ '_tree', args) }}"
+                                               data-toggle="tooltip" title="{{ "Éditer"|trans|striptags }}" class="btn btn-info btn-circle">
+                                                {{ 'fas fa-pencil-alt'|fontawesome(14, 17, 'white') }}
+                                            </a>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if routeExist('admin_' ~ interface['name'] ~ '_profile') %}
+                                        <span data-toggle="preloader" class="btn-show btn text-center pr-0">
+                                            <a href="{{ path('admin_' ~ interface['name'] ~ '_profile', args) }}"
+                                               data-toggle="tooltip" title="{{ "Afficher le profil"|trans|striptags }}" class="text-dark">
+                                                {{ 'fal fa-address-card'|fontawesome(20, 18) }}
+                                            </a>
+                                        </span>
+                                    {% elseif routeExist('admin_' ~ interface['name'] ~ '_show') %}
+                                        <span data-toggle="preloader" class="btn-show btn text-center pr-0">
+                                            <a href="{{ path('admin_' ~ interface['name'] ~ '_show', args) }}"
+                                               data-toggle="tooltip" title="{{ "Afficher les informations"|trans|striptags }}" class="text-dark">
+                                                {{ 'fal fa-info'|fontawesome(9, 18) }}
+                                            </a>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if routeExist('admin_' ~ interface['name'] ~ '_delete') and 'delete'|moduleActive(allModules) %}
+
+                                        <span class="btn text-center">
+                                            <a href="{{ path('admin_' ~ interface['name'] ~ '_delete', args) }}"
+                                               data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}"
+                                               data-target="#entity-row-{{ entity.id }}"
+                                               class="text-dark swal-delete-link cursor">
+                                                {{ 'fas fa-trash'|fontawesome(12, 18) }}
+                                            </a>
+                                        </span>
+
+                                        <div class="custom-control custom-checkbox delete-input-index-wrap d-none">
+                                            <input type="checkbox" class="custom-control-input delete-input-index" id="delete-input-{{ entity.id }}"
+                                                   data-path="{{ path('admin_' ~ interface['name'] ~ '_delete', args) }}">
+                                            <label class="custom-control-label" for="delete-input-{{ entity.id }}"></label>
+                                        </div>
+
+                                    {% endif %}
+
+                                    {% if routeExist('admin_' ~ interface['name'] ~ '_reset') and 'delete'|moduleActive(allModules) %}
+                                        <a href="{{ path('admin_' ~ interface['name'] ~ '_reset', args) }}"
+                                           data-toggle="tooltip" title="{{ "Réinitialiser"|trans|striptags }}"
+                                           data-target="#entity-row-{{ entity.id }}"
+                                           class="text-dark swal-delete-link">
+                                            {{ 'fas fa-sync'|fontawesome(14, 14) }}
+                                        </a>
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                    {% else %}
+                        <tr>
+                            <td colspan="12" class="text-center">{{ "Aucun résultat"|trans }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% include 'admin/core/include/pagination.html.twig' %}
+
+        </div>
+
+    </div>
+
+{% endblock %}

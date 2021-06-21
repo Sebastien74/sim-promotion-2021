@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 9:04 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT UTILITIES :
+    ================
+
+------------------------------------------------------------------ */
+
+@import "each-element";
+@import "each-text";
+@import "each-background";
+@import "each-icon";
+@import "each-order";
+@import "../../../vendor/mixin/font-weight";
+
+@each $suffix, $config in $buttons {
+    @include button($suffix, $config);
+}
+
+@each $suffix, $color in $app-colors {
+    @include svg($suffix, $color);
+}
+
+@include appMargins($margins);
+
+@include fontsWeights($fonts-weights);

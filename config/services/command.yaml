@@ -1,0 +1,17 @@
+#####################################
+#           Command                 #
+#####################################
+
+services:
+
+    App\Command\CacheCommand:
+        public: true
+        lazy: true
+        arguments:
+            $kernel: '@kernel'
+
+    App\Command\DoctrineCommand:
+        public: true
+        lazy: true
+        arguments:
+            $kernel: '@kernel'

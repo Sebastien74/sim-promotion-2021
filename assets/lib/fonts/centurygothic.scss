@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2021
+    Created on : 2021-05-20, 9:55 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS CATAMARAN :
+    ======================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Century Gothic", sans-serif;
+
+$fonts: (
+    'CenturyGothic': ('weight': normal, 'style': normal),
+    'CenturyGothic-Bold': ('weight': bold, 'style': normal),
+);
+
+@include font-face("CenturyGothic", $fonts);

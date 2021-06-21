@@ -1,0 +1,15 @@
+{% trans_default_domain 'gdpr' %}
+
+{% set cookies = cookies() %}
+{% set iframeActive = cookies['iframe'] is defined and cookies['iframe'] %}
+
+<div class="gdpr-iframe-wrap"
+     data-code="iframe"
+     data-prototype="{{ prototype|e('html_attr') }}"
+     data-prototype-placeholder="{{ prototype_placeholder|e('html_attr') }}">
+    {% if iframeActive %}
+        {{ prototype|raw }}
+    {% else %}
+        {{ prototype_placeholder|raw }}
+    {% endif %}
+</div>

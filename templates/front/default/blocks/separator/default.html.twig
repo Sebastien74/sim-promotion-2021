@@ -1,0 +1,9 @@
+{% trans_default_domain 'front_default' %}
+
+{% if block.height %}
+    <!-- .separator-block -->
+    <div class="separator-block w-100 block{% if block.hideMobile %} d-none d-lg-inline-block{% endif %}">
+        <div class="d-inline-block w-100 {{ block.color }}" style="height: {{ block.height }}px;"></div>
+    </div>
+    <!-- \.separator-block -->
+{% endif %}

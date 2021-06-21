@@ -1,0 +1,20 @@
+//===================================
+// Base Buttons Style
+//===================================
+
+.btn.hbtn {
+
+    position: relative;
+    box-sizing: border-box;
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+    border: solid 1px #ffffff;
+    text-decoration: none;
+    color: #ffffff;
+    z-index: 0;
+}
+
+.btn.hpill {
+    border-radius: 50px;
+}

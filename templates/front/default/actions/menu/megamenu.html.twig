@@ -1,0 +1,203 @@
+{% trans_default_domain 'front_default' %}
+
+{% set template = configuration.template %}
+{% set webpack = 'front_' ~ template %}
+{% set links = tree.main is defined ? tree.main : [] %}
+
+{% if links %}
+
+    {% set logos = menu.website|logos %}
+    {% set logo = logos.logo is defined and logos.logo ? logos.logo : null %}
+
+    <div id="top-navigation" class="container-fluid d-none d-lg-inline-block">
+        <div class="inner pt-4 pb-3">
+            <div class="row">
+                <div class="col-md-6">
+                    {% if logo %}
+                        <a class="navbar-brand p-0" aria-label="{{ companyName }}" href="{{ app.request.getSchemeAndHttpHost() }}" data-toggle="preloader">
+                            {{ imgRender({'src': asset(logo), 'width': 80, 'height': 80, 'title': companyName, 'id': 'main-navigation-logo', 'only_html': true, 'lazy': false}) }}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 text-end d-flex align-items-end">
+                    <div class="ms-auto">
+                        <div class="d-none d-lg-inline-flex">
+                            {{ render_esi(controller('App\\Controller\\Front\\Module\\LocaleController::switcher', { 'website': website.id } )) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- .mega-menu-navigation -->
+    <nav class="mega-menu-navigation navbar navbar-expand-lg bg-white pt-3 pb-3 pt-lg-4 pb-lg-4 pe-0 ps-0" data-component="mega-menu">
+        <div class="mega-menu-container {% if menu.size == 'container' %}container{% else %}container-fluid{% endif %}">
+
+            <div id="xs-nav" class="row m-0 w-100 d-lg-none">
+                <div class="col-8 p-0">
+                    {% if logo %}
+                        <a class="navbar-brand p-0" href="{{ app.request.getSchemeAndHttpHost() }}" data-toggle="preloader">
+                            {{ imgRender({'src': asset(logo), 'width': 50, 'height': 50, 'title': companyName}) }}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="col-4 p-0 text-end">
+                    <button class="navbar-toggler text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#mega-menu-nav-{{ menu.id }}" aria-controls="main-navigation-nav" aria-expanded="false" aria-label="{{ "Menu"|trans|raw }}">
+                        <div class="toggler-wrap">
+                            <span id="nav-toggler-icon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                            <strong class="d-inline-block w-100 text-end">{{ emt("Menu"|trans) }}</strong>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div id="mega-menu-nav-{{ menu.id }}" class="collapse navbar-collapse">
+                <ul class="navbar-nav{% if multiLingues %} multi-locales{% endif %}">
+
+                    {% for link in links %}
+
+                        {% set infos = link|linkMenu(tree) %}
+
+                        {% if infos.online %}
+
+                            {% set pushMicroData = microDataActive and not infos.externalLink and not infos.children %}
+
+                            <li class="nav-item link-item-{{ link.level}} me-0 me-lg-4 d-flex align-items-end{% if infos.children %} dropdown mega-dropdown{% endif %}"
+                                {% if pushMicroData %} itemscope="itemscope" itemtype="http://www.schema.org/SiteNavigationElement"{% endif %}>
+
+                                <a class="nav-link link-link-{{ link.level}} me-0 me-lg-5 d-inline-block cursor{% if infos.children %} dropdown-toggle{% endif %}{% if infos.active %} active{% endif %} {{ infos.class }}"
+                                   href="{% if infos.children %}#{% else %}{{ infos.path }}{% endif %}"
+                                   title="{{ infos.title|striptags }}"
+                                   {% if infos.children %}data-bs-toggle="dropdown"{% endif %}
+                                   {% if infos.newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+                                   {% if infos.externalLink %} rel="noopener noreferrer"{% endif %}
+                                   aria-haspopup="{% if infos.children %}true{% else %}false{% endif %}"
+                                   aria-expanded="false"
+                                   {% if pushMicroData %} itemprop="url"{% endif %}>
+
+                                    {% if pushMicroData %}<span itemprop="name">{% endif %}{{ infos.title|unescape|raw }}{% if pushMicroData %}</span>{% endif %}
+                                    {% if infos.children %}{{ 'fal fa-chevron-down'|fontawesome(null, 8, 'ms-3 float-end') }}{% endif %}
+                                </a>
+
+                                {% if infos.children %}
+
+                                    <div class="dropdown-menu animated bounceInDown {{ infos.bgColor }}">
+                                        <ul class="mega-dropdown-menu overflow-hidden reset">
+                                            {% for col in infos.children %}
+
+                                                {% set colInfos = col|linkMenu(tree) %}
+
+                                                {% if colInfos.online %}
+
+                                                    <li class="float-start level-2 text-center text-md-start {{ colInfos.bgColor }}">
+
+                                                    {% if colInfos.path %}
+                                                        <h4 class="mb-4{% if colInfos.active %} active{% endif %}">
+                                                            <a href="{{ colInfos.path }}" class="{{ colInfos.class }}"
+                                                               title="{{ colInfos.title|striptags }}"
+                                                               {% if colInfos.newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+                                                               {% if colInfos.externalLink %} rel="noopener noreferrer"{% endif %}>{{ colInfos.title|raw }}</a>
+                                                        </h4>
+                                                    {% endif %}
+
+                                                    {% if colInfos.children %}
+
+                                                        {% for block in colInfos.children %}
+
+                                                            {% set blockInfos = block|linkMenu(tree) %}
+
+                                                            {% if blockInfos.media %}
+                                                                {% include 'front/' ~ template ~ '/include/card.html.twig' with {
+                                                                    'entity': block,
+                                                                    'website': website,
+                                                                    'i18n': {
+                                                                        'title': blockInfos.title,
+                                                                        'subTitle': blockInfos.subTitle,
+                                                                        'newTab': blockInfos.newTab
+                                                                    },
+                                                                    'title': blockInfos.title,
+                                                                    'targetLink': blockInfos.path,
+                                                                    'mediaRelation': blockInfos.media
+                                                                } %}
+                                                            {% elseif blockInfos.title or blockInfos.path %}
+                                                                <div class="nav-block-title{% if not loop.first %} mt-3 mt-lg-5{% endif %}">
+                                                                    {% if blockInfos.title %}
+                                                                        <h5 class="mb-0 section-title"{% if blockInfos.active %} class="active"{% endif %}>
+                                                                    {% endif %}
+                                                                        {% if blockInfos.path and blockInfos.online %}
+                                                                            <a href="{{ blockInfos.path }}" class="{{ blockInfos.class }}{% if blockInfos.active %} active{% endif %}"
+                                                                               {% if blockInfos.newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+                                                                               title="{{ blockInfos.title|striptags }}">
+                                                                        {% endif %}
+                                                                            {{ blockInfos.title|raw }}
+                                                                        {% if blockInfos.path and blockInfos.online %}
+                                                                            </a>
+                                                                        {% endif %}
+                                                                    {% if blockInfos.title %}
+                                                                        </h5>
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            {% if blockInfos.children %}
+                                                                <ul class="nav-block-link reset">
+                                                                    {% for blockLink in blockInfos.children %}
+                                                                        {% set linkInfos = blockLink|linkMenu(tree) %}
+                                                                        {% if linkInfos.online %}
+                                                                            <li{% if linkInfos.active %} class="active"{% endif %}>
+                                                                                {% if linkInfos.path and linkInfos.online %}
+                                                                                    <a href="{{ linkInfos.path }}" title="{{ linkInfos.title|striptags }}"
+                                                                                       class="{{ linkInfos.class }}"
+                                                                                       {% if linkInfos.newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+                                                                                       {% if linkInfos.externalLink %} rel="noopener noreferrer"{% endif %}>
+                                                                                {% endif %}
+                                                                                    {{ linkInfos.title|raw }}
+                                                                                    {% if linkInfos.media %}
+                                                                                        <div class="nav-img-block mt-4">
+                                                                                            {{ linkInfos.media|thumb }}
+                                                                                        </div>
+                                                                                    {% endif %}
+                                                                                {% if linkInfos.path and linkInfos.online %}
+                                                                                    </a>
+                                                                                {% endif %}
+                                                                            </li>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            {% endif %}
+
+                                                        {% endfor %}
+
+                                                    {% endif %}
+
+                                                </li>
+                                                {% endif %}
+
+                                        {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+
+                    {% endfor %}
+
+                </ul>
+
+                {% if isMobile() or isTablet() %}
+                    <div id="xs-pages-nav" class="d-lg-none bg-secondary reset">
+                        {{ render_esi(controller('App\\Controller\\Front\\Module\\LocaleController::switcher', { 'website': website.id } )) }}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </nav>
+    <!-- \.mega-menu-navigation -->
+
+{% endif %}

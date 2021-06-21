@@ -1,0 +1,152 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Created on : 2020-01-28, 10:15 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    ADMIN CATALOG :
+    ==============
+
+-------------------------------------------------------- */
+
+@import '../variables';
+
+#product_values-collection {
+
+    .prototype-block {
+        padding: 1rem !important;
+    }
+
+    strong {
+        font-weight: 700;
+        letter-spacing: .02rem;
+    }
+}
+
+#product-edition {
+
+    .ui-state-highlight {
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.05) !important;
+        border-color: transparent !important;
+        margin-bottom: 15px;
+    }
+
+    .ui-feature, .ui-video {
+        background-color: #fff;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 4px 0 rgba(0,0,0,.1);
+        border-radius: 10px;
+    }
+
+    .handle-feature {
+
+        text-align: center;
+        cursor: grabbing;
+        position: relative;
+        margin-right: 30px;
+        float: left;
+
+        &:after {
+            content: "";
+            position: absolute;
+            right: -14px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+        }
+    }
+}
+
+#videos-sortable {
+
+    .side {
+        top: -15px;
+        right: 0;
+        bottom: 0;
+        background: $gray-200;
+        width: 40px;
+        border-radius: 0 10px 10px 0;
+        padding-top: 10px;
+    }
+
+    &.multi-locales {
+
+        .ui-video {
+            padding-top: 15px;
+            padding-left: 5px;
+        }
+
+        .item-video {
+            margin-right: 45px !important;
+            width: calc(100% - 45px);
+        }
+    }
+}
+
+#features-sortable {
+
+    .ui-feature {
+        h5 {
+            border-radius: 10px 10px 0 0;
+            padding: 17px;
+        }
+    }
+
+    .feature-values-sortable {
+
+        padding: 15px;
+
+        .custom-control-label::before,
+        .custom-control-label::after {
+            top: 17px !important;
+        }
+
+        strong {
+            font-weight: 700;
+            letter-spacing: .02rem;
+        }
+
+        .ui-value {
+
+            background-color: #fff;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.07);
+            overflow: hidden;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .handle-value {
+
+                height: 50px;
+                width: 50px;
+                line-height: 50px;
+                text-align: center;
+                cursor: grabbing;
+                position: relative;
+                margin-right: 30px;
+                float: left;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    right: 0;
+                    top: 15px;
+                    bottom: 15px;
+                    width: 1px;
+                    background-color: $gray-800;
+                }
+            }
+
+            .ui-value-row {
+                float: left;
+                width: calc(100% - 80px);
+                line-height: 50px;
+            }
+        }
+    }
+}

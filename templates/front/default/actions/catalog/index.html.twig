@@ -1,0 +1,80 @@
+{% trans_default_domain 'front_default' %}
+
+{% set pageNum = app.request.get('page') ? app.request.get('page') : 1 %}
+{% set ajaxPath = path('front_cataloglisting_index', {'website': website.id, 'url': url.id, 'filter': filter}) %}
+
+<div class="index-products row pt-4 pb-3 pt-md-5 pb-md-4">
+
+    {% if listing.display != 'disable' %}
+        <div class="col-lg-3">
+            {{ render_esi(controller('App\\Controller\\Front\\Action\\CatalogController::search', {
+                'listing': listing.id, 'url': url.id
+            })) }}
+        </div>
+    {% endif %}
+
+    <div class="col-lg-{% if listing.display != 'disable' %}9{% else %}12{% endif %}">
+
+        {% set noneResultTxt = "Aucun produit"|trans %}
+        {% set oneResultTxt = "produit"|trans %}
+        {% set multiResultTxt = "produits"|trans %}
+
+        {% if listing.counter %}
+            <div class="row m-0">
+                <div class="col-12">
+                    <div id="result-counter" class="ribbon-vwrapper alert alert-secondary">
+                        <div class="ribbon ribbon-bookmark ribbon-vertical-l ribbon-secondary">
+                            {{ "fas fa-info"|fontawesome(null, 17) }}
+                        </div>
+                        <span class="text d-inline-block"
+                              data-none="{{ noneResultTxt }}"
+                              data-one="{{ oneResultTxt }}"
+                              data-multi="{{ multiResultTxt }}">
+                            {% if count == 0 %}
+                                {{ emt(noneResultTxt) }}
+                            {% elseif count == 1 %}
+                                {{ count ~ " " ~ oneResultTxt }}
+                            {% else %}
+                                {{ count ~ " " ~ multiResultTxt }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- .products-index-container -->
+        <div id="scroll-wrapper"
+             data-scroll-active="{{ scrollInfinite }}"
+             data-page="{{ pageNum }}"
+             data-max="{{ maxPage }}"
+             data-href="{{ ajaxPath }}"
+             data-highlight="{{ highlight }}"
+             class="products-index-container">
+
+            {% include 'front/' ~ websiteTemplate ~ '/actions/catalog/results.html.twig' %}
+
+            {% if scrollInfinite %}
+                <div id="scroller-loader" class="w-100 mt-5 d-none text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden sr-only">{{ emt("Chargement..."|trans) }}</span>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if maxPage > 1 %}
+                <div class="row text-center text-md-right{% if scrollInfinite %} d-none{% endif %}">
+                    <div class="col-12">
+                        <div class="inner d-inline-block">
+                            {{ knp_pagination_render(products) }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+        <!-- /.products-index-container -->
+
+    </div>
+</div>
+

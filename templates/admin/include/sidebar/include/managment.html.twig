@@ -1,0 +1,20 @@
+{% trans_default_domain 'admin' %}
+
+<li>
+
+    <a class="has-arrow bigger{% if mainActive %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+        {{ 'fal fa-desktop'|fontawesome(null, 15, 'white show-menu') }}<span class="hide-menu">{{ "Gestion du site"|trans }}</span>
+    </a>
+
+    <ul aria-expanded="true" class="collapse{% if mainActive %} in{% endif %}">
+        {% include 'admin/include/sidebar/include/managment/page.html.twig' %}
+        {% include 'admin/include/sidebar/include/managment/medias.html.twig' %}
+        {% include 'admin/include/sidebar/include/managment/navigation.html.twig' %}
+        {% include 'admin/include/sidebar/include/managment/translation.html.twig' %}
+        {% include 'admin/include/sidebar/include/managment/seo.html.twig' %}
+{#        {% include 'admin/include/sidebar/include/managment/layout.html.twig' %}#}
+        {% include 'admin/include/sidebar/include/managment/user.html.twig' %}
+        {% include 'admin/include/sidebar/include/managment/information.html.twig' %}
+    </ul>
+
+</li>

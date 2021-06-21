@@ -1,0 +1,76 @@
+{% set website = website() %}
+{% set configuration = website().configuration %}
+{% set websiteTemplate = configuration.template %}
+{% set i18n = mediaRelation.i18n is defined ? mediaRelation.i18n : null %}
+{% set class = imgClass is defined and imgClass ? imgClass ~ ' ' : null %}
+{% set imageLink = i18n|i18nLink %}
+{% set imageTitle = i18n and i18n.title and mediaRelation.displayTitle ? i18n.title : null %}
+{% set forceSize = desktop.forceSize is defined ? desktop.forceSize : false %}
+{% set quality = mediaRelation.media.quality is defined and mediaRelation.media.quality > 0 ? mediaRelation.media.quality : 72 %}
+{% set titlePosition = mediaRelation.media.titlePosition is defined ? mediaRelation.media.titlePosition : 'bottom' %}
+{% set displayTitle = imageTitle and mediaRelation.displayTitle %}
+
+{% set filter = '/placeholder.' in desktop.path ? 'media100' : 'media' ~ quality %}
+{% set disabledExtensions = ['svg', 'gif', 'tiff'] %}
+{% set filepathDesktop = desktop.runtimeConfig and desktop.media.extension not in disabledExtensions
+    ? asset(desktop.path)|imagine_filter(filter, desktop.runtimeConfig)
+    : asset(desktop.path) %}
+{% set filepathDesktopWebP = webp['desktop'] is defined and webp['desktop'] and desktop.runtimeConfig and desktop.media.extension not in disabledExtensions
+    ? webp['desktop']|imagine_filter(filter, desktop.runtimeConfig)
+    : null %}
+
+{% if not desktop.runtimeConfig and desktop.media.extension not in disabledExtensions %}
+    {% set filepathDesktop = asset(desktop.path)|imagine_filter('media' ~ quality) %}
+{% endif %}
+
+{% set webpPath = filepathDesktopWebP %}
+{% if isTablet() and webp['tablet'] is defined %}
+    {% set webpPath = webp['tablet'] %}
+{% elseif isMobile() and webp['mobile'] is defined %}
+    {% set webpPath = webp['mobile'] %}
+{% endif %}
+
+{% set lazyDesktop = webpPath and desktop.runtimeConfig ? asset(webpPath)|imagine_filter('media30', desktop.runtimeConfig)
+    : (desktop.runtimeConfig and desktop.media.extension not in disabledExtensions
+    ? asset(desktop.path)|imagine_filter('media30', desktop.runtimeConfig)
+    : (desktop.lazyFile is defined and desktop.lazyFile and desktop.media.extension not in disabledExtensions
+    ? asset(desktop.lazyFile)
+    : asset('build/vendor/images/lazy-point.svg', 'vendor'))) %}
+
+{% set tabletExist = tablet.path is defined and tablet.path %}
+{% set filepathTablet = tabletExist ? asset(tablet.path) : null %}
+
+{% set mobileExist = mobile.path is defined and mobile.path %}
+{% set filepathMobile = mobileExist ? asset(mobile.path) : null %}
+
+{% set desktopClass = class ? class ~ ' ' : null %}
+{% if mobileExist or tabletExist %}
+    {% set desktopClass = imgClass ~ 'd-none d-lg-inline-block' %}
+{% endif %}
+
+{% set desktopMedia = desktop %}
+{% set isInBox = not inAdmin and (inBox or popupGallery) and not btnLink %}
+{% set screensPaths = {'desktop': filepathDesktop, 'tablet': filepathTablet, 'mobile': filepathMobile} %}
+
+{% extends isInBox and configuration.hoverTheme ? 'front/' ~ configuration.template ~ '/include/hovereffect/' ~ configuration.hoverTheme ~ '.html.twig'
+    : 'core/image-block.html.twig' %}
+
+{% block media %}
+
+    {% if not inAdmin and not isInBox and imageLink.link is defined and imageLink.link is not empty and not btnLink %}
+        <a href="{{ imageLink.link }}"{% if imageLink.targetBlank %} target="_blank"{% endif %}>
+    {% endif %}
+
+    {% include 'core/image.html.twig' with {
+        'mediaTitle': desktop.attr.title is defined ? desktop.attr.title : null,
+        'mediaAuthor': desktop.attr.author is defined ? desktop.attr.author : null,
+        'mediaWidth': desktop.attr.width is defined ? desktop.attr.width : 'auto',
+        'mediaHeight': desktop.attr.height is defined ? desktop.attr.height : 'auto',
+        'mediaTitle': desktop.attr.title is defined ? desktop.attr.title : null
+    } %}
+
+    {% if not inAdmin and not isInBox and imageLink.link is defined and imageLink.link is not empty and not btnLink %}
+        </a>
+    {% endif %}
+
+{% endblock %}

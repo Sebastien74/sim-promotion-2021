@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-10-09, 8:55 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS GEOSANS :
+    =====================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Geosans", sans-serif;
+
+$fonts: (
+    'GeosansLight': ('weight': 100, 'style': normal),
+    'GeosansLightOblique': ('weight': 100, 'style': italic)
+);
+
+@include font-face("Geosans", $fonts);

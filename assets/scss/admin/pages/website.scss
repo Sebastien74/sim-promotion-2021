@@ -1,0 +1,52 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-12-11, 12:13 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    WEBSITE :
+    ========
+
+    1 ) Imports
+    2 ) Main
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Imports
+-----------------------------------*/
+
+@import '../variables';
+
+/*-----------------------------------
+   2 ) Main
+-----------------------------------*/
+
+.themes-group {
+
+    .card {
+
+        border-radius: 10px;
+
+        img {
+            border-radius: 10px;
+        }
+
+        .content {
+            background-color: transparentize($white, .1);
+            border-radius: 10px;
+        }
+
+        &.active:before {
+            border-radius: 10px;
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: transparentize($black, .3);
+        }
+    }
+}

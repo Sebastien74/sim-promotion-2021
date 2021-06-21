@@ -1,0 +1,28 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+
+{% if i18n %}
+
+    {% set intro = i18n.introduction %}
+    {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : '' %}
+    {% set body = i18n.body %}
+    {% set bodyAlignment = i18n.bodyAlignment ? i18n.bodyAlignment : '' %}
+
+    {% if intro|striptags|length > 0 or body|striptags|length > 0 %}
+        <!-- .text-block -->
+        <div class="text-block w-100">
+
+            {% if intro|striptags|length > 0 %}
+                <p class="text-bold introduction {{ introAlignment }}">{{ intro|nl2br|raw }}</p>
+            {% endif %}
+
+            {% if body|striptags|length > 0 %}
+                <div class="body {{ bodyAlignment }}{% if i18n.headerTable %} header-table{% endif %}">{{ body|unescape|raw }}</div>
+            {% endif %}
+
+        </div>
+        <!-- \.text-block -->
+    {% endif %}
+
+{% endif %}

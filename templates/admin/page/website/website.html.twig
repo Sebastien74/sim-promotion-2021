@@ -1,0 +1,85 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = "Site :"|trans ~ " " ~ entity.adminName %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-website', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('admin-website', 'admin', 'Website') }}
+{% endblock %}
+
+{% set tabs = {
+    "configuration": {
+        "title": "Configuration"|trans,
+        "icon": "fal fa-cog"
+    },
+    "domains": {
+        "title": "Domaines"|trans,
+        "icon": "fal fa-rss"
+    },
+    "modules": {
+        "title": "Modules"|trans,
+        "icon": "fal fa-sliders-h"
+    },
+    "themes": {
+        "title": "Thèmes"|trans,
+        "icon": "fal fa-atom"
+    },
+    "apis": {
+        "title": "APIS"|trans,
+        "icon": "fal fa-meteor"
+    },
+    "security": {
+        "title": "Sécurité"|trans,
+        "icon": "fal fa-shield-check"
+    },
+    "emails": {
+        "title": "Emails"|trans,
+        "icon": "fal fa-at"
+    },
+    "development": {
+        "title": "Développement"|trans,
+        "icon": "fal fa-code"
+    }}
+%}
+
+{% block body %}
+
+    <div id="website-edition" class="d-inline-block w-100">
+        {{ form_start(form, {"attr": {"novalidate": "novalidate", 'id': 'website-form'}}) }}
+            <div class="card">
+                <div class="card-body p-0">
+                    <ul class="nav nav-tabs custom-tab large" role="tablist">
+                        {% for tabId, config in tabs %}
+                            <li class="nav-item">
+                                <a id="nav-{{ tabId }}-tab" class="nav-link{% if loop.first %} active{% endif %}" data-toggle="tab" href="#{{ tabId }}" role="tab" aria-selected="{{ loop.first }}">
+                                    {{ config.icon|fontawesome(17, 17, 'dark mr-sm-2') }}
+                                    <span class="d-none d-sm-inline-block">{{ config.title }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="tab-content">
+                        {% for tabId, config in tabs %}
+                            <div class="tab-pane mr-4 ml-4 pt-4{% if loop.first %} active{% endif %}" id="{{ tabId }}" role="tabpanel" aria-labelledby="nav-{{ tabId }}-tab">
+                                {% include 'admin/page/website/include/website/' ~ tabId ~ '.html.twig' %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% include 'admin/core/form/save/footer-only.html.twig' %}
+            </div>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

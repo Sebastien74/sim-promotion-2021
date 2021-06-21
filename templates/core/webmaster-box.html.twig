@@ -1,0 +1,180 @@
+{% trans_default_domain 'front_webmaster' %}
+
+{% if renderToolbox is not defined %}
+
+    {% set interfaceName = interface.name is defined ? interface.name : 'null' %}
+    {% set entityId = interfaceName and entity.id is defined ? entity.id : (seo.entity.id is defined ? seo.entity.id : null) %}
+    {% set routeArgs = { 'website': website.id, 'interfaceName': interfaceName, 'entityId': entityId } %}
+    {% if url is defined %}
+        {% set routeArgs = routeArgs|merge({'url': url.id}) %}
+    {% endif %}
+
+    <div id="data-tool-box" data-path="{{ path('front_webmaster_toolbox', routeArgs) }}"></div>
+
+{% else %}
+
+    {% if not app.user %}
+
+        <!-- #webmaster-box -->
+        <div id="webmaster-box">
+            <a href="{{ path('security_login') }}"
+               class="btn btn-outline-info webmaster-btn btn-login"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               title="{{ "Connectez-vous"|trans|striptags }}"
+               aria-label="{{ "Connectez-vou"|trans|striptags }}"
+               target="_blank">
+                {{ 'fad fa-power-off'|fontawesome(23, 23) }}
+            </a>
+        </div>
+        <!-- \#webmaster-box -->
+
+    {% elseif is_granted('ROLE_ADMIN') %}
+
+        <!-- #webmaster-box -->
+        <div id="webmaster-box">
+
+            <div class="btn-group">
+
+                <span id="webmaster-box-wrapper"
+                      class="d-inline-block"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-close="{{ "Ouvrir"|trans|striptags }}"
+                      data-open="{{ "Fermer"|trans|striptags }}"
+                      title="{{ "Ouvrir"|trans|striptags }}">
+
+                    <button id="webmaster-box-dropdown"
+                            aria-label="{{ "Ouvrir"|trans|striptags }}"
+                            type="button"
+                            class="btn btn-secondary dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        {{ 'fal fa-times'|fontawesome(15, 15) }}
+                    </button>
+
+                    <div class="dropdown-menu">
+
+                        {% set layoutRoute = 'admin_' ~ interfaceName ~ '_layout' %}
+                        {% set layoutRouteExist = routeExist(layoutRoute) %}
+
+                        {% if interfaceName is defined and interfaceName and layoutRouteExist and entityId %}
+                            <a href="{{ path(layoutRoute, {"website": website.id, (interfaceName): entityId}) }}"
+                               class="btn btn-outline-info webmaster-btn"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title="{{ "Éditer la page"|trans|striptags }}"
+                               aria-label="{{ "Éditer la page"|trans|striptags }}"
+                               target="_blank">
+                                {{ 'fad fa-pencil-alt'|fontawesome(24, 24) }}
+                            </a>
+                        {% else %}
+                            <a href="{{ path('admin_dashboard', {"website": website.id}) }}"
+                               class="btn btn-outline-info webmaster-btn"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title="{{ "Accéder à l'administration"|trans|striptags }}"
+                               aria-label="{{ "Accéder à l'administration"|trans|striptags }}"
+                               target="_blank">
+                                {{ 'fad fa-briefcase'|fontawesome(24, 21) }}
+                            </a>
+                        {% endif %}
+
+                        <a href="#" id="webmaster-edit-btn"
+                           class="btn btn-outline-info webmaster-btn"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="right"
+                           title="{{ "Afficher les boutons d'éditions"|trans|striptags }}"
+                           aria-label="{{ "Afficher les boutons d'éditions"|trans|striptags }}">
+                            {{ 'fad fa-eye'|fontawesome(24, 16) }}
+                        </a>
+
+                        {% set previewRoute = 'front_' ~ interfaceName ~ '_preview' %}
+                        {% if routeExist(previewRoute) and is_granted('ROLE_TRANSLATION') %}
+                            <a href="{{ path(previewRoute, {'website': website.id, 'url': url.id}) }}?edit_mode=true"
+                               class="btn btn-outline-info webmaster-btn"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title="{{ "Éditer les textes"|trans|striptags }}"
+                               aria-label="{{ "Éditer les textes"|trans|striptags }}">
+                                {{ 'fad fa-pen-nib'|fontawesome(24, 16) }}
+                            </a>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_ALLOWED_TO_SWITCH') %}
+                            <a id="users-switcher-btn"
+                               class="btn btn-outline-info webmaster-btn cursor"
+                               title="{{ "Afficher le commutateur d'utilsateurs"|trans|striptags }}"
+                               aria-label="{{ "Afficher le commutateur d'utilsateurs"|trans|striptags }}"
+                               data-path="{{ path('admin_user_switcher', {'website': website.id, 'type': 'front'}) }}"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right">
+                                {{ 'fad fa-users'|fontawesome(24, 17) }}
+                            </a>
+                        {% endif %}
+
+                        {% if is_granted('IS_IMPERSONATOR') %}
+
+                            <a href="{{ path('front_index', {'_switch_user': '_exit'}) }}"
+                               class="btn btn-outline-info webmaster-btn"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title="{{ "Reconnectez-vous en tant qu'administrateur"|trans|striptags }}"
+                               aria-label="{{ "Reconnectez-vous en tant qu'administrateur"|trans|striptags }}">
+                                {{ 'fad fa-repeat'|fontawesome(24, 23) }}
+                            </a>
+
+                        {% else %}
+
+                            <a href="{{ path('security_logout') }}"
+                               class="btn btn-outline-info webmaster-btn"
+                               title="{{ "Déconnectez-vous"|trans|striptags }}"
+                               aria-label="{{ "Déconnectez-vous"|trans|striptags }}"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right">
+                                {{ 'fad fa-power-off'|fontawesome(23, 23) }}
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </span>
+
+            </div>
+        </div>
+        <!-- \#webmaster-box -->
+    {% elseif is_granted('IS_IMPERSONATOR') %}
+
+        <!-- #webmaster-box -->
+        <div id="webmaster-box">
+            <a href="{{ path('front_index', {'_switch_user': '_exit'}) }}"
+               class="btn btn-outline-info webmaster-btn"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               title="{{ "Reconnectez-vous en tant qu'administrateur"|trans|striptags }}"
+               aria-label="{{ "Reconnectez-vous en tant qu'administrateur"|trans|striptags }}">
+                {{ 'fad fa-repeat'|fontawesome(24, 23) }}
+            </a>
+        </div>
+        <!-- \#webmaster-box -->
+
+    {% elseif is_granted('ROLE_SECURE_PAGE') %}
+
+        <!-- #webmaster-box -->
+        <div id="webmaster-box">
+            <a href="{{ path('security_logout') }}"
+               class="btn btn-outline-info webmaster-btn"
+               title="{{ "Déconnectez-vous"|trans|striptags }}"
+               aria-label="{{ "Déconnectez-vous"|trans|striptags }}"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right">
+                {{ 'fad fa-power-off'|fontawesome(23, 23) }}
+            </a>
+        </div>
+        <!-- \#webmaster-box -->
+
+    {% endif %}
+
+{% endif %}

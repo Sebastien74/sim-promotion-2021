@@ -1,0 +1,17 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'timeline'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/timelines/' in uri %}
+    {% set module = 'timeline'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['timeline'][app.user.locale] is defined ? i18nsModules['timeline'][app.user.locale] : i18nsModules['timeline']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['timeline']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_timeline_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['timeline']['entity'].iconClass|iconHtml({'width': 15, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

@@ -1,0 +1,65 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-catalog', webpack, true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% set hasLayout = true %}
+    {% set i18n = product|i18n %}
+    {% set layout = product.catalog.layout is defined and product.catalog.layout and product.catalog.layout.slug ? product.catalog.layout : null %}
+    {% set template = layout and layout.slug and layout.zones|length > 0 ? 'front/' ~ websiteTemplate ~ '/actions/catalog/view/layout.html.twig' : null %}
+    {% set template = (template)|fileExist ? template : 'front/' ~ websiteTemplate ~ '/actions/catalog/view/default-product.html.twig' %}
+    {% set templateCatalog = 'front/' ~ websiteTemplate ~ '/actions/catalog/view/' ~ product.catalog.slug ~ '-product.html.twig' %}
+    {% set templateCatalog = (templateCatalog)|fileExist ? templateCatalog : template %}
+
+    {% if i18n %}
+
+        {% set title = i18n.title %}
+        {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+        {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : 'text-left' %}
+        {% set intro = i18n.introduction %}
+        {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : 'text-left' %}
+        {% set body = i18n.body %}
+        {% set bodyAlignment = i18n.bodyAlignment ? i18n.bodyAlignment : 'text-left' %}
+        {% set i18nVideo = i18n.video %}
+        {% set haveMainMedia = product|haveMainMedia %}
+        {% set medias = product|i18nMedias %}
+        {% set i18nMainMedia = product|mainMedia %}
+        {% set link = i18n|i18nLink %}
+        {% set linkAlignment = link and link.alignment ? link.alignment : 'text-left' %}
+        {% set linkStyle = link.style ? link.style : 'btn btn-primary' %}
+
+        <!-- .news-view-container -->
+        <div class="product-view-container position-relative">
+
+            {% include 'core/webmaster-edit.html.twig' with {
+                'title': "Éditer le produit"|trans([], 'front_webmaster'),
+                'role': 'ROLE_CATALOG',
+                'path': path('admin_catalogproduct_edit', {'website': website.id, 'catalogproduct': product.id, 'catalog': product.catalog.id})
+            } only %}
+
+            {% if layout and layout.zones|length > 0 and (template)|fileExist %}
+                <div class="product-layout product-layout-{{ layout.slug }}">
+                    {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' with {'entity': product.catalog} %}
+                </div>
+            {% else %}
+                {% include templateCatalog %}
+            {% endif %}
+
+        </div>
+        <!-- \.news-view-container -->
+
+    {% endif %}
+
+{% endblock %}

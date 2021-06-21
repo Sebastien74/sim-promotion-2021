@@ -1,0 +1,90 @@
+{#{% trans_default_domain 'front_default' %}#}
+
+{#{% set disabledMain = mainMediaInHeader %}#}
+{#{% set mediaCount = disabledMain ? 0 : medias|length %}#}
+
+{#{% if disabledMain %}#}
+{#    {% for media in medias %}#}
+{#        {% if not media.isMain %}#}
+{#            {% set mediaCount = mediaCount + 1 %}#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
+{#{% endif %}#}
+
+{#<div id="carousel-news-card-{{ news.id }}"#}
+{#     class="carousel slide carousel-fade"#}
+{#     data-interval="5000"#}
+{#     data-autoplay="1"#}
+{#     data-ride="carousel">#}
+
+{#    <div class="carousel-inner">#}
+
+{#        {% set isFirst = true %}#}
+{#        {% set count = 1 %}#}
+
+{#        {% for media in medias %}#}
+
+{#            {% if not disabledMain or disabledMain and not media.isMain %}#}
+
+{#                <div class="carousel-item{% if isFirst %} active{% endif %}">#}
+
+{#                    {% set popup = popup is defined ? popup : false %}#}
+{#                    {{ media|thumb(null, {'isInBox': popup, 'popupGallery': popup}) }}#}
+
+{#                    {% set i18nMedia = media.i18n %}#}
+
+{#                    {% if i18nMedia %}#}
+
+{#                        {% set mediaTitle = i18nMedia.title %}#}
+{#                        {% set mediaTitleForce = i18nMedia.titleForce ? i18nMedia.titleForce : 2 %}#}
+{#                        {% set mediaTitleAlignment = i18nMedia.titleAlignment ? i18nMedia.titleAlignment : 'text-start' %}#}
+{#                        {% set mediaIntro = i18nMedia.introduction %}#}
+{#                        {% set mediaIntroAlignment = i18nMedia.introductionAlignment ? i18nMedia.introductionAlignment : 'text-start' %}#}
+{#                        {% set mediaBody = i18nMedia.body %}#}
+{#                        {% set mediaBodyAlignment = i18nMedia.bodyAlignment ? i18nMedia.bodyAlignment : 'text-start' %}#}
+
+{#                        <div class="carousel-caption">#}
+{#                            <div class="row">#}
+{#                                <div class="col-6 text-start text-bold">#}
+{#                                    {% if mediaCount > 1 %}#}
+{#                                        {{ count ~ "/" ~ mediaCount }}#}
+{#                                    {% endif %}#}
+{#                                </div>#}
+{#                                <div class="col-6 text-end">#}
+{#                                    {% if mediaCount > 1 %}#}
+{#                                        <a class="carousel-control-prev cursor me-2" href="#carousel-news-card-{{ news.id }}" role="button" data-slide="prev" aria-label="{{ "Précédent"|trans }}">#}
+{#                                            {{ imgRender({'src': asset('build/front/' ~ websiteTemplate ~ '/images/arrow-left.svg', 'front_default'), 'width': 20, 'height': 20, 'title': "Précédent"|trans}) }}#}
+{#                                        </a>#}
+{#                                        <a class="carousel-control-next cursor ms-2" href="#carousel-news-card-{{ news.id }}" role="button" data-slide="next" aria-label="{{ "Suivant"|trans }}">#}
+{#                                            {{ imgRender({'src': asset('build/front/' ~ websiteTemplate ~ '/images/arrow-right.svg', 'front_default'), 'width': 20, 'height': 20, 'title': "Suivant"|trans}) }}#}
+{#                                        </a>#}
+{#                                    {% endif %}#}
+{#                                </div>#}
+{#                                <div class="col-12">#}
+{#                                    {% if mediaTitle|striptags|length > 0 %}#}
+{#                                        <h{{ mediaTitleForce }} class="{{ mediaTitleAlignment }} caption-title">{{ mediaTitle|unescape|raw }}</h{{ mediaTitleForce }}>#}
+{#                                    {% endif %}#}
+{#                                    {% if mediaIntro|striptags|length > 0 %}#}
+{#                                        <p class="introduction text-bold {{ mediaIntroAlignment }}">{{ mediaIntro|unescape|raw|nl2br }}</p>#}
+{#                                    {% endif %}#}
+{#                                    {% if not popup %}#}
+{#                                        {% include 'front/' ~ websiteTemplate ~ '/blocks/link/default.html.twig' with {'i18n': i18nMedia} %}#}
+{#                                    {% endif %}#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+
+{#                        {% set count = count + 1 %}#}
+
+{#                    {% endif %}#}
+{#                </div>#}
+
+{#                {% set isFirst = false %}#}
+
+{#            {% endif %}#}
+
+{#        {% endfor %}#}
+
+{#    </div>#}
+
+{#</div>#}

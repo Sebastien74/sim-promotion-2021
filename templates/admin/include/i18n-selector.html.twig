@@ -1,0 +1,25 @@
+{% trans_default_domain 'admin' %}
+
+{% set args = args is defined ? args : {} %}
+{% set allLocales = website().configuration.allLocales %}
+{% set entitylocale = entitylocale is defined ? entitylocale : entitylocale %}
+
+{% if entitylocale and allLocales|length > 1 %}
+    <div class="btn-group" role="group">
+        <button id="locales-dropdown" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                 data-src="{{ asset('/medias/icons/flags/' ~ entitylocale ~ '.svg') }}" class="img-fluid lazyload mr-2" height="14" width="19">{{ entitylocale|languageName }}
+        </button>
+        <div id="locales-dropdown-select" class="dropdown-menu" aria-labelledby="locales-dropdown">
+            {% for websiteLocale in allLocales %}
+                {% if websiteLocale != entitylocale and (route)|routeExist %}
+                    {% set args = args|merge({'website': websiteId(), 'entitylocale': websiteLocale}) %}
+                    <a class="dropdown-item" href="{{ path(route, args) }}" data-toggle="preloader">
+                        <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                             data-src="{{ asset('/medias/icons/flags/' ~ websiteLocale ~ '.svg') }}" class="img-fluid lazyload mr-2" height="14" width="19">{{ websiteLocale|languageName }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

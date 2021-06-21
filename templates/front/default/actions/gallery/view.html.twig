@@ -1,0 +1,21 @@
+{% trans_default_domain 'front_default' %}
+
+{% set customTemplate = 'front/' ~ websiteTemplate ~ '/actions/gallery/template/' ~ gallery.slug ~ '.html.twig' %}
+{% set customTemplateExist = (customTemplate)|fileExist %}
+{% set template = customTemplateExist
+    ? 'front/' ~ websiteTemplate ~ '/actions/gallery/template/' ~ gallery.slug ~ '.html.twig'
+    : 'front/' ~ websiteTemplate ~ '/actions/gallery/template/default.html.twig' %}
+
+<!-- .gallery-container -->
+<div id="slider-container-{{ gallery.slug }}" class="gallery-container position-relative">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer la galerie"|trans([], 'front_webmaster'),
+        'role': 'ROLE_GALLERY',
+        'path': path('admin_gallery_edit', {'website': website.id, 'gallery': gallery.id})
+    } only %}
+
+    {% include template %}
+
+</div>
+<!-- \.gallery-container -->

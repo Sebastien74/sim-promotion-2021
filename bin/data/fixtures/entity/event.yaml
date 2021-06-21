@@ -1,0 +1,98 @@
+#####################################
+#           Event                   #
+#####################################
+
+App\Entity\Module\Event\Category:
+    translations:
+        adminName:
+            fr: "Nom de la catégorie (Module évènement)"
+            en: 'Category name (Module event)'
+        isDefault:
+            fr: "Principale"
+            en: 'Main'
+        singular:
+            fr: "Catégorie d'évènement"
+            en: 'News event'
+        plural:
+            fr: "Catégories d'évènements"
+            en: 'Events categories'
+        add:
+            fr: 'Ajouter une catégorie'
+            en: 'Add category'
+        delete:
+            fr: "Supprimer la catégorie"
+            en: 'Delete category'
+    columns:
+        - adminName
+        - isDefault
+
+App\Entity\Module\Event\Event:
+    mediaMulti: true
+    asCard: true
+    orderBy: publicationStart
+    orderSort: ASC
+    translations:
+        adminName:
+            fr: "Nom de l'évènement"
+            en: 'Event name'
+        category:
+            fr: "Catégorie"
+            en: 'Category'
+        singular:
+            fr: 'Évènement'
+            en: 'Event'
+        plural:
+            fr: 'Évènements'
+            en: 'Events'
+        add:
+            fr: 'Ajouter un évènement'
+            en: 'Add event'
+        delete:
+            fr: "Supprimer l'évènement"
+            en: 'Delete event'
+        promote:
+            fr: "Mise en avant"
+            en: 'Promote'
+        media:
+            fr: 'Image'
+            en: 'Image'
+    columns:
+        - media
+        - adminName
+        - category
+        - promote
+        - publicationStart
+        - publicationEnd
+
+App\Entity\Module\Event\Listing:
+    translations:
+        singular:
+            fr: "Index (Module évènement)"
+            en: 'Index (Module event)'
+        plural:
+            fr: 'Indexes'
+            en: 'Indexes'
+        add:
+            fr: 'Ajouter un index'
+            en: 'Add index'
+        delete:
+            fr: "Supprimer l'index"
+            en: 'Delete index'
+
+App\Entity\Module\Event\Teaser:
+    translations:
+        adminName:
+            fr: 'Nom du teaser (Module évènement)'
+            en: 'Teaser name (Module event)'
+        singular:
+            fr: 'Teaser'
+            en: 'Teaser'
+        plural:
+            fr: 'Teasers'
+            en: 'Teasers'
+        add:
+            fr: 'Ajouter un teaser'
+            en: 'Add teaser'
+        delete:
+            fr: "Supprimer le teaser"
+            en: 'Delete teaser'

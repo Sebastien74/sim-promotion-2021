@@ -1,0 +1,21 @@
+{% trans_default_domain 'front_default' %}
+
+{% set title = i18n and i18n.title ? i18n.title : null %}
+{% set titleForce = i18n and i18n.titleForce ? i18n.titleForce : 2 %}
+{% set titleAlignment = i18n and i18n.titleAlignment ? i18n.titleAlignment : 'text-start' %}
+{% set intro = i18n and i18n.introduction ? i18n.introduction : null %}
+{% set introAlignment = i18n and i18n.introductionAlignment ? i18n.introductionAlignment : 'text-start' %}
+{% set body = i18n and i18n.body ? i18n.body : null %}
+{% set bodyAlignment = i18n and i18n.bodyAlignment ? i18n.bodyAlignment : 'text-start' %}
+
+{% if title|striptags|length > 0 %}
+    <h{{ titleForce }} class="title mb-4 {{ titleAlignment }}">{{ title|unescape|raw }}</h{{ titleForce }}>
+{% endif %}
+
+{% if intro|striptags|length > 0 %}
+    <p class="introduction {{ introAlignment }}">{{ intro|unescape|raw|nl2br }}</p>
+{% endif %}
+
+{% if intro|striptags|length > 0 %}
+    <div class="body {{ bodyAlignment }}">{{ body|unescape|raw }}</div>
+{% endif %}

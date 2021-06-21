@@ -1,0 +1,74 @@
+{% trans_default_domain 'admin' %}
+
+{% set allModules = allModules is defined and allModules ? allModules : website()|modules %}
+
+{% if is_granted('ROLE_ADMIN') %}
+
+    {% set modules = [
+        'newscasts',
+        'sliders',
+        'events',
+        'maps',
+        'faqs',
+        'forms',
+        'forums',
+        'galleries',
+        'newsletters',
+        'portfolios',
+        'tables',
+        'tabs',
+        'searchs',
+        'catalogs',
+        'makings',
+        'agendas',
+        'forums',
+        'timelines',
+        'portfolios',
+        'contacts'
+    ] %}
+
+    {% set requestUri = app.request.uri %}
+    {% set moduleActive = false %}
+    {% set moduleTag = null %}
+    {% for tag in modules %}
+        {% if '/' ~ tag ~ '/' in requestUri %}
+            {% set moduleActive = true %}
+            {% set moduleTag = tag %}
+        {% endif %}
+    {% endfor %}
+
+    {% set pages = modules|merge(['seo', 'gdpr', 'security']) %}
+    {% set pageTag = null %}
+    {% for tag in pages %}
+        {% if '/' ~ tag ~ '/' in requestUri %}
+            {% set pageTag = tag %}
+        {% endif %}
+    {% endfor %}
+
+    {% set mainActive = not moduleActive %}
+
+    <aside class="left-sidebar">
+        <div class="scroll-sidebar">
+            <nav class="sidebar-nav">
+                <ul id="sidebarnav">
+                    {% include 'admin/include/sidebar/include/header.html.twig' %}
+                    {% include 'admin/include/sidebar/include/managment.html.twig' %}
+                    {% include 'admin/include/sidebar/include/modules.html.twig' %}
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+{% else %}
+
+    <aside class="left-sidebar">
+        <div class="scroll-sidebar ps ps--theme_default" data-ps-id="a3999edd-4318-03cb-d7c0-a466289cae2c">
+            <nav class="sidebar-nav">
+                <ul id="sidebarnav">
+                    {% include 'admin/include/sidebar/include/header.html.twig' %}
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+{% endif %}

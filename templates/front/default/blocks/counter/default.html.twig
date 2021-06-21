@@ -1,0 +1,35 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+
+{% if i18n %}
+
+    {% set noMarginChars = ['%'] %}
+    {% set prefix = i18n.placeholder|striptags|length > 0 ? i18n.placeholder|raw : null %}
+    {% set suffix = i18n.slug|striptags|length > 0 ? i18n.slug|raw : null %}
+    {% set suffixHaveMargin = i18n.slug|striptags not in noMarginChars %}
+
+    <!-- .counter-block -->
+    <div class="counter-block w-100">
+        <h3 class="title text-primary mb-4">
+            <div class="d-inline-block w-100">
+                {% if prefix %}
+                    <span class="float-start me-2">{{ prefix }}</span>
+                {% endif %}
+                <span id="counter-block-{{ block.id }}"
+                      class="purecounter float-start"
+                      data-component="counter"
+                      data-purecounter-start="0"
+                      data-purecounter-end="{% if i18n.title|striptags|length > 0 %}{{ i18n.title|raw }}{% endif %}"
+                      data-counter-time="2000"
+                      data-counter-delay="80">0</span>
+                {% if suffix %}
+                    <span class="float-start{% if suffixHaveMargin %} ms-2{% endif %}">{{ suffix }}</span>
+                {% endif %}
+            </div>
+            {% if i18n.body|striptags|length > 0 %}{{ i18n.body|raw }}{% endif %}
+        </h3>
+    </div>
+    <!-- \.counter-block -->
+
+{% endif %}

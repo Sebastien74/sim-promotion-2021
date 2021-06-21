@@ -1,0 +1,78 @@
+{% trans_default_domain 'front_default' %}
+
+<!-- .search-results-container -->
+<div class="search-results-container position-relative">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer le moteur de recherche"|trans([], 'front_webmaster'),
+        'role': 'ROLE_SEARCH',
+        'path': path('admin_search_edit', {'website': website.id, 'search': search.id})
+    } only %}
+
+    {{ form_start(form, {'attr': {"id": "search-engine-form", "class": "search-engine-form", "novalidate": "novalidate"}}) }}
+        <div class="input-group mb-3">
+            {{ form_widget(form.search) }}
+            <div class="input-group-append">
+                <button type="submit"
+                        class="cursor btn btn-outline-primary hbtn hb-fill-right"
+                        id="search-engine-submit"
+                        data-toggle="preloader">
+                    {{ 'fal fa-search'|fontawesome(15, 15, 'search me-2') }}
+                    {{ emt("Rechercher"|trans) }}
+                </button>
+            </div>
+        </div>
+    {{ form_end(form) }}
+
+    <div id="search-results">
+
+        {% if searchText %}
+            <p class="search-infos mb-4 mt-4 pb-3">
+                {% if counts.all is defined %}
+                    <strong class="count badge badge-primary float-start me-2">{{ counts.all }}</strong>
+                {% endif %}
+                {% set message = "Aucun résultat par la recherche :"|trans %}
+                {% if counts.all is defined and counts.all == 1 %}
+                    {% set message = "Résultat trouvé pour la recherche :"|trans %}
+                {% elseif counts.all is defined and counts.all > 1 %}
+                    {% set message = "Résultat(s) trouvé(s) pour la recherche :"|trans %}
+                {% endif %}
+                <span class="result-title text-primary">{{ emt(message) }} <strong>"{{ searchText }}"</strong></span>
+            </p>
+        {% endif %}
+
+        {% if results %}
+
+            <div id="results">
+                {% for page, pageResults in results %}
+                    {% if search.filterGroup %}
+                        {% include 'front/' ~ websiteTemplate ~ '/actions/search/template/groups.html.twig' %}
+                    {% else %}
+                        {% include 'front/' ~ websiteTemplate ~ '/actions/search/template/list.html.twig' %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if allResults|length > 1 %}
+                <div class="w-100 text-end mt-4">
+                    <ul class="d-inline-block pagination">
+                        {% for page, pageResults in allResults %}
+                            {% if pageResults.items is defined %}
+                                <li class="nav-item page-item float-start">
+                                    <a class="nav-link page-link{% if loop.index == currentPage %} active{% endif %}"
+                                       href="{{ path('front_index', {'url': resultsPageUrl.code, 'search': searchText|url_encode, 'page': loop.index }) }}">
+                                        {{ page }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+<!-- \.search-results-container -->

@@ -1,0 +1,23 @@
+framework:
+    assets:
+        packages:
+            vendor:
+                json_manifest_path: '%kernel.project_dir%/public/build/vendor/manifest.json'
+            front_default:
+                json_manifest_path: '%kernel.project_dir%/public/build/front/default/manifest.json'
+            libraries:
+                json_manifest_path: '%kernel.project_dir%/public/build/libraries/manifest.json'
+            fonts:
+                json_manifest_path: '%kernel.project_dir%/public/build/fonts/manifest.json'
+            gdpr:
+                json_manifest_path: '%kernel.project_dir%/public/build/gdpr/manifest.json'
+            admin:
+                json_manifest_path: '%kernel.project_dir%/public/build/admin/manifest.json'
+            security:
+                json_manifest_path: '%kernel.project_dir%/public/build/security/manifest.json'
+            in_build:
+                json_manifest_path: '%kernel.project_dir%/public/build/in-build/manifest.json'
+            init:
+                json_manifest_path: '%kernel.project_dir%/public/build/init/manifest.json'
+            exception:
+                json_manifest_path: '%kernel.project_dir%/public/build/exception/manifest.json'

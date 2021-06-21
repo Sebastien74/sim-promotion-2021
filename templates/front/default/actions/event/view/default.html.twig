@@ -1,0 +1,85 @@
+{#{% trans_default_domain 'front_default' %}#}
+
+{#{% if title|striptags|length > 0 %}#}
+{#    {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with {#}
+{#        'block': news,#}
+{#        'i18nMedia': mainMediaInHeader ? i18nMainMedia : null,#}
+{#        'fullSize': true,#}
+{#        'page': page,#}
+{#        'pageTitle': title,#}
+{#        'template': websiteTemplate,#}
+{#        'thumbConfiguration': null } %}#}
+{#{% endif %}#}
+
+{#<div class="container pt-5 pb-5">#}
+
+{#    <div class="row">#}
+
+{#        <div class="col-lg-7">#}
+
+{#            {% if category and category.displayCategory and i18nCategory.title is defined and i18nCategory.title %}#}
+{#                <h{{ titleForce + 1 }} class="news-category-title {{ titleAlignment }}">{{ i18nCategory.title|unescape|raw }}</h{{ titleForce + 1 }}>#}
+{#            {% endif %}#}
+
+{#            {% if category and not category.hideDate or not category %}#}
+{#                <small class="date mb-4 d-inline-block w-100">#}
+{#                    {% set format = category ? category.formatDate : 'dd/MM/Y' %}#}
+{#                    {{ emt("Publié le"|trans) }} {{ news.publicationStart|localizedDate('none', 'none', app.request.locale, null, format) }}#}
+{#                </small>#}
+{#            {% endif %}#}
+
+{#            {% if intro|striptags|length > 0 %}#}
+{#                <p class="introduction text-bold {{ introAlignment }}">{{ intro|unescape|raw|nl2br }}</p>#}
+{#            {% endif %}#}
+
+{#            {% if body|striptags|length > 0 %}#}
+{#                <div class="body {{ bodyAlignment }}{% if i18n.headerTable %} header-table{% endif %}">{{ body|unescape|raw }}</div>#}
+{#            {% endif %}#}
+
+{#            {% if news.author %}#}
+{#                <strong class="author mb-4 d-inline-block w-100">{{ news.author }}</strong>#}
+{#            {% endif %}#}
+
+{#            {% if i18nVideo %}#}
+{#                <div class="video">{{ i18nVideo|video }}</div>#}
+{#            {% endif %}#}
+
+{#            {% if link.link is defined and link.link %}#}
+{#                <!-- .link-block -->#}
+{#                <div class="link-block mt-4 {{ linkAlignment }}">#}
+{#                    <a href="{{ link.link }}"#}
+{#                       class="{{ linkStyle }}{% if 'btn' in linkStyle %} hbtn hb-fill-right{% endif %}"#}
+{#                            {% if link.targetBlank %} target="_blank"{% else %} data-toggle="preloader"{% endif %}>#}
+{#                        {{ link.label|unescape|raw }}#}
+{#                    </a>#}
+{#                </div>#}
+{#                <!-- .link-block -->#}
+{#            {% endif %}#}
+
+{#            {% set indexPage = news|indexPage %}#}
+{#            {% set pageUrl = indexPage ? website|i18nUrl(indexPage) : website|i18nUrl(page) %}#}
+{#            {% set btnLabel = i18nCategory.targetLabel is defined and i18nCategory.targetLabel ? i18nCategory.targetLabel : emt("Retourner à la liste des publications"|trans) %}#}
+
+{#            {% if pageUrl %}#}
+{#                <a href="{{ path('front_index', {'url': pageUrl}) }}" class="link mt-5 d-none d-lg-inline-block" data-toggle="preloader">#}
+{#                    {{ btnLabel }}{{ "fal fa-chevron-right"|fontawesome(null, 8, 'ms-2') }}#}
+{#                </a>#}
+{#            {% endif %}#}
+
+{#        </div>#}
+
+{#        <div class="col-lg-5">#}
+
+{#            <div class="carousel-wrap">#}
+{#                {% include 'front/' ~ websiteTemplate ~ '/actions/newscast/view/include/carousel.html.twig' %}#}
+{#            </div>#}
+
+{#            <a href="{{ path('front_index', {'url': pageUrl}) }}" class="link mt-5 d-lg-none" data-toggle="preloader">#}
+{#                {{ btnLabel }}{{ "fal fa-chevron-right"|fontawesome(null, 8, 'ms-2') }}#}
+{#            </a>#}
+
+{#        </div>#}
+
+{#    </div>#}
+
+{#</div>#}

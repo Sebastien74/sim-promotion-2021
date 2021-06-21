@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2021
+    Created on : 2021-01-07, 4:55 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT VENDOR BLOCKQUOTE :
+    =========================
+
+------------------------------------------------------------------ */
+
+.blockquote-block {
+
+    i, svg {
+        position: absolute;
+        font-size: rem(40px);
+        height: 40px;
+        top: -10px;
+        left: -10px;
+        fill: $gray-400;
+    }
+
+    p {
+        position: relative;
+        font-style: italic;
+        font-size: rem(20px);
+        line-height: rem(20px);
+    }
+}

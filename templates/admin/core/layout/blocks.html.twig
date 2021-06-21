@@ -1,0 +1,133 @@
+{% trans_default_domain 'admin' %}
+
+{% set displayAdminName = ['form'] %}
+{% set website = website is defined ? website : website() %}
+
+{% if zone.cols|length > 0 %}
+    <ul id="block-sortable-{{ col.id }}" class="block-sortable reset ui-sortable row">
+        {% for block in col.blocks %}
+            <li class="block col-md-{{ block.size }}{% if block.hide %} block-hidden{% endif %}"
+                id="block-{{ block.id }}"
+                data-size-class="col-md-{{ block.size }}"
+                data-col="{{ col.id }}"
+                data-id="{{ block.id }}"
+                data-position="{{ block.position }}">
+                <div class="block-resizable position-relative">
+                    <div class="row block-row">
+                        <div class="col-6 my-auto">
+                            <div class="infos-block mr-1 d-inline-block">
+
+                                {% set title = block.blockType.adminName is defined ? block.blockType.adminName : null %}
+                                {% set icon = block.blockType.iconClass is defined ? block.blockType.iconClass : null %}
+                                {% set blockTypeCode = block.blockType.slug is defined ? block.blockType.slug : null %}
+                                {% set i18n = block.i18ns is defined ? block.i18ns|i18n(website().configuration.locale) : null %}
+                                {% set mediaRelation = block.mediaRelations is defined ? block.mediaRelations|i18n(website().configuration.locale) : null %}
+
+                                {% if block.blockType.slug == 'core-action' %}
+                                    {% set title = block.action.adminName is defined ? block.action.adminName : null %}
+                                    {% set icon = block.action.iconClass is defined ? block.action.iconClass : null %}
+                                {% endif %}
+
+                                {% if icon %}
+                                    <span data-toggle="tooltip" title="{{ title|striptags }}">
+                                        {{ icon|iconHtml({'width': 14, 'height': 14, 'class': 'info mr-2'}) }}
+                                    </span>
+                                {% endif %}
+
+                                {% if title %}
+                                    <span class="block-title">{{ title|trans }}</span>
+                                {% endif %}
+
+                                {% if (blockTypeCode == 'title' or blockTypeCode == 'titleheader') %}
+                                    {% if i18n.titleForce is defined and i18n.titleForce %}
+                                        <span class="title-info text-info mr-1">H{{ i18n.titleForce }}</span>
+                                    {% endif %}
+                                    {% if i18n.title is defined and i18n.title %}
+                                        <small class="info-text italic">{{ i18n.title|striptags|truncate(35) }}</small>
+                                    {% endif %}
+                                {% elseif interface.name in displayAdminName %}
+                                    <small class="info-text italic">{{ block.adminName|striptags|truncate(35) }}</small>
+                                {% endif %}
+
+                                {% if i18n.introduction is defined and i18n.introduction or i18n.body is defined and i18n.body %}
+                                    {% set description = i18n.body|striptags|length > 0 ? i18n.body : i18n.introduction %}
+                                    <small class="info-text italic">{{ description|striptags|truncate(35) }}</small>
+                                {% elseif i18n.targetLabel is defined and i18n.targetLabel %}
+                                    <small class="info-text italic">{{ i18n.targetLabel|striptags|truncate(35) }}</small>
+                                {% endif %}
+
+                                {% if mediaRelation and mediaRelation.media and mediaRelation.media.filename %}
+                                    <a href="{{ mediaRelation|thumb(null, {"path": true}) }}" class="image-popup d-inline-block text-center ml-2">
+                                        {{ mediaRelation|thumb(null, {"height": 20, "width": 20}) }}
+                                    </a>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                        <div class="col-6 btn-block-group text-right my-auto">
+
+                            {% if 'edit'|moduleActive(allModules) %}
+                                <span data-path="{{ path('admin_block_configuration', {'website': websiteId(), 'block': block.id}) }}"
+                                      class="item edit-layout-element-btn cursor">
+                                    <span data-toggle="tooltip"
+                                          title="{{ "Configuration"|trans|striptags }}"
+                                          class="btn">{{ 'far fa-cog'|fontawesome(14, 14, 'dark') }}</span>
+                                </span>
+                            {% endif %}
+
+                            {% if 'edit'|moduleActive(allModules) %}
+                                <span class="item background-block-item background-item d-inline-block">
+                                      {% set color = 'background'|color(website, block.backgroundColor) %}
+                                {% set hexa = color ? color.color : null %}
+                                    <span class="color-info-bulle"{% if hexa %} style="background-color: {{ hexa }}" {% endif %}></span>
+                                    <span class="btn edit-layout-element-btn btn-palette cursor"
+                                          data-path="{{ path('admin_block_background', {'website': website.id, 'block': block.id}) }}"
+                                          data-toggle="tooltip"
+                                          title="{{ "Couleur de fond"|trans|striptags }}">
+                                        {{ 'far fa-palette'|fontawesome(14, 14, 'dark') }}
+                                    </span>
+                                </span>
+                            {% endif %}
+
+                            {% if 'edit'|moduleActive(allModules) and (block.blockType.category != 'layout' and block.blockType.slug != 'core-action' or block.blockType.slug == 'core-action' and block.action.entity is defined and block.action.entity) %}
+                                <span data-toggle="preloader">
+                                    <a href="{{ path('admin_block_edit', {'website': websiteId(), 'col': col.id, 'interfaceName': interface.name, 'interfaceEntity': entity.id, 'block': block.id}) }}"
+                                       data-toggle="tooltip" title="{{ "Éditer"|trans|striptags }}"
+                                       class="btn">
+                                        {{ 'far fa-pencil-alt'|fontawesome(14, 14, 'dark') }}
+                                    </a>
+                                </span>
+                            {% endif %}
+
+                            {% if 'delete'|moduleActive(allModules) %}
+                                <span href="{{ path('admin_block_delete', {'website': websiteId(), 'col': col.id, 'block': block.id}) }}"
+                                      data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}"
+                                      data-target="#block-{{ block.id }}"
+                                      class="btn swal-delete-link cursor">
+                                        {{ 'fas fa-trash'|fontawesome(14, 14, 'dark') }}
+                                </span>
+                            {% endif %}
+
+                            {% if block.hide %}
+                                <span class="item btn"
+                                      data-toggle="tooltip"
+                                      data-placement="right" title="{{ "Bloc désactivée"|trans|striptags }}">
+                                        {{ 'far fa-ban'|fontawesome(14, 14, 'danger') }}
+                                    </span>
+                            {% endif %}
+
+                            {% if 'edit'|moduleActive(allModules) %}
+                                <span class="item handle-block grabbable btn"
+                                      data-toggle="tooltip" title="{{ "Déplacer"|trans|striptags }}">
+                                    {{ 'far fa-arrows-alt'|fontawesome(14, 14, 'dark') }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+                        <span class="btn-resize btn-resize-block btn-white btn-xs btn-circle">{{ 'fad fa-arrow-from-right'|fontawesome(9, 10, 'dark') }}</span>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

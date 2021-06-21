@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-09-25, 10:12 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    CORE CARD :
+    ===========================
+
+    1 ) Website
+    2 ) Edition
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Website
+-----------------------------------*/
+
+.default-media-card {
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    h4 {
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+}
+
+/*-----------------------------------
+   2 ) Edition
+-----------------------------------*/
+
+.card {
+
+    .card-header.save-top {
+        border-top-right-radius: $card-border-radius;
+        border-top-left-radius: $card-border-radius;
+    }
+
+    .card-footer.save-bottom {
+        border-bottom-right-radius: $card-border-radius;
+        border-bottom-left-radius: $card-border-radius;
+    }
+}

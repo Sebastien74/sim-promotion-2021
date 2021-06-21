@@ -1,0 +1,5 @@
+add: 'Add order'
+adminName: 'Order (EC International)'
+delete: 'Delete order'
+plural: Orders
+singular: 'Order (EC International)'

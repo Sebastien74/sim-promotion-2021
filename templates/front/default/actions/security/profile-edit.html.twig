@@ -1,0 +1,81 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block metaTitle %}{{ "Mon profil"|trans|raw }} - {{ companyName }}{% endblock %}
+{% block metaRobots %}noindex{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-security', webpack, true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('front-' ~ websiteTemplate ~ '-security', webpack, 'Security') }}
+{% endblock %}
+
+{% block body %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with { 'title': emt("Mon profil"|trans|raw) } %}
+
+    <div class="container pt-5">
+
+        {{ form_start(form, { "attr": {
+            "novalidate": "novalidate",
+            "id": "user-front-form",
+            "action": path('security_front_profile_edit')
+        }}) }}
+
+            <div class="row">
+
+                <div class="col-md-8">
+
+                    <div class="row">
+                        {{ form_row(form.profile.gender) }}
+                        {{ form_row(form.lastName) }}
+                        {{ form_row(form.firstName) }}
+                        {{ form_row(form.login) }}
+                        {{ form_row(form.email) }}
+                    </div>
+
+                    {% if 'SECURITY_FRONT_ADDRESSES'|getEnv %}
+
+                        <h3 class="mb-4 mt-4">{{ emt("Adresse de livraison"|trans) }}</h3>
+                        <div class="row">
+                            {% for address in form.profile.addresses %}
+                                {% if address.vars.data.slug == 'basic' %}
+                                    {{ form_row(address) }}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        {% if 'SECURITY_FRONT_ADDRESSES'|getEnv == 'full' %}
+                            <h3 class="mb-4 mt-4">{{ emt("Adresse de facturation"|trans) }}</h3>
+                            <div class="row">
+                                {% for address in form.profile.addresses %}
+                                    {% if address.vars.data.slug == 'billing' %}
+                                        {{ form_row(address) }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-4">
+                    {{ form_row(form.file) }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">{{ emt("Enregistrer"|trans|raw) }}</button>
+
+        {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}

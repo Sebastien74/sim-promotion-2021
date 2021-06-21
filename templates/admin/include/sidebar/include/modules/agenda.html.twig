@@ -1,0 +1,25 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'agenda'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/agendas/' in uri %}
+    {% set module = 'agenda'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['agenda'][app.user.locale] is defined ? i18nsModules['agenda'][app.user.locale] : i18nsModules['agenda']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['agenda']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['agenda']['entity'].iconClass|iconHtml({'width': 13, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'agendas' %} in{% endif %}">
+            <li>
+                <a href="{{ path('admin_agenda_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Liste des agendas"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_agendainformation_index', {"website": websiteId}) }}"{% if '/agendas/informations/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Liste des informations"|trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endif %}

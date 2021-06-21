@@ -1,0 +1,36 @@
+{% trans_default_domain 'front_default' %}
+
+{% set medias = slider|i18nMedias(app.request.locale) %}
+{% set popup = slider.popup is defined and slider.popup ? true : null %}
+{% set colSize = block.col.size is defined ? block.col.size : null %}
+
+{% if medias %}
+
+    {% set selectedTemplate = 'front/' ~ websiteTemplate ~ '/actions/slider/template/' ~ slider.template ~ '.html.twig' %}
+    {% set customTemplate = 'front/' ~ websiteTemplate ~ '/actions/slider/template/' ~ slider.slug ~ '.html.twig' %}
+    {% set customTemplateExist = (customTemplate)|fileExist %}
+    {% set template = customTemplateExist
+        ? 'front/' ~ websiteTemplate ~ '/actions/slider/template/' ~ slider.slug ~ '.html.twig'
+        : ((selectedTemplate)|fileExist ? selectedTemplate : 'front/' ~ websiteTemplate ~ '/actions/slider/template/bootstrap.html.twig') %}
+
+    <!-- .slider-container -->
+    <div id="slider-container-{{ slider.slug }}" class="slider-container{% if slider.popup %} popup-gallery{% endif %}">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer le carrousel"|trans([], 'front_webmaster'),
+            'role': 'ROLE_SLIDER',
+            'path': path('admin_slider_edit', {'website': website.id, 'slider': slider.id})
+        } only %}
+
+        {% if slider.banner %}
+            {% include 'front/' ~ websiteTemplate ~ '/actions/slider/template/banner.html.twig' %}
+        {% elseif slider.itemsPerSlide > 1 and not customTemplateExist %}
+            {% include 'front/' ~ websiteTemplate ~ '/actions/slider/template/splide.html.twig' %}
+        {% else %}
+            {% include template %}
+        {% endif %}
+
+    </div>
+    <!-- \.slider-container -->
+
+{% endif %}

@@ -1,0 +1,15 @@
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                url: 'mysql://%env(DB_USER_PREPROD)%:%env(DB_PASSWORD_PREPROD)%@%env(DB_HOST_PREPROD)%:%env(DB_PORT_PREPROD)%/%env(DB_NAME_PREPROD)%'
+#            direct:
+#                url: 'mysql://%env(DB_USER_DIRECT_PREPROD)%:%env(DB_PASSWORD_DIRECT_PREPROD)%@%env(DB_HOST_DIRECT_PREPROD)%:%env(DB_PORT_DIRECT_PREPROD)%/%env(DB_NAME_DIRECT_PREPROD)%'
+    orm:
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+#            direct:
+#                connection: direct

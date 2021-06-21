@@ -1,0 +1,101 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-08-07, 16:56:32 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    TAB :
+    ===========================
+
+    1 ) Vertical tabs
+    3 ) Custom vertical tab
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Vertical tabs
+-----------------------------------*/
+
+.vtabs {
+
+    display: table;
+
+    .tabs-vertical {
+        width: 150px;
+        border-bottom: 0;
+        border-right: 1px solid $border-color;
+        display: table-cell;
+        vertical-align: top;
+
+        li .nav-link {
+            color: $gray-800;
+            margin-bottom: 10px;
+            border: 0;
+            border-radius: $border-radius 0 0 $border-radius;
+        }
+    }
+
+    .tab-content {
+        display: table-cell;
+        padding: 20px;
+        vertical-align: top;
+    }
+}
+
+.tabs-vertical li .nav-link.active,
+.tabs-vertical li .nav-link:hover,
+.tabs-vertical li .nav-link.active:focus {
+    background: $theme-color;
+    border: 0;
+    color: $white;
+}
+
+/*-----------------------------------
+   3 ) Custom vertical tab
+-----------------------------------*/
+
+.customvtab .tabs-vertical li .nav-link.active,
+.customvtab .tabs-vertical li .nav-link:hover,
+.customvtab .tabs-vertical li .nav-link:focus {
+    background: $white;
+    border: 0;
+    border-right: 2px solid $theme-color;
+    margin-right: -1px;
+    color: $theme-color;
+}
+
+.tab-content-border {
+    border: 1px solid #ddd;
+    border-top: 0;
+}
+
+.custom-tab-2 {
+
+    li {
+
+        a.nav-link {
+
+            border: 0;
+            margin-right: 3px;
+            color: $body-color;
+
+            &.active {
+                background: $theme-color;
+                color: $white;
+            }
+
+            &:hover {
+                color: $white;
+                background: $theme-color;
+            }
+        }
+    }
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+    background-color: $theme-color !important;
+    border-color: $theme-color !important;
+    box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.33);
+}

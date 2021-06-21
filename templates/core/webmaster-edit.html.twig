@@ -1,0 +1,23 @@
+{% trans_default_domain 'front' %}
+
+{% if is_granted(role) %}
+
+    {% set title = title is defined ? title : "Éditer"|trans|striptags %}
+    {% set path = path is defined ? path : "#" %}
+    {% set toolBoxClass = toolBoxClass is defined ? toolBoxClass : null %}
+
+    <!-- .webmaster-link-edit -->
+    <a href="{{ path }}"
+       class="webmaster-link-edit btn btn-success d-none{% if toolBoxClass %} {{ toolBoxClass }}{% endif %}"
+       data-toggle="tooltip"
+       data-placement="right"
+       title="{{ title|striptags }}" target="_blank">
+        {% if btnType is defined and btnType == 'eye' %}
+            {{ 'fas fa-eye'|fontawesome(11, 11) }}
+        {% else %}
+            {{ 'fas fa-pencil-alt'|fontawesome(11, 11) }}
+        {% endif %}
+    </a>
+    <!-- \.webmaster-link-edit -->
+
+{% endif %}

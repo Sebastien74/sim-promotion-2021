@@ -1,0 +1,162 @@
+{% trans_default_domain 'front_default' %}
+
+{% if calendar %}
+
+    {% set blockId = block.id is defined ? block.id : null %}
+    {% set blockColSize = block.col.size is defined and block.col.size ? block.col.size : 12 %}
+
+    {% set colSize = 12 %}
+    {% if blockColSize < 6 %}
+        {% set colSize = 12 %}
+    {% elseif calendar.daysPerPage == 3 %}
+        {% set colSize = 4 %}
+    {% elseif calendar.daysPerPage == 4 %}
+        {% set colSize = 5 %}
+    {% elseif calendar.daysPerPage == 5 %}
+        {% set colSize = 6 %}
+    {% elseif calendar.daysPerPage == 6 %}
+        {% set colSize = 8 %}
+    {% elseif calendar.daysPerPage == 7 %}
+        {% set colSize = 10 %}
+    {% endif %}
+
+    <!-- .form-calendar-container -->
+    <div class="form-calendar-container position-relative">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer le calendrier"|trans([], 'front_webmaster'),
+            'role': 'ROLE_FORM_CALENDAR',
+            'path': path('admin_formcalendar_edit', {'website': website.id, 'form': form.id, 'formcalendar': calendar.id})
+        } only %}
+
+        <div class="form-calendar-ajax-content">
+
+            {% if calendars|length > 1 %}
+                <div class="row">
+                    <div class="col-lg-{{ colSize }} mx-auto">
+                        <div id="calendars-selector-group" class="form-group calendars-selector-group text-center">
+                            <label for="calendars-selector" class="text-primary text-bold">{{ emt("Choisissez"|trans|raw) }}</label>
+                            <select class="form-control text-center" id="calendars-selector">
+                                {% for calendarChange in calendars %}
+                                    <option value="{{ path('front_form_calendar_view', {'block': blockId, "website": website.id, 'calendar': calendarChange.id}) }}"
+                                        {% if calendarChange.id == calendar.id %} selected{% endif %}>
+                                        {% set i18n = calendarChange|i18n %}
+                                        {% set optionTitle = i18n.title is defined and i18n.title ? i18n.title : calendarChange.adminName %}
+                                        {{ optionTitle }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-primary d-inline-block mt-2 mb-2">{{ emt("Vous pourrez sélectionner un créneau après avoir rempli le formulaire"|trans|raw) }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {{ form_start(formCalendar, {"attr": {
+                "novalidate": "novalidate",
+                "action": path('front_form_calendar_view', {'block': blockId, 'token': token, 'startDate': startDate}),
+                "data-calendar": calendar.id,
+                "data-component": "form-calendar",
+                "class": not contact ? 'disabled form-calendar' : 'form-calendar',
+                'id': 'form-calendar-container-' ~ calendar.id }}) }}
+
+                {% set i18n = calendar|i18n %}
+                {% set title = i18n.title is defined and i18n.title ? i18n.title : calendar.adminName %}
+
+                <div class="row">
+                    <div class="col-lg-{{ colSize }} mx-auto">
+
+                        {% if not calendars %}
+                            <h2 class="title text-center">{{ title }}</h2>
+                        {% endif %}
+
+                        <!-- .card -->
+                        <div class="card form-calendar-card">
+
+                            <div class="card-loader d-none">
+                                <div class="vertical-align">
+                                    <span class="spinner-border" role="status"></span>
+                                </div>
+                            </div>
+
+                            <!-- .card-header -->
+                            <div class="card-header">
+                                <div class="row">
+                                    {% for date in dates.dates %}
+                                        <div class="col text-center">
+                                            {{ date.datetime|localizedDate('full', 'none', app.request.locale, null, 'cccc')|capitalize }}<br>
+                                            {{ date.datetime|localizedDate('full', 'none', app.request.locale, null, 'dd/MM/Y')|capitalize }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <!-- \.card-header -->
+
+                            <!-- .card-body -->
+                            <div class="slots-container card-body" data-simplebar>
+                                {{ form_row(formCalendar.slot_date) }}
+                            </div>
+                            <!-- \.card-body -->
+
+                            <!-- .card-footer -->
+                            <div class="card-footer p-0">
+                                <div class="caption">
+                                    <ul class="reset">
+                                        <li>{{ 'fas fa-square'|fontawesome(12, 12, 'available float-start me-1') }}{{ emt("Libre"|trans|raw) }}</li>
+                                        <li>{{ 'fas fa-square'|fontawesome(12, 12, 'later float-start me-1') }}{{ emt("Bientôt disponible"|trans|raw) }}</li>
+                                        <li>{{ 'fas fa-square'|fontawesome(12, 12, 'unavailable float-start me-1') }}{{ emt("Indisponible"|trans|raw) }}</li>
+                                    </ul>
+                                </div>
+                                {% if calendar.controls %}
+                                    <div class="controls">
+                                        <div class="row">
+                                            <div class="col-6 text-start">
+                                                {% if dates.previous %}
+                                                    <span data-href="{{ path('front_form_calendar_view', {'block': blockId, "website": website.id, 'token': token, 'calendar': calendar.id, 'startDate': dates.previous|date('Y-m-d')}) }}"
+                                                          class="btn btn-primary change-dates-btn">
+                                                        {{ "fal fa-chevron-left"|fontawesome(null, 20) }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                {% if dates.next %}
+                                                    <span data-href="{{ path('front_form_calendar_view', {'block': blockId, "website": website.id, 'token': token, 'calendar': calendar.id, 'startDate': dates.next|date('Y-m-d')}) }}"
+                                                          class="btn btn-primary change-dates-btn">
+                                                        {{ "fal fa-chevron-right"|fontawesome(null, 20) }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <!-- \.card-footer -->
+
+                        </div>
+                        <!-- /.card -->
+
+                        {% if register == 'no-available' %}
+                            <div id="calendar-error">
+                                {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'error', "message": emt("Ce crénéau n'est plus disponible. Veuillez en choisir un autre."|trans|raw)} only %}
+                            </div>
+                        {% endif %}
+
+                        {% if contact %}
+                            <div id="block-slot-submit" class="btn btn-primary mt-4 w-100 disabled">{{ emt("Enregistrer"|trans|raw) }}</div>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            {{ form_end(formCalendar) }}
+
+        </div>
+
+    </div>
+    <!-- /.form-calendar-container -->
+
+{% else %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'info', "message": emt("Nous n'avons pas trouvé de calendrier !!"|trans|raw)} only %}
+
+{% endif %}

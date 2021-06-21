@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-08-07, 10:27:46 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    GLOBAL :
+    ===========================
+
+    1 ) Background
+    2 ) Popup
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Background
+-----------------------------------*/
+
+.bg-info-light {
+    background-color: $info-light;
+    color: $info-darken;
+}
+
+.bg-info-darken {
+    background-color: $info-darken;
+}
+
+.bg-body {
+    background-color: $body-bg;
+}
+
+.bg-hover-info-darken:hover,
+.bg-active-info-darken.active,
+.bg-hover-active-info-darken:hover,
+.bg-hover-active-info-darken.active {
+
+    background-color: $info-darken !important;
+    border: 1px solid $info-darken !important;
+    color: $white;
+
+    svg {
+        fill: $white;
+    }
+}
+
+/*-----------------------------------
+   2 ) Popup
+-----------------------------------*/
+
+img.mfp-img {
+    min-width: 80px;
+}
+
+/*-----------------------------------
+   3 ) Border
+-----------------------------------*/
+
+.border-info-darken {
+    border: 1px solid $info-darken;
+}

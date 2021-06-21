@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-11-16, 7:23 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT EACH ELEMENTS :
+    =====================
+
+------------------------------------------------------------------ */
+
+$titles-tags: 'h1', 'h2', 'h3', 'h4', 'h5', 'h6';
+
+@each $element, $config in $elements {
+
+    @if map-has-key($config, "colors-in-backgrounds") {
+        @each $color-name, $color in map-get($config, 'colors-in-backgrounds') {
+            .bg-#{$color-name} {
+                #{$element} {
+                    @if $element == "svg" {
+                        fill: $color !important;
+                        * {
+                            fill: $color !important;
+                        }
+                    } @else {
+                        color: $color !important;
+                    }
+                }
+            }
+        }
+    }
+
+    @if map-has-key($config, "properties") {
+
+        #{$element} {
+
+            @each $property, $value in map-get($config, 'properties') {
+                #{$property}: $value;
+            }
+
+            @if index($titles-tags, $element) {
+                @include mediaQuery('max-md') {
+                    @if map-has-key(map-get($config, 'properties'), 'font-size') {
+                        font-size: map-get(map-get($config, 'properties'), 'font-size') * .9;
+                    }
+                    @if map-has-key(map-get($config, 'properties'), 'line-height') {
+                        line-height: map-get(map-get($config, 'properties'), 'line-height') * .8;
+                    }
+                }
+            }
+
+            @if $element == "a.link, .body a, .introduction a, a.phone-link, a.email-link" {
+                @if map-has-key(map-get($config, 'properties'), 'color') {
+                    &:not([href]) {
+                        color: map-get(map-get($config, 'properties'), 'color');
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{% trans_default_domain 'front_default' %}
+
+{% block _filters_products_values_widget %}
+
+    {% if multiple %}
+        <div id="{{ id }}">
+            {% for title, values in choices %}
+                <span class="text-info d-inline-block mb-3">{{ title }}</span>
+                {% for value in values %}
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="value-input-{{ value.value }}" name="search_filters[values][]" class="custom-control-input" value="{{ value.value }}">
+                        <label class="cursor custom-control-label" for="value-input-{{ value.value }}">{{ value.label }}</label>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% else %}
+        {{ form_row(form) }}
+    {% endif %}
+
+{% endblock %}

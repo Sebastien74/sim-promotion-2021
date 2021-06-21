@@ -1,0 +1,81 @@
+{% trans_default_domain 'gdpr' %}
+
+<div id="cookies-infos" class="container table-responsive mb-5">
+
+    <h2 id="legacy-title-params" class="mb-4">{{ "Paramétrage des cookies"|trans }}</h2>
+
+    <table class="table table-bordered table-striped gdpr-management mb-0">
+        <thead>
+            <tr>
+                <th class="align-middle">{{ "Groupe"|trans }}</th>
+                <th class="align-middle">
+                    <div class="row">
+                        <div class="col-8 my-auto">{{ "Description"|trans }}</div>
+                        <div class="col-4 my-auto">
+                            <button type="button" id="gdpr-choices-validate" class="btn float-end d-none d-lg-inline-block">
+                                <div id="gdpr-choices-validate-icon-large" class="spinner-border me-2 d-none" role="status"></div>
+                                <span class="d-inline-block">{{ "Enregister"|trans|raw }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+                {% for group in category.gdprgroups %}
+                    {% if category.slug != "functional" %}
+                        {% set i18n = i18n(group) %}
+                        <tr>
+                            <td data-title="{{ "Groupe"|trans|striptags }}">
+                                <div class="content text-bold">
+                                    <span class="img-wrap float-start me-2">
+                                        <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                                             data-src="{{ asset('build/gdpr/images/' ~ group.slug ~ '-gdpr.svg', 'gdpr') }}"
+                                             class="lazyload"
+                                             width="25" height="auto"
+                                             alt="{{ group.adminName|striptags }}" title="{{ group.adminName|striptags }}" />
+                                    </span>
+                                    {{ group.adminName|unescape|raw }}
+                                </div>
+                            </td>
+                            <td data-title="{{ "Description"|trans|striptags }}">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-lg-9 my-auto">
+                                            {% if i18n.introduction|striptags|length > 0 %}
+                                                {{ i18n.introduction|unescape|raw }}
+                                            {% endif %}
+                                            {% if i18n.body|striptags|length > 0 %}
+                                                {{ i18n.body|unescape|raw }}
+                                            {% endif %}
+                                            {% if i18n.targetLink is defined and i18n.targetLink %}
+                                                <a href="{{ i18n.targetLink }}" target="_blank">{{ "En savoir plus"|trans }}</a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-lg-3 my-auto">
+                                            <div class="material-switch float-end">
+                                                <input id="table-gdpr-{{ group.slug }}"
+                                                       type="checkbox"
+                                                       class="cookie-group-checkbox"
+                                                       data-service="{{ group.service }}"
+                                                       data-code="{{ group.slug }}"{% if cookie(group.slug) %} checked{% endif %} />
+                                                <label for="table-gdpr-{{ group.slug }}" class="label-primary"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="button" id="gdpr-choices-validate" class="btn d-lg-none mt-4">
+        <div id="gdpr-choices-validate-icon-small" class="spinner-border me-2 d-none" role="status"></div>
+        {{ "Enregister"|trans|raw }}
+    </button>
+
+</div>

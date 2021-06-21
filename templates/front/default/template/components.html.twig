@@ -1,0 +1,128 @@
+{% set website = website is defined and website ? website : website() %}
+{% extends 'front/' ~ website.configuration.template ~ '/base.html.twig' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% trans_default_domain 'front_default' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-' ~ templateName, webpack, true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('front-' ~ websiteTemplate ~ '-' ~ templateName, webpack, 'Page', false, true) }}
+{% endblock %}
+
+{% set zonePosition = 1 %}
+{% set btnHover = "hbtn hb-fill-right" %}
+{% set websiteColors = website|colors %}
+{% set mainColors = websiteColors.color is defined ? websiteColors.color : [] %}
+{% set backgroundColors = websiteColors.background is defined ? websiteColors.background : [] %}
+{% set buttonColors = websiteColors.button is defined ? websiteColors.button : [] %}
+{% set alertColors = websiteColors.alert is defined ? websiteColors.alert : [] %}
+
+{% block body %}
+
+    {% if isComponentUser() %}
+
+        <!-- #content-components -->
+        <div id="content-{{ templateName }}" class="template-page">
+
+            {% for i in 1..6 %}
+                {{ website|newZone({
+                    'seo': seo,
+                    'position': zonePosition,
+                    'fullSize': true,
+                    'blocks': { (1): {'titleheader': { 'titleForce': i } }}
+                }) }}
+                {% set zonePosition = zonePosition + 1 %}
+            {% endfor %}
+
+            <div id="content">
+
+                {% set blockPosition = 1 %}
+
+                {% for background in backgroundColors %}
+
+                    {% set blocks = {} %}
+                    {% for i in 1..6 %}
+                        {% set blocks = blocks|merge({ (i): {'title': { 'titleForce': i } }}) %}
+                        {% set blockPosition = blockPosition + 1 %}
+                    {% endfor %}
+
+                    {% set blocks = blocks|merge({ (blockPosition): {'text': {} }}) %}
+                    {% set blockPosition = blockPosition + 1 %}
+
+                    {% set blocks = blocks|merge({ (blockPosition): {'blockquote': {} }}) %}
+                    {% set blockPosition = blockPosition + 1 %}
+
+                    {{ website|newZone({
+                        'seo': seo,
+                        'background': background,
+                        'position': zonePosition,
+                        'blocks': blocks
+                    }) }}
+
+                    {% set zonePosition = zonePosition + 1 %}
+
+                {% endfor %}
+
+                {% for background in backgroundColors %}
+
+                    <div class="layout-zone pt-5 pb-5 {{ background }}">
+                        <div class="container">
+                            <div class="row m-0">
+                                <div class="layout-col" data-position="{{ zonePosition }}">
+                                    <div class="layout-block text-center position-relative row">
+                                        <div class="col-12 mb-4">
+                                            <h2 class="mb-4">Textes</h2>
+                                            {% for color in mainColors %}
+                                                <div class="text-{{ color }} d-inline-block{% if not loop.last %} me-3{% endif %}">.text-{{ color }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col-12 mb-4">
+                                            <h2 class="mb-4">Bordures</h2>
+                                            {% for color in mainColors %}
+                                                <span class="border border-{{ color }} text-{{ color }} d-inline-block mb-4 pe-5 ps-5 pt-3 pb-3{% if not loop.last %} me-3{% endif %}">.border-{{ color }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col-12">
+                                            <h2 class="mb-4">Boutons</h2>
+                                            {% for color in buttonColors %}
+                                                <button type="button" class="btn {{ color }} {{ btnHover }}{% if not loop.last %} me-md-3{% endif %} mb-4">.btn-{{ color }}</button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% set zonePosition = zonePosition + 1 %}
+
+                {% endfor %}
+
+                {% for color in alertColors %}
+                    <div class="container pb-5{% if loop.first %} pt-5{% endif %}">
+                        {{ website|newBlock('alert', { 'color': color }) }}
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+        <!-- \#content-components -->
+
+    {% else %}
+
+        <div class="container pt-5 pb-4">
+            <div class="alert alert-info">
+                {{ emt("Veuillez vous connecter pour visualiser cette page."|trans|raw) }}
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

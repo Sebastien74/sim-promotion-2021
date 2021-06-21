@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-08-07, 10:25:46 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    PRELOADER :
+    ===========
+
+------------------------------------------------------------------ */
+
+@import '../../lib/fonts/poppins';
+
+body.preloader-active {
+    overflow: hidden;
+}
+
+.page-wrapper {
+    min-height: calc(100vh - 61px);
+}
+
+.parent-preloader {
+    position: relative;
+}
+
+#medias-sortable-container {
+    .admin-preloader {
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+}
+
+#layout-preloader {
+    border-radius: 10px;
+}
+
+.stripe-preloader {
+
+    background-color: transparent !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    .bg-stripe-loader {
+        background: repeating-linear-gradient(-55deg, rgba(238, 238, 238, .8) 1px, rgba(226, 226, 226, .8) 2px, rgba(226, 226, 226, .8) 11px, rgba(238, 238, 238, .8) 12px, rgba(238, 238, 238, .8) 20px) !important;
+    }
+
+    h4 {
+        background-color: transparent !important;
+        font-weight: 300 !important;
+        color: #343a40;
+    }
+
+    &.prototype-preloader {
+
+        left: 10px;
+        right: 10px;
+        bottom: 15px;
+        z-index: 9999;
+
+        &.full {
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+    }
+
+    &.radius-preloader {
+        border-radius: 10px !important;
+    }
+}
+
+#entities-index,
+.tab-content {
+    .stripe-preloader {
+        &.prototype-preloader {
+            border-radius: 0;
+        }
+    }
+}
+
+#main-preloader {
+    opacity: 0;
+    max-height: 100vh;
+    position: fixed;
+}

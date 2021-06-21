@@ -1,0 +1,30 @@
+{% trans_default_domain 'front_default' %}
+
+{% set icons = {
+    'success': 'far fa-check',
+    'info': 'fas fa-info',
+    'warning': 'fas fa-exclamation',
+    'danger': 'far fa-exclamation-triangle',
+    'error': 'far fa-exclamation-triangle',
+    'undefined': 'fas fa-info'
+} %}
+
+{% set websiteTemplate = websiteTemplate is defined ? websiteTemplate : website().configuration.template %}
+{% set alertClass = alertClass is defined and alertClass ? alertClass : null %}
+{% set alignment = alignment is defined and alignment ? alignment : "text-start" %}
+{% set alert = alert is defined and alert ? alert|replace({'alert-': '', 'error_form': 'danger'}) : "info" %}
+{% set alert = alert == "error" ? "danger" : alert %}
+{% set icon = icons[alert] is defined ? icons[alert] : icons['undefined'] %}
+
+<!-- .alert -->
+<div class="ribbon-vwrapper alert alert-{{ alert }} {{ alignment }}{% if alertClass %} {{ alertClass }}{% endif %}">
+    <div class="ribbon ribbon-bookmark ribbon-vertical-l ribbon-{{ alert }}">
+        {{ icon|fontawesome(null, 17) }}
+    </div>
+    {% if message is defined %}
+        {{ message|unescape|raw }}
+    {% else %}
+        {{ emt("Que se passe-t-il ?"|trans|raw) }}
+    {% endif %}
+</div>
+<!-- \.alert -->

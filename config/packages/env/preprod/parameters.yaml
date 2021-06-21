@@ -1,0 +1,3 @@
+parameters:
+    protocol: '%env(PROTOCOL_PREPROD)%'
+    env(SECURE_SCHEME): '%env(PROTOCOL_PREPROD)%'

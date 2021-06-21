@@ -1,0 +1,31 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'event'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/events/' in uri %}
+    {% set module = 'event'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['event'][app.user.locale] is defined ? i18nsModules['event'][app.user.locale] : i18nsModules['event']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['event']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['event']['entity'].iconClass|iconHtml({'width': 17, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'events' %} in{% endif %}">
+            <li>
+                <a href="{{ path('admin_event_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Liste des évènements"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_eventcategory_index', {"website": websiteId}) }}"{% if '/events/categories/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Liste des catégories"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_eventteaser_index', {"website": websiteId}) }}"{% if '/events/teasers/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Configuration des teasers"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_eventlisting_index', {"website": websiteId}) }}"{% if '/events/listings/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Configuration des index"|trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endif %}

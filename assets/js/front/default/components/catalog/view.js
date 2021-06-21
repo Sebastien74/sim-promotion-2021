@@ -1,0 +1,1 @@
+require('../../../scss/front/default/view.scss');

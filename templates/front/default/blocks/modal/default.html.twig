@@ -1,0 +1,82 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+
+{% if i18n %}
+
+    {% set i18nMedia = block|mainMedia %}
+
+    {% set title = i18n.title %}
+    {% set subTitle = i18n.subTitle %}
+    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+    {% set subTitleForce = titleForce < 6 ? titleForce + 1 : titleForce %}
+    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : null %}
+    {% set intro = i18n.introduction %}
+    {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : null %}
+    {% set body = i18n.body %}
+    {% set bodyAlignment = i18n.bodyAlignment ? i18n.bodyAlignment : null %}
+    {% set placeholder = i18n.placeholder ? i18n.placeholder : null %}
+
+    <!-- .modal-block -->
+    <div class="modal-block w-100">
+
+        {% if not block.timer %}
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-block-{{ block.id }}">
+                {% if placeholder|striptags|length > 0 %}
+                    {{ placeholder|unescape|raw }}
+                {% else %}
+                    {{ emt("Afficher plus"|trans|raw) }}
+                {% endif %}
+            </button>
+        {% endif %}
+
+        <!-- .modal -->
+        <div id="modal-block-{{ block.id }}"
+             class="modal fade"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="modal-block-{{ block.id }}-label"
+             aria-hidden="true"{% if block.timer %} data-modal-timer="{{ block.timer * 1000 }}"{% endif %}>
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-inline-block">
+                        {% if title|striptags|length > 0 %}
+                            <h{{ titleForce }} class="modal-title title d-inline-block w-100" id="modal-block-{{ block.id }}-label">{{ title|unescape|raw }}</h{{ titleForce }}>
+                        {% endif %}
+                        {% if subTitle|striptags|length > 0 %}
+                            <h{{ subTitleForce }} class="modal-sub-title sub-title d-inline-block w-100">{{ subTitle|unescape|raw }}</h{{ subTitleForce }}>
+                        {% endif %}
+                        <button type="button" class="btn-close position-absolute" data-bs-dismiss="modal" aria-label="{{ "Fermer"|trans|raw }}"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        {% if i18nMedia %}
+                            <div class="media-container mb-4">
+                                {% if thumbConfiguration %}
+                                    {% set mediaConfig = i18nMedia|thumbConfiguration(thumbConfiguration) %}
+                                    {{ i18nMedia|thumb(mediaConfig) }}
+                                {% else %}
+                                    {{ i18nMedia|thumb }}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if intro|striptags|length > 0 %}
+                            <p class="text-bold introduction {{ introAlignment }}">{{ intro|unescape|raw }}</p>
+                        {% endif %}
+
+                        {% if body|striptags|length > 0 %}
+                            <div class="body {{ bodyAlignment }}">{{ body|unescape|raw }}</div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- \.modal -->
+
+    </div>
+    <!-- \.modal-block -->
+
+{% endif %}

@@ -1,0 +1,16 @@
+{% set allModules = allModules is defined and allModules ? allModules : website()|modules %}
+
+{% if not isNew and 'edit'|moduleActive(allModules) and ('admin_' ~ interfaceName ~ '_position')|routeExist %}
+
+    {% set position = property.vars.data.position is defined and property.vars.data.position ? property.vars.data.position : 0 %}
+
+    <div id="handle-item-prototype-{{ uniqId() }}"
+         class="btn btn-white handle-item-prototype cursor"
+         data-path="{{ path('admin_' ~ interfaceName ~ '_position', {"website": websiteId(), (interfaceName): entityId}) }}"
+         data-position="{{ position }}">
+        <span data-toggle="tooltip" title="{{ "Déplacer"|trans|raw }}">
+            {{ 'far fa-arrows-alt'|fontawesome(17, 14, 'info') }}
+        </span>
+    </div>
+
+{% endif %}

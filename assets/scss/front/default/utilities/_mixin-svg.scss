@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-10-23, 8:52 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    MIXIN SVG :
+    ==========
+
+------------------------------------------------------------------ */
+
+@mixin svg($suffix, $color) {
+
+    svg.#{$suffix} {
+
+        fill: $color !important;
+
+        * {
+            fill: $color !important;
+        }
+    }
+}

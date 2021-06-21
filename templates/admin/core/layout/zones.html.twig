@@ -1,0 +1,150 @@
+{% trans_default_domain 'admin' %}
+
+{% if layout %}
+
+    {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'layout-preloader', 'full': true} only %}
+
+    <ul id="zones-sortable" class="reset">
+        {% for zone in layout.zones %}
+            <li class="zone{% if zone.hide %} hide-zone{% endif %}" id="zone-{{ zone.id }}" data-id="{{ zone.id }}" data-position="{{ zone.position }}">
+                <div class="zone-sidebar">
+
+                    {% if 'edit'|moduleActive(allModules) %}
+                        <span class="item handle-zone grabbable btn"
+                              data-toggle="tooltip"
+                              data-placement="right" title="{{ "Déplacer"|trans|striptags }}">
+                            {{ 'far fa-arrows-alt'|fontawesome(17, 17, 'dark') }}
+                        </span>
+                    {% endif %}
+
+                    {% if zone.hide %}
+                        <span class="item btn"
+                          data-toggle="tooltip"
+                          data-placement="right" title="{{ "Zone désactivée"|trans|striptags }}">
+                            {{ 'fas fa-ban'|fontawesome(17, 17, 'danger') }}
+                        </span>
+                    {% endif %}
+
+                    {% if 'edit'|moduleActive(allModules) and interface.resize is defined and interface.resize %}
+                        {% set sizeAction = zone.fullSize ? "Rétrécir"|trans : "Étendre"|trans %}
+                        {% set size = zone.fullSize ? 'true' : 'false' %}
+                        <span data-toggle="tooltip" title="{{ sizeAction|striptags }}" data-placement="right" class="item">
+                            <a class="btn zone-resize cursor"
+                               data-zone="{{ zone.id }}"
+                               data-size="{{ size }}"
+                               data-compress="{{ "Étendre"|trans }}"
+                               data-expand="{{ "Rétrécir"|trans }}">
+                                <span class="icon-wrap{% if zone.fullSize %} d-none{% endif %}">
+                                    {{ 'far fa-expand-arrows-alt'|fontawesome(17, 17, 'dark') }}
+                                </span>
+                                <span class="icon-wrap{% if not zone.fullSize %} d-none{% endif %}">
+                                    {{ 'far fa-compress-arrows-alt'|fontawesome(17, 17, 'dark') }}
+                                </span>
+                            </a>
+                        </span>
+                    {% endif %}
+
+                    {% if 'edit'|moduleActive(allModules) %}
+                        {% set mediaRelation = zone.mediaRelations is defined ? zone.mediaRelations|i18n(website().configuration.locale) : null %}
+                        <span class="item" data-toggle="preloader">
+                            <a href="{{ path('admin_zone_edit', {'website': websiteId(), 'layout': layout.id, 'zone': zone.id, 'interfaceName': interface.name, 'interfaceEntity': entity.id}) }}"
+                               class="btn position-relative"
+                               data-toggle="tooltip"
+                               data-placement="right"
+                               title="{{ "Image de fond"|trans|striptags }}">
+                                {% if mediaRelation and mediaRelation.media and mediaRelation.media.filename %}
+                                    <span style="background: url({{ mediaRelation|thumb(null, {"path": true}) }})" class="image-info-bulle"></span>
+                                {% endif %}
+                                {{ 'far fa-image'|fontawesome(17, 17, 'dark') }}
+                            </a>
+                        </span>
+                    {% endif %}
+
+                    {% if 'edit'|moduleActive(allModules) %}
+                        <span class="item background-item">
+                            {% set color = 'background'|color(website, zone.backgroundColor) %}
+                            {% set hexa = color ? color.color : null %}
+                            <span class="color-info-bulle"{% if hexa %} style="background-color: {{ hexa }}" {% endif %}></span>
+                            <span class="btn edit-layout-element-btn btn-palette cursor"
+                               data-path="{{ path('admin_zone_background', {'website': websiteId(), 'zone': zone.id}) }}"
+                               data-toggle="tooltip"
+                               data-placement="right"
+                               title="{{ "Couleur de fond"|trans|striptags }}">
+                                {{ 'far fa-palette'|fontawesome(17, 17, 'dark') }}
+                            </span>
+                        </span>
+                    {% endif %}
+
+                    {% if 'edit'|moduleActive(allModules) and interface.resize is defined and interface.resize %}
+                        {% set isStandardize = zone.standardizeElements %}
+                        {% set standardizeAction = isStandardize ? "Largeur par défaut des colonnes"|trans : "Uniformiser la largeur des colonnes"|trans %}
+                        {% set standardize = isStandardize ? 'true' : 'false' %}
+                        <span data-toggle="tooltip" title="{{ standardizeAction|striptags }}" data-placement="right" class="item">
+                            <a class="btn zone-cols-standardize cursor"
+                               data-zone="{{ zone.id }}"
+                               data-standardize="{{ standardize }}"
+                               data-cols-default="{{ "Largeur par défaut des colonnes"|trans }}"
+                               data-cols-standardize="{{ "Uniformiser la largeur des colonnes"|trans }}">
+                                <span class="icon-wrap{% if isStandardize %} d-none{% endif %}">
+                                    {{ 'far fa-indent'|fontawesome(17, 17, 'dark') }}
+                                </span>
+                                <span class="icon-wrap{% if not isStandardize %} d-none{% endif %}">
+                                    {{ 'far fa-outdent'|fontawesome(17, 17, 'info') }}
+                                </span>
+                            </a>
+                        </span>
+                    {% endif %}
+
+                    {% if 'edit'|moduleActive(allModules) %}
+                        <span class="item">
+                            <span class="btn duplicate-btn cursor"
+                                  data-path="{{ path('admin_zone_duplicate', {'website': websiteId(), 'zone': zone.id, 'refresh': true, 'template': 'layout'}) }}"
+                                  data-preloader="#layout-preloader"
+                                  data-toggle="tooltip"
+                                  data-placement="right"
+                                  title="{{ "Dupliquer"|trans|striptags }}">
+                                {{ 'far fa-copy'|fontawesome(17, 17, 'dark') }}
+                            </span>
+                        </span>
+                    {% endif %}
+
+                    {% if 'edit'|moduleActive(allModules) %}
+                        <span data-toggle="tooltip"
+                              data-placement="right"
+                              title="{{ "Configuration"|trans|striptags }}"
+                              data-path="{{ path('admin_zone_configuration', {'website': websiteId(), 'zone': zone.id}) }}"
+                              class="item edit-layout-element-btn">
+                            <button class="btn">{{ 'far fa-cog'|fontawesome(17, 17, 'dark') }}</button>
+                        </span>
+                    {% endif %}
+
+                    {% if 'delete'|moduleActive(allModules) %}
+                        <span href="{{ path('admin_zone_delete', {'website': websiteId(), 'layout': layout.id, 'zone': zone.id}) }}"
+                           data-toggle="tooltip" data-placement="right" title="{{ "Supprimer"|trans|striptags }}"
+                           data-target="#zone-{{ zone.id }}"
+                           class="btn swal-delete-link cursor">
+                            {{ 'fas fa-trash'|fontawesome(16, 16, 'dark') }}
+                        </span>
+                    {% endif %}
+
+                </div>
+
+                {% include 'admin/core/layout/cols.html.twig' %}
+
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if 'edit'|moduleActive(allModules) %}
+        <button id="add-zone-btn"
+                class="btn edit-layout-element-btn w-100"
+                data-path="{{ path('admin_zone_new', {'website': websiteId(), 'layout': layout.id}) }}">
+            <img data-src="{{ asset('build/admin/images/theme/plus-rounded.svg', 'admin') }}"
+                 src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                 class="img-fluid rounded-add-img lazyload"
+                 width="20" height="20" alt="{{ 'Ajouter'|trans|striptags }}" /><br>
+            {{ 'Ajouter une ligne'|trans }}
+        </button>
+    {% endif %}
+
+{% endif %}

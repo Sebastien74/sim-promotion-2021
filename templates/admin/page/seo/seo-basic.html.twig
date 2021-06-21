@@ -1,0 +1,73 @@
+{% trans_default_domain 'admin' %}
+
+{% set configuration = website().configuration %}
+{% set defaultLocale = configuration.locale %}
+{% set allLocales = configuration.allLocales %}
+
+<div class="col-12">
+    <h4 class="card-subtitle mb-4">
+        {{ "fal fa-code"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Référencement"|trans }}
+    </h4>
+</div>
+
+{% if allLocales|length > 1 %}
+    <div class="locales-tab-container">
+{% endif %}
+
+    {% if allLocales|length > 1 %}
+        <ul class="nav nav-tabs w-100" role="tablist">
+            {% for url in form.urls %}
+                {% set locale = url.vars.value.locale %}
+                <li class="nav-item{% if locale not in allLocales %} d-none{% endif %}" data-toggle="tooltip" title="{{ languageName(locale, app.user.locale) }}">
+                    <a class="nav-link{% if locale == defaultLocale %} active{% endif %}" data-toggle="tab"
+                       id="seo-basic-{{ locale }}-tab"
+                       aria-selected="{% if locale == defaultLocale %}true{% else %}false{% endif %}"
+                       href="#seo-basic-tab-{{ locale }}" role="tab">
+                        <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                             data-src="{{ asset('/medias/icons/flags/' ~ locale ~ '.svg') }}" class="img-fluid lazyload" height="14" width="19">
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if allLocales|length > 1 %}
+        <div class="tab-content tab-content-border w-100 seo-basic-tab">
+    {% endif %}
+
+        {% for url in form.urls %}
+
+            {% set locale = url.vars.value.locale %}
+
+            {% if allLocales|length == 1 and locale != configuration.locale %}
+                <div class="d-none">
+            {% endif %}
+
+            {% if allLocales|length > 1 %}
+                <div id="seo-basic-tab-{{ locale }}" class="tab-pane fade{% if locale == defaultLocale %} show active{% endif %}" role="tabpanel" aria-labelledby="seo-basic-{{ locale }}-tab">
+                    <div class="p-20 pb-0">
+                        <div class="row">
+            {% endif %}
+
+                {{ form_row(url.seo.metaTitle) }}
+                {{ form_row(url.seo.metaDescription) }}
+
+            {% if allLocales|length > 1 %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if allLocales|length == 1 and locale != configuration.locale %}
+                </div>
+            {% endif %}
+
+        {% endfor %}
+
+    {% if allLocales|length > 1 %}
+        </div>
+    {% endif %}
+
+{% if allLocales|length > 1 %}
+    </div>
+{% endif %}

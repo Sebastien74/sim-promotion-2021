@@ -1,0 +1,134 @@
+{% extends "admin/core/edit.html.twig" %}
+
+{% set websiteId = websiteId() %}
+{% set excludesFields = ['cols'] %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-table', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('admin-table', 'admin', 'Table') }}
+{% endblock %}
+
+{% set outerCustomized %}
+
+    {% set table = entity|table(entitylocale) %}
+
+    {% include 'admin/page/table/actions.html.twig' %}
+
+    <table class="table-edit table-bordered table table-striped mb-0 mb-4">
+        <thead class="bg-info-darken">
+            {% for col in form.cols %}
+                <th class="align-middle p-0">
+                    <div class="actions bg-body">
+                        <div class="inner float-right">
+                            {% if not loop.first %}
+                                <span class="active btn" data-toggle="preloader">
+                                    <a href="{{ path('admin_tablecol_position', {"website": websiteId, "table": entity.id, "col": col.vars.data.id, "type": "down"}) }}"
+                                       data-toggle="tooltip" title="{{ "Modifier la position"|trans|striptags }}">{{ 'fas fa-chevron-left'|fontawesome(10, 16, 'dark') }}
+                                    </a>
+                                </span>
+                            {% else %}
+                                <span class="disabled btn">{{ 'fas fa-chevron-left'|fontawesome(10, 16, 'dark-50') }}</span>
+                            {% endif %}
+                            {% if not loop.last %}
+                                {% set iconColor = loop.last ? 'dark-50' : 'dark' %}
+                                <span class="active btn" data-toggle="preloader">
+                                    <a href="{{ path('admin_tablecol_position', {"website": websiteId, "table": entity.id, "col": col.vars.data.id, "type": "up"}) }}"
+                                       data-toggle="tooltip" title="{{ "Modifier la position"|trans|striptags }}">{{ 'fas fa-chevron-right'|fontawesome(10, 16, iconColor) }}
+                                    </a>
+                                </span>
+                            {% else %}
+                                <span class="disabled btn">{{ 'fas fa-chevron-right'|fontawesome(10, 16, 'dark-50') }}</span>
+                            {% endif %}
+                            <span data-toggle="tooltip" title="{{ "Enregistrer"|trans|striptags }}">
+                                <button type="submit" class="btn" data-toggle="preloader">{{ 'far fa-save'|fontawesome(16, 18, 'dark') }}</button>
+                            </span>
+                            <a href="{{ path('admin_tablecol_delete', {"website": website.id, "table": entity.id, "col": col.vars.data.id}) }}"
+                               data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}"
+                               class="swal-delete-link btn">{{ 'fas fa-trash'|fontawesome(null, 15, 'dark') }}
+                            </a>
+                        </div>
+                    </div>
+                    {% if col.i18ns is defined %}
+                        {% for i18n in col.i18ns %}
+                            {% set i18nLocale = i18n.vars.data.locale %}
+                            <div class="row i18ns-row{% if i18nLocale != entitylocale %} d-none{% endif %}">
+                                <div class="col-md-4">{{ form_widget(i18n.titleForce) }}</div>
+                                <div class="col-md-8">{{ form_widget(i18n.title) }}</div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </th>
+            {% endfor %}
+            <th></th>
+        </thead>
+        <tbody>
+            {% if table.body is defined %}
+                {% for rows in table.body %}
+                    <tr id="cells-row-{{ loop.index }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+                        {% for row in rows %}
+                            <td class="edition">
+                                {% for col in form.cols %}
+                                    {% for cell in col.cells %}
+                                        {% if cell.vars.data.id == row.cell.id %}
+                                            {% for i18n in cell.i18ns %}
+                                                {% set i18nLocale = i18n.vars.data.locale %}
+                                                <div class="row{% if i18nLocale != entitylocale %} d-none{% endif %}">
+                                                    <div class="col-md-2 form-group">{{ form_widget(i18n.titleForce) }}</div>
+                                                    <div class="col-md-10 form-group">{{ form_widget(i18n.title) }}</div>
+                                                    <div class="col-12 form-group"> {{ form_widget(i18n.introduction) }}</div>
+                                                    <div class="col-12">{{ form_widget(i18n.body) }}</div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </td>
+                        {% endfor %}
+                        <td class="actions bg-body text-center">
+                            <div class="inner">
+                                    <span {% if not loop.first %} data-toggle="preloader"{% endif %}>
+                                        {% if not loop.first %}
+                                            <a href="{{ path('admin_tablecell_position', {"website": websiteId, "table": entity.id, "position": loop.index, "type": "up"}) }}"
+                                               class="btn" data-toggle="tooltip" title="{{ "Modifier la position"|trans|striptags }}">{{ 'fas fa-chevron-up'|fontawesome(15, 16, 'dark') }}
+                                            </a>
+                                        {% else %}
+                                            <span class="btn disabled">{{ 'fas fa-chevron-up'|fontawesome(15, 16, 'dark-50') }}</span>
+                                        {% endif %}
+                                    </span>
+                                <span {% if not loop.last %} data-toggle="preloader"{% endif %}>
+                                        {% if not loop.last %}
+                                            <a href="{{ path('admin_tablecell_position', {"website": websiteId, "table": entity.id, "position": loop.index, "type": "down"}) }}"
+                                               class="btn" data-toggle="tooltip" title="{{ "Modifier la position"|trans|striptags }}">{{ 'fas fa-chevron-down'|fontawesome(15, 16, 'dark') }}
+                                            </a>
+                                        {% else %}
+                                            <span class="btn disabled" >{{ 'fas fa-chevron-down'|fontawesome(15, 16, 'dark-50') }}</span>
+                                        {% endif %}
+                                    </span>
+                                <span data-toggle="tooltip" title="{{ "Enregistrer"|trans|striptags }}">
+                                        <button type="submit" class="btn" data-toggle="preloader">{{ 'far fa-save'|fontawesome(16, 18, 'dark') }}</button>
+                                    </span>
+                                <a href="{{ path("admin_tablecell_delete", {"website": websiteId, "table": entity.id, "position": loop.index}) }}"
+                                   data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}"
+                                   class="btn swal-delete-link">
+                                    {{ 'fas fa-trash'|fontawesome(null, 15, 'dark') }}
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    {% include 'admin/page/table/actions.html.twig' %}
+
+{% endset %}

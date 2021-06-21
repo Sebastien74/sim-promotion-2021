@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-12-07, 6:44 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FIRST PRELOADER :
+    ================
+
+------------------------------------------------------------------ */
+
+#main-preloader {
+
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 100030;
+    transition: all 1s;
+
+    &.disappear {
+        transition: all 1s;
+        left: -100%;
+    }
+
+    .vertical-align {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        width: 100%;
+        text-align: center;
+    }
+
+    img, svg {
+        max-height: 200px;
+        min-height: 200px;
+        min-width: 200px;
+        animation: preloader 3s infinite;
+    }
+}
+
+@keyframes preloader {
+
+    from {
+        transform: scale(0.25);
+    }
+    50% {
+        transform: scale(0.5);
+    }
+    to {
+        transform: scale(0.25);
+    }
+}

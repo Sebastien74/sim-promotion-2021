@@ -1,0 +1,123 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block title %}{{ "Bibliothèque de médias"|trans }}{% endblock %}
+{% block pageTitle %}{{ "Bibliothèque de médias"|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-medias-library', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('admin-medias-library', 'admin', 'Medias library') }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="media-library-page">
+
+        {% if 'edit'|moduleActive(allModules) %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ render_esi(controller("App\\Controller\\Admin\\Media\\FolderController::new", {"website": websiteId()})) }}
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <a href="{{ path('cache_liip_clear') }}" class="btn btn-outline-dark" data-toggle="preloader">
+                        {{ 'fad fa-broom'|fontawesome(17, 14, 'dark mr-2') }}{{ "Vider le cache"|trans }}
+                    </a>
+                    <button class="btn btn-success"
+                            data-toggle="collapse"
+                            data-target="#collapseFormMedias"
+                            aria-expanded="false"
+                            aria-controls="collapseFormMedias">
+                        {{ 'fal fa-plus'|fontawesome(11, 15, 'white mr-1') }}{{ "Ajouter des medias"|trans }}</button>
+                </div>
+            </div>
+            {{ render_esi(controller("App\\Controller\\Admin\\Media\\UploadController::uploader", {"website": websiteId()})) }}
+        {% endif %}
+
+        <div class="row mt-3">
+            <div class="col-md-5">
+                <h4 class="card-subtitle mb-4">
+                    <div class="row">
+                        <div class="col-md-6 my-auto">{{ 'fal fa-folder-tree'|fontawesome(16, 14, 'info-darken mr-2') }}{{ "Dossiers"|trans }}</div>
+                        <div class="col-md-6 text-right my-auto">
+                            {% if 'delete'|moduleActive(allModules) %}
+                                <button id="delete-pack-btn" class="btn btn-danger d-none"
+                                        data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}">
+                                    {{ 'fas fa-trash'|fontawesome(13, 13, 'white') }}
+                                </button>
+                            {% endif %}
+                            {% set collapsedAdminTrees = configuration.collapsedAdminTrees is defined
+                                ? configuration.collapsedAdminTrees : website().configuration.collapsedAdminTrees %}
+                            <span id="nestable-expand-all" class="btn btn-outline-dark cursor mr-2{% if not collapsedAdminTrees %} d-none{% endif %}" data-toggle="tooltip" title="{{ "Dépiler"|trans|raw }}">
+                                {{ 'fal fa-arrow-alt-to-bottom'|fontawesome(11, 14) }}
+                            </span>
+                            <span id="nestable-collapse-all" class="btn btn-dark cursor mr-2{% if collapsedAdminTrees %} d-none{% endif %}" data-toggle="tooltip" title="{{ "Empiler"|trans|raw }}">
+                                {{ 'fal fa-arrow-alt-to-top'|fontawesome(11, 14, 'white') }}
+                            </span>
+                            <a href="{{ path('admin_medias_library', {'website': websiteId}) }}"
+                               class="ajax-get-refresh btn btn-info"
+                               data-target="#medias-results"
+                               data-target-loader="#medias-preloader">
+                                {{ 'fas fa-eye'|fontawesome(16, 14, 'white mr-2') }}{{ "Racine"|trans|striptags }}
+                            </a>
+                        </div>
+                    </div>
+                </h4>
+                {% include 'admin/core/include/nestable.html.twig' with {
+                    "routenameInterface": "folder",
+                    'customTitle': 'Afficher les médias'|trans,
+                    'customIcon': 'fas fa-eye',
+                    'customClass': 'ajax-get-refresh',
+                    'customBtn': 'info',
+                    'targetLoader': '#medias-preloader',
+                    'targetAjax': '#medias-results',
+                    "customRoute": 'admin_medias_library',
+                    "customRole": 'ROLE_EDIT'
+                } %}
+            </div>
+            <div class="col-md-7">
+                <div id="medias-card" class="card scroll-to-response-ajax">
+                    <div class="d-none">
+                        {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'medias-preloader', 'full': true} only %}
+                    </div>
+                    <h4 class="card-header mb-0">
+                        <div class="row">
+                            <div class="col-md-6 my-auto">
+                                {{ 'fal fa-photo-video'|fontawesome(23, 18, 'info-darken mr-2') }}{{ "Médias"|trans }}
+                                <div id="media-management-buttons" class="d-none ml-3">
+                                    {% if 'edit'|moduleActive(allModules) %}
+                                        <button id="select-folder-btn"
+                                                data-path="{{ path('admin_folder_select', {'website': websiteId()}) }}"
+                                                class="btn btn-warning">
+                                            {{ 'fas fa-share-square'|fontawesome(19, 17, 'white') }}<span class="hidden-xs ml-1">{{ "Déplacer"|trans }}</span>
+                                        </button>
+                                    {% endif %}
+                                    {% if 'delete'|moduleActive(allModules) %}
+                                        <button class="btn btn-danger sa-warning sa-warning-delete-medias">
+                                            {{ 'fas fa-trash'|fontawesome(13, 15, 'white') }}
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                {{ render_esi(controller('App\\Controller\\Admin\\Media\\FolderController::search', { "website": websiteId() })) }}
+                            </div>
+                        </div>
+                    </h4>
+                    <div class="card-body pb-2">
+                        {% include 'admin/page/media/medias-list.html.twig' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

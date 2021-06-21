@@ -1,0 +1,25 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'gallery'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/galleries/' in uri %}
+    {% set module = 'gallery'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['gallery'][app.user.locale] is defined ? i18nsModules['gallery'][app.user.locale] : i18nsModules['gallery']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['gallery']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['gallery']['entity'].iconClass|iconHtml({'width': 17, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'galleries' %} in{% endif %}">
+            <li>
+                <a href="{{ path('admin_gallery_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Liste des galeries"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_gallerycategory_index', {"website": websiteId}) }}" {% if '/galleries/categories/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Liste des catégories"|trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endif %}

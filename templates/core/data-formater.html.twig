@@ -1,0 +1,157 @@
+{% set isIndex = view is defined and view == 'index' %}
+{% set inAdmin = inAdmin() %}
+
+{% if dataValue|instanceof('DateTime') %}
+
+    {{ dataValue|localizedDate('none', 'none', app.request.locale, null, "cccc d MMMM Y 'à' HH:mm"|trans) }}
+
+{% elseif property is defined and property == 'locale'
+    or property is defined and '.locale' in property %}
+
+    {% if '.locale' in property and dataValue|isObject %}
+        {% set dataValue = entityValue(dataValue, property) %}
+    {% endif %}
+
+    <span class="d-none">{{ dataValue }}</span>
+    <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+         data-src="{{ asset('/medias/icons/flags/' ~ dataValue ~ '.svg') }}"
+         class="img-fluid lazyload mr-1" height="9" width="12">
+
+{% elseif dataValue|isEmail %}
+
+    <a href="mailto:{{ dataValue }}">{{ dataValue }}</a>
+
+{% elseif dataValue|isBool %}
+
+    {% if inAdmin and dataValue == false %}
+        {{ 'fas fa-ban'|fontawesome(null, 14, 'danger') }}
+    {% elseif inAdmin %}
+        {{ 'fas fa-check'|fontawesome(null, 14, 'success') }}
+    {% elseif dataValue == false %}
+        {{ "Non"|trans|raw }}
+    {% else %}
+        {{ "Oui"|trans|raw }}
+    {% endif %}
+
+{% elseif dataValue|isObject and 'PersistentCollection' in dataValue|getClass or dataValue|isArray or property is defined and '.' in property %}
+
+    {% if '.' in property %}
+        {% set properties = property|split('.') %}
+        <ul class="reset">
+            {% for data in attribute(dataValue, properties[0]) %}
+                <li>{% include 'core/data-formater.html.twig' with {'dataValue': attribute(data, properties[1])} only %}</li>
+            {% endfor %}
+        </ul>
+    {% elseif dataValue %}
+        <ul class="reset">
+            {% for data in dataValue %}
+
+                {% set isDisplay = false %}
+                {% if elementsToShow is defined %}
+                    {% for elementToShow in elementsToShow %}
+                        {% if property ~ '.' in elementToShow %}
+                            {% set metaProperty = elementToShow|replace({(property ~ '.'): ''}) %}
+                            {% set metaFieldValue = attribute(data, metaProperty) %}
+                            {% if metaFieldValue %}
+                                {% set stringToDate = metaFieldValue|stringToDate %}
+                                {% set blockEntity = data.configuration.block is defined and data.configuration.block ? data.configuration.block : null %}
+                                {% set valueClassname = blockEntity.fieldConfiguration.className is defined and blockEntity.fieldConfiguration.className ? blockEntity.fieldConfiguration.className : null %}
+                                {% set isFile = metaProperty != 'label' and metaFieldValue|fileExist('public') %}
+                                <li{% if metaProperty == 'label' %} class="bold" {% endif %}>
+                                    {% if metaProperty == 'label' %}
+                                        {% set i18n = blockEntity|i18n %}
+                                        {% set value = i18n.title is defined and i18n.title ? i18n.title : (blockEntity.adminName is defined and blockEntity.adminName ? blockEntity.adminName : metaFieldValue) %}
+                                        {{ value|raw }}
+                                    {% elseif valueClassname and metaProperty != 'label' %}
+                                        {% set entity = valueClassname|find(metaFieldValue) %}
+                                        {% set i18n = valueClassname|findI18n(metaFieldValue) %}
+                                        {% set value = i18n.title is defined and i18n.title ? i18n.title : (entity.adminName is defined and entity.adminName ? entity.adminName : metaFieldValue) %}
+                                        {{ value|raw }}
+                                    {% elseif isFile %}
+                                        {% set matches = metaFieldValue|split('/') %}
+                                        <a href="{{ path('admin_medias_downloader', {'website': websiteId(), 'fileDirname': metaFieldValue|url_encode}) }}" download="{{ matches|last }}">{{ matches|last }}</a>
+                                    {% elseif stringToDate %}
+                                        {{ stringToDate.datetime|localizedDate('long', 'none', app.request.locale) }}
+                                    {% elseif metaFieldValue == '["true"]' or metaFieldValue == 'true' %}
+                                        {{ 'fas fa-check'|fontawesome(null, 14, 'success') }}
+                                    {% elseif metaFieldValue == '["false"]' or metaFieldValue == 'false' %}
+                                        {{ 'fas fa-ban'|fontawesome(null, 14, 'danger') }}
+                                    {% else %}
+                                        {{ metaFieldValue|raw }}
+                                    {% endif %}
+                                </li>
+                                {% set isDisplay = true %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if not isDisplay %}
+                    <li>
+                        {% if data.adminName is defined and data.adminName %}
+                            {{ data.adminName|raw }}
+                        {% elseif data.id is defined %}
+                            {{ data.id }}
+                        {% else %}
+                            {{ data|raw }}
+                        {% endif %}
+                    </li>
+                {% endif %}
+
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% elseif dataValue|isObject and 'User' in dataValue|getClass and not isIndex %}
+
+    {{ dataValue.username }}
+    {% if dataValue.email is defined and dataValue.email %}
+        : <a href="mailto:{{ dataValue.email }}">{{ dataValue.email }}</a>
+    {% endif %}
+
+{% elseif dataValue|isObject and not dataValue|instanceof('DateTime') and 'User' not in dataValue|getClass %}
+
+    {% if elementsToShow is defined %}
+        {% for element in elementsToShow %}
+            {% if property ~ "." in element %}
+                {% set subProperty = element|replace({(property ~ "."): ''}) %}
+                {% set subValue = attribute(dataValue, subProperty) %}
+                {% include 'core/data-formater.html.twig' with {'elementsToShow': elementsToShow, 'dataValue': subValue, 'view': 'show'} only %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if dataValue.adminName is defined and dataValue.adminName %}
+        {{ dataValue.adminName|raw }}
+    {% elseif dataValue.id is defined %}
+        {{ dataValue.id }}
+    {% endif %}
+
+{% elseif not dataValue|isObject %}
+
+    {% set property = property is defined ? property : null %}
+    {% set hasBagde = property and dataValue and 'status' in property|lower %}
+
+    {% if hasBagde %}
+        <div class="label label-info-darken text-white">
+    {% endif %}
+
+    {% set hasUrl = 'http://' in dataValue or 'https://' in dataValue %}
+    {% if hasUrl %}
+        <a href="{{ dataValue }}" target="_blank">
+    {% endif %}
+
+        {% if truncate is defined and truncate %}
+            {{ dataValue|striptags|truncate(truncate) }}
+        {% else %}
+            {{ dataValue|raw }}
+        {% endif %}
+
+    {% if hasUrl %}
+        </a>
+    {% endif %}
+
+    {% if hasBagde %}
+        </div>
+    {% endif %}
+
+{% endif %}

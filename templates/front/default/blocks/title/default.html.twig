@@ -1,0 +1,30 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+
+{% if i18n %}
+
+    {% set title = i18n.title %}
+    {% set subTitle = i18n.subTitle %}
+    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : '' %}
+
+    {% if title|striptags|length > 0 %}
+        <!-- .title-block -->
+        <div class="title-block w-100 {{ titleAlignment }}">
+
+            {% if i18n.subTitlePosition == 'top' and subTitle|striptags|length > 0 %}
+                <strong class="sub-title mb-2">{{ subTitle|unescape|raw }}</strong>
+            {% endif %}
+
+            <h{{ titleForce }} class="title">{{ title|unescape|raw }}</h{{ titleForce }}>
+
+            {% if i18n.subTitlePosition == 'bottom' and subTitle|striptags|length > 0 %}
+                <strong class="sub-title">{{ subTitle|unescape|raw }}</strong>
+            {% endif %}
+
+        </div>
+        <!-- \.title-block -->
+    {% endif %}
+
+{% endif %}

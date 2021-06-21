@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-11-06, 9:30 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS NOTO :
+    =================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Noto", sans-serif;
+
+$fonts: (
+    'Noto-Black': ('weight': 900, 'style': normal),
+    'Noto-Bold': ('weight': 800, 'style': normal),
+    'Noto-Regular': ('weight': 400, 'style': normal),
+    'Noto-Medium': ('weight': 500, 'style': normal),
+    'Noto-Light': ('weight': 300, 'style': normal),
+    'Noto-Thin': ('weight': 300, 'style': normal),
+);
+
+@include font-face("Noto", $fonts);

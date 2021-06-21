@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-11-06, 9:30 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS CATAMARAN :
+    ======================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Catamaran", sans-serif;
+
+$fonts: (
+    'Catamaran-Black': ('weight': 900, 'style': normal),
+    'Catamaran-ExtraBold': ('weight': 800, 'style': normal),
+    'Catamaran-Bold': ('weight': 700, 'style': normal),
+    'Catamaran-SemiBold': ('weight': 600, 'style': normal),
+    'Catamaran-Medium': ('weight': 500, 'style': italic),
+    'Catamaran-Regular': ('weight': 400, 'style': normal),
+    'Catamaran-Light': ('weight': 300, 'style': normal),
+    'Catamaran-ExtraLight': ('weight': 200, 'style': normal),
+    'Catamaran-Thin': ('weight': 100, 'style': normal),
+);
+
+@include font-face("Catamaran", $fonts);

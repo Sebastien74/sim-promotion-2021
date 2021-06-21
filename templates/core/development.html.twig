@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Titre de la page</title>
+        <link rel="stylesheet" href="style.css" />
+        <script src="script.js" nonce="{{ csp_nonce() }}"></script>
+    </head>
+
+    <body>
+
+        <p>{{ text|raw }}</p>
+
+    </body>
+
+</html>

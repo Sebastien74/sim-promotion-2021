@@ -1,0 +1,106 @@
+{% trans_default_domain 'front_default' %}
+
+{% set website = website is defined ? website : website() %}
+{% set api = api is not defined and website.api is defined or not api and website.api is defined ? website.api : (api is defined ? api : null) %}
+{% set isFixed = api.shareLinkFixed is defined ? api.shareLinkFixed : true %}
+{% set displayName = not isFixed and api.displayShareNames %}
+{% set shareUrl = masterRequest().uri %}
+{% set ogImage = seo.ogImage is defined and seo.ogImage ? seo.ogImage : null %}
+{% set ogImage = not ogImage and logos.share is defined and logos.share ? logos.share : ogImage %}
+{% set title = seo.title is defined and seo.title ? seo.title : null %}
+{% set description = seo.description is defined and seo.description ? seo.description : null %}
+{% set shareCodes = api.shareLinks is defined ? api.shareLinks : [] %}
+{% set websiteTemplate = websiteTemplate is defined and websiteTemplate ? websiteTemplate : website.configuration.template %}
+
+{% set sharers = {
+    'facebook': {'media': 'facebook-f', 'url': "https://www.facebook.com/sharer/sharer.php?u=" ~ shareUrl},
+    'twitter': {'media': 'twitter', 'url': "https://twitter.com/intent/tweet?status=" ~ shareUrl ~ "&text=" ~ title},
+    'pinterest': {'media': 'pinterest-p', 'url': "https://pinterest.com/pin/create/button/?url=" ~ shareUrl ~ "&media=" ~ ogImage ~ "&description=" ~ description},
+    'linkedin': {'media': 'linkedin-in', 'url': "https://www.linkedin.com/shareArticle?mini=true&url=" ~ shareUrl ~ "&title=" ~ title},
+    'email': {'media': 'envelope'}
+} %}
+
+<div class="share-widget w-100">
+
+    {% if not isFixed %}
+        <span class="d-inline-block w-100 text-bold mb-2">{{ emt("Partager sur :"|trans|raw) }}</span>
+    {% endif %}
+
+    <ul class="reset{% if isFixed %} share-fixed{% endif %}{% if displayName %} share-names{% else %} share-buttons{% endif %}" data-count="{{ shareCodes|length }}">
+        {% for code, config in sharers %}
+            {% if code in shareCodes %}
+                <li class="float-start{% if not loop.last %} me-2{% endif %}">
+                    {% if code == 'email' %}
+                        <div title="{{ code|capitalize }}" data-bs-toggle="tooltip"{% if isFixed %} data-placement="left"{% endif %}>
+                            <span class="share-link share-link-{{ code }} d-inline-block text-center cursor{% if displayName %} btn{% endif %}"
+                                  data-toggle="modal"
+                                  data-target="#share-email-modal">
+                                {{ 'fab fa-' ~ config['media']|fontawesome }}
+                                {% if displayName %}<span class="ps-2">{{ code|capitalize }}</span>{% endif %}
+                            </span>
+                        </div>
+                    {% else %}
+                        <a href="{{ config['url'] }}"
+                           class="share-link share-link-popup share-link-{{ code }} d-inline-block text-center cursor{% if displayName %} btn{% endif %}"
+                           title="{{ code|capitalize }}"
+                           data-bs-toggle="tooltip"{% if isFixed %} data-placement="left"{% endif %}>
+                            {{ 'fab fa-' ~ config['media']|fontawesome }}
+                            {% if displayName %}<span class="ps-2">{{ code|capitalize }}</span>{% endif %}
+                        </a>
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    {% if 'email' in shareCodes %}
+        <div class="modal fade" id="share-email-modal" tabindex="-1" role="dialog" aria-labelledby="share-email-modal-label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content text-white">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ "Fermer"|trans|raw }}"></button>
+                    <div class="modal-body d-flex">
+                        <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4 my-auto p-0">
+
+                            <div class="header mb-4">
+                                <h4 class="title mb-4">{{ emt("Envoyer à un ami"|trans|raw) }}</h4>
+                                {% if title %}
+                                    <span class="share-title d-inline-block w-100">{{ title }}</span>
+                                {% endif %}
+                                <span class="url d-inline-block w-100">{{ shareUrl }}</span>
+                            </div>
+
+                            <form action="">
+                                <div class="form-group">
+                                    <label for="share-to-input">{{ emt("Envoyer à"|trans|raw) }}<span> *</span></label>
+                                    <input type="email" class="form-control" id="share-to-input" placeholder="{{ "Saisissez un email"|trans|striptags }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="share-subject-input">{{ emt("Sujet"|trans|raw) }}</label>
+                                    <input type="text" class="form-control" id="share-subject-input" placeholder="{{ "Saisissez un sujet"|trans|striptags }}" value="{{ title }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="share-message-input">{{ emt("Message"|trans|raw) }}</label>
+                                    <textarea class="form-control" id="share-message-input" rows="3" placeholder="{{ "Saisissez un message"|trans|striptags }}"></textarea>
+                                </div>
+                                <div class="form-group text-center">
+                                    <button class="btn share-email-submit" data-url="{{ shareUrl }}">
+                                        {{ emt("Envoyer"|trans|raw) }}
+                                    </button>
+                                </div>
+
+                                <small class="d-inline-block w-100 info">
+                                    {{ emt("(*) champs obligatoires"|trans|raw) }} <br>
+                                    {{ emt("Par cet envoi, j'affirme que je suis autorisé à envoyer cet e-mail."|trans|raw) }}
+                                </small>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+

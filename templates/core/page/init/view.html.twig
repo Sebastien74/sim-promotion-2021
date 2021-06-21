@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+
+    {% trans_default_domain 'core_init' %}
+
+    {% import 'core/src-macro.html.twig' as resources %}
+
+    <head>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('build/init/images/favicon.ico', 'init') }}" />
+        <title>{{ "Initialisation"|trans|raw }} - SFCMS {{ symfonyVersion() }}</title>
+
+        {% block stylesheets %}
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+            <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,400;0,700;0,900;1,300&display=swap" rel="stylesheet">
+            {{ resources.encore_absolute_link_tags('core-init', 'init', true) }}
+        {% endblock %}
+
+    </head>
+
+    <body class="bg-secondary">
+
+        <header class="text-center pt-5 pb-5 bg-primary">
+            <div class="container-fluid">
+                <img src="{{ asset('build/init/images/' ~ step ~ '.svg', 'init') }}"
+                     width="75" height="75"
+                     alt="{{ step }}" class="img-fluid mb-4" /><br>
+                <h1 class="text-dark">{{ title|raw }}</h1>
+            </div>
+        </header>
+
+        <div class="container form-wizard{% if step != 'success' %} pt-5 pb-5{% endif %}">
+
+            {% if steps %}
+                <div class="steps mb-5">
+                    <ul role="tablist">
+                        {% for step in steps %}
+                            <li role="tab" class="step-tab{% if loop.index < stepPosition %} done{% endif %}" data-step="{{ loop.index }}">
+                                <a id="steps-uid-0-t-0" class="step-wrap">
+                                    <span class="step text-secondary">{{ loop.index }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="row{% if step == 'success' %} success-height{% endif %}">
+                <div class="col-md-{% if size is defined %}{{ size }}{% else %}12{% endif %} mx-auto">
+                    {% if form %}
+                        {{ form_start(form, {"attr": {
+                            "novalidate": "novalidate",
+                            "action": app.request.schemeAndHttpHost ~ path('app_new_website_project', {'step': step}),
+                        }}) }}
+                            <div class="row">
+                                {% set labelsGroup = {'colors': 'Couleurs'|trans} %}
+                                {% set labelGroup = null %}
+                                {% for field in form.children %}
+                                    {% set label = field.vars.attr['data-category'] is defined and labelsGroup[field.vars.attr['data-category']] is defined
+                                        ? labelsGroup[field.vars.attr['data-category']] : null %}
+                                    {% if label and label != labelGroup %}
+                                        {% set labelGroup = label %}
+                                        <label class="mb-1">{{ labelGroup }}</label>
+                                    {% endif %}
+                                    {% if field.vars.name == 'save' %}
+                                        {% for alert, flashes in app.session.flashbag.all %}
+                                            {% for flash in flashes %}
+                                                <div class="col-12">
+                                                    <div class="alert alert-{{ alert }} mb-0 text-bold">{{ flash|raw }}</div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {{ form_row(form[field.vars.name]) }}
+                                {% endfor %}
+                            </div>
+                        {{ form_end(form) }}
+                    {% elseif step == 'success' %}
+                        <div id="success-wrap" class="text-center position-relative success-height">
+                            <div class="inner">
+                                <div class="row mb-5">
+                                    <div class="col-md-8 mx-auto">
+                                        <div class="alert alert-info p-4">{{ "Votre projet a été créé avec succès. <br> Vous pouvez maintenant vous rendre sur votre site ou dans votre administration."|trans|raw }}</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <a href="{{ path('security_login', {'_locale': app.request.locale}) }}" target="_blank">
+                                            <div class="w-100 mb-2">
+                                                <img src="{{ asset('build/init/images/back.svg', 'init') }}"
+                                                     width="150" height="150"
+                                                     alt="{{ "Administration"|trans|striptags }}" class="img-fluid" />
+                                            </div>
+                                            <h3 class="text-primary">{{ "Administration"|trans|raw }}</h3>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2 text-secondary my-auto or-wrap">{{ 'ou'|trans|raw }}</div>
+                                    <div class="col-md-5">
+                                        <a href="{{ path('front_index') }}" target="_blank">
+                                            <div class="w-100 mb-2">
+                                                <img src="{{ asset('build/init/images/front.svg', 'init') }}"
+                                                     width="150" height="150"
+                                                     alt="{{ "Front"|trans|striptags }}" class="img-fluid" />
+                                            </div>
+                                            <h3 class="text-primary">{{ "Front"|trans|raw }}</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif 'generate' in step %}
+                        <div class="generator position-relative overflow-hidden text-center text-light pt-5 pb-5 pr-4 pl-4"
+                             data-path="{{ app.request.schemeAndHttpHost ~ path('app_new_website_project', {'step': newStep}) }}">
+                            <div class="loader position-absolute"></div>
+                            <h2 class="w-100 text-secondary position-relative">{{ subTitle|raw }}</h2>
+                            <div class="spinner-border text-secondary" role="status"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+        {% block javascripts %}
+            {{ resources.encore_entry_js_files('core-init', 'init', 'Build', false, true) }}
+        {% endblock %}
+
+    </body>
+
+</html>

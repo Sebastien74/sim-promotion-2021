@@ -1,0 +1,198 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-10-30, 8:38 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT LAYOUT :
+    ==============
+
+    1 ) Core
+    2 ) Responsive
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Core
+-----------------------------------*/
+
+* {
+    outline: none !important;
+}
+
+body {
+
+    font-family: $font-primary;
+    overflow-x: hidden;
+
+    &.overflow-hidden {
+        overflow: hidden;
+    }
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+
+    width: initial;
+    max-width: 100%;
+
+    &.img-png, &.img-jpg, &.img-jpeg, &.img-gif {
+        height: auto;
+    }
+}
+
+#content-page {
+
+    overflow: hidden;
+    background-color: $body-bg;
+    max-width: $content-page-full-width;
+    margin: 0 auto;
+
+    &.content-page-box {
+        max-width: $content-page-box-width;
+        margin: 0 auto;
+    }
+
+    .negative-margin {
+        z-index: 999;
+    }
+}
+
+.layout-block {
+
+    .zone-container {
+        padding: 0;
+    }
+}
+
+.col-full-size {
+    > .row:first-child,
+    > .row:first-child .layout-block-content,
+    > .row:first-child .loader-image-wrapper,
+    > .row:first-child .media-block picture,
+    > .row:first-child .media-block img,
+    > .row:first-child .media-block {
+        height: 100% !important;
+        object-fit: cover;
+    }
+}
+
+.layout-zone {
+    &.have-bg-img {
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+    }
+}
+
+.bg-col,
+.layout-col {
+
+    z-index: 99;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+
+    &.vertical-align-lg {
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+form .layout-col .layout-block-content {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+.edit-trans-block {
+
+    .edit-trans-btn-modal {
+        width: 25px !important;
+        height: 25px !important;
+    }
+
+    .trans-edit-form .trans-edit-input-group {
+        display: none;
+    }
+}
+
+.box9 {
+
+    background: transparent;
+    text-align: center;
+    position: relative;
+
+    .box-content {
+        background: transparentize($black, .25);
+        padding: 15px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        opacity: 0;
+        transition: all .35s ease 0s;
+    }
+
+    .hover-buttons-wrap {
+
+        img {
+            height: 50px;
+        }
+
+        &.only-one, &.only-one li, &.only-one li a {
+            transform: none;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            position: absolute;
+        }
+    }
+
+    &:hover .box-content {
+        top: 10px;
+        left: 10px;
+        bottom: 10px;
+        right: 10px;
+        opacity: 1;
+        z-index: 80;
+    }
+}
+
+/*-----------------------------------
+   2 ) Responsive
+-----------------------------------*/
+
+@include mediaQuery(max-lg) {
+
+    .layout-zone {
+
+        &.container-size .col-content {
+            padding-right: 15px !important;
+            padding-left: 15px !important;
+        }
+
+        .zone-container > .row {
+
+            .layout-col {
+
+                margin-top: 2rem !important;
+
+                &:first-child, form .layout-col {
+                    margin-top: 0 !important;
+                }
+            }
+        }
+
+        &.full-size {
+            .zone-container > .row {
+                .layout-col {
+                    margin-top: 0 !important;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,78 @@
+{% set website = website is defined and website ? website : website() %}
+{% extends 'front/' ~ website.configuration.template ~ '/base.html.twig' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% trans_default_domain 'front_default' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-' ~ templateName, webpack, true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('front-' ~ websiteTemplate ~ '-' ~ templateName, webpack, 'Page', false, true) }}
+{% endblock %}
+
+{% block body %}
+
+    {% set localeTemplate = 'front/' ~ websiteTemplate ~ '/template/include/' ~ entity.slug ~ '-' ~ app.request.locale ~ '.html.twig' %}
+    {% set templateExist = (localeTemplate)|fileExist %}
+    {% set localeTemplate = templateExist ? localeTemplate : 'front/' ~ websiteTemplate ~ '/template/include/' ~ entity.slug ~ '-en.html.twig' %}
+    {% set templateExist = (localeTemplate)|fileExist %}
+    {% set legacy = websiteInformation|i18nLegacy %}
+    {% set companyName = legacy.companyName is defined and legacy.companyName ? legacy.companyName : null %}
+    {% set companyRepresentativeName = legacy.companyRepresentativeName is defined and legacy.companyRepresentativeName ? legacy.companyRepresentativeName : null %}
+    {% set capital = legacy.capital is defined and legacy.capital ? legacy.capital : null %}
+    {% set vatNumber = legacy.vatNumber is defined and legacy.vatNumber ? legacy.vatNumber : null %}
+    {% set siretNumber = legacy.siretNumber is defined and legacy.siretNumber ? legacy.siretNumber : null %}
+    {% set commercialRegisterNumber = legacy.commercialRegisterNumber is defined and legacy.commercialRegisterNumber ? legacy.commercialRegisterNumber : null %}
+    {% set companyAddress = legacy.companyAddress is defined and legacy.companyAddress ? legacy.companyAddress : null %}
+    {% set managerName = legacy.managerName is defined and legacy.managerName ? legacy.managerName : null %}
+    {% set managerEmail = legacy.managerEmail is defined and legacy.managerEmail ? legacy.managerEmail : null %}
+    {% set webmasterName = legacy.webmasterName is defined and legacy.webmasterName ? legacy.webmasterName : null %}
+    {% set webmasterEmail = legacy.webmasterEmail is defined and legacy.webmasterEmail ? legacy.webmasterEmail : null %}
+    {% set hostName = legacy.hostName is defined and legacy.hostName ? legacy.hostName : null %}
+    {% set hostAddress = legacy.hostAddress is defined and legacy.hostAddress ? legacy.hostAddress : null %}
+    {% set protectionOfficerName = legacy.protectionOfficerName is defined and legacy.protectionOfficerName ? legacy.protectionOfficerName : null %}
+    {% set protectionOfficerEmail = legacy.protectionOfficerEmail is defined and legacy.protectionOfficerEmail ? legacy.protectionOfficerEmail : null %}
+    {% set protectionOfficerAddress = legacy.protectionOfficerAddress is defined and legacy.protectionOfficerAddress ? legacy.protectionOfficerAddress : null %}
+    {% set updatedAt = legacy.updatedAt is defined and legacy.updatedAt ? legacy.updatedAt : null %}
+    {% set updatedAt = not updatedAt and legacy.createdAt is defined and legacy.createdAt ? legacy.createdAt : updatedAt %}
+    {% set updatedAt = updatedAt ? updatedAt|localizedDate('none', 'none', app.request.locale, null, 'dd/MM/Y') : null %}
+    {% set isCookiePage = 'cookies' in app.request.uri %}
+
+    <!-- #content-legacy -->
+    <div id="content-{{ templateName }}" class="template-page{% if not isCookiePage %} pb-lg-5{% endif %}">
+
+        {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' %}
+
+        {% if templateExist %}
+
+            <section class="text-block pt-lg pb-lg">
+
+                <div class="container position-relative">
+
+                    {% include 'core/webmaster-edit.html.twig' with {
+                        'title': "Éditer les informations"|trans([], 'front_webmaster'),
+                        'role': 'ROLE_EDIT',
+                        'path': path('admin_information_edit', {'website': website.id, 'information': information.id, 'tab': 'legal-notice'})
+                    } only %}
+
+                    {% include localeTemplate %}
+
+                </div>
+
+            </section>
+
+        {% endif %}
+
+    </div>
+    <!-- #content-legacy -->
+
+    {% if isCookiePage %}
+        {{ render_esi(controller("App\\Controller\\Front\\Module\\GdprController::legacy")) }}
+    {% endif %}
+
+{% endblock %}

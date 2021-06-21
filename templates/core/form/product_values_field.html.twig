@@ -1,0 +1,115 @@
+{% trans_default_domain 'admin' %}
+
+{%- block _product_values_widget -%}
+
+    {% import _self as macro %}
+
+    {% macro field_prototype(property) %}
+
+        {% set data = property.vars.data is defined and property.vars.data ? property.vars.data : null %}
+        {% set isNew = data.id is defined and data.id ? false : true %}
+        {% set entityId = isNew ? uniqId() : property.vars.data.id %}
+        {% set position = isNew ? null : data.position %}
+        {% set interfaceName = property.vars.errors.form.config.dataClass|interfaceName %}
+
+        {% if isNew %}
+            <div class="prototype-block prototype mb-4">
+                <div class="row m-0">
+                    <div class="col-md-3">{{ form_widget(property.value) }}</div>
+                    <div class="col-md-3 my-auto text-center"><strong>{{ "OU valeur personnalisée"|trans }}</strong></div>
+                    <div class="col-md-3">{{ form_widget(property.feature) }}</div>
+                    <div class="col-md-3">{{ form_widget(property.adminName) }}</div>
+                    <div class="d-none">{{ form_widget(property.displayInArray) }}</div>
+                    {% include 'admin/core/form/modal-delete-collection.html.twig' with {
+                        'isNew': property.vars.data.id is defined and property.vars.data.id ? false : true,
+                        'entityId': isNew ? uniqId() : property.vars.data.id,
+                        'interfaceName': interfaceName
+                    } %}
+                </div>
+            </div>
+        {% endif %}
+
+    {% endmacro %}
+
+    {% set entity = form.parent.vars.data %}
+    {% set featuresGroups = entity|productData %}
+
+    <div class="col-12">
+        <ul id="features-sortable" class="reset">
+            {% for featurePosition, values in featuresGroups['byPosition'] %}
+                {% set feature = featuresGroups['featuresByPosition'][featurePosition] %}
+                {% set featureId = feature.id %}
+                <li class="ui-feature" data-id="{{ featureId }}" data-product="{{ entity.id }}"
+                    data-pos-path="{{ path('admin_catalogfeaturevalueproduct_feature_position', {'website': websiteId(), 'product': entity.id, 'feature': featureId}) }}">
+                    <h5 class="card-subtitle mb-0">
+                        <span class="handle-feature cursor" data-toggle="tooltip" title="{{ "Déplacer"|trans|raw }}">
+                            {{ 'far fa-arrows-alt'|fontawesome(null, 14, 'info-darken') }}
+                        </span>
+                        <span class="entitled">{{ feature.adminName }}</span>
+                    </h5>
+                    <ul class="feature-values-sortable reset">
+                        {% for value in values %}
+                            {% for property in form.children %}
+                                {% if value.id == property.vars.data.id %}
+                                    {% set isCustomized = value.value.isCustomized %}
+                                    {% set entitled = isCustomized ? "Valeur personnalisée"|trans : "Valeur générale"|trans %}
+                                    <li id="ui-value-{{ value.id }}" class="ui-value" data-position="{{ value.position }}" data-id="{{ value.position }}"
+                                        data-pos-path="{{ path('admin_catalogfeaturevalueproduct_position', {'website': websiteId(), 'catalogfeaturevalueproduct': value.id}) }}">
+                                        <span class="handle-value d-inline-block" data-toggle="tooltip" title="{{ "Déplacer"|trans }}">
+                                            {{ 'far fa-arrows-alt'|fontawesome(null, 14, 'info') }}
+                                        </span>
+                                        <div class="row ui-value-row">
+                                            <strong class="col-md-3">{{ entitled }}</strong>
+                                            <span class="col-md-3">{{ value.value.adminName }}</span>
+                                            <span class="col-md-3">
+                                                {{ form_widget(property.displayInArray) }}
+                                                <div class="d-none">
+                                                    {{ form_row(property.value) }}
+                                                    {{ form_row(property.adminName) }}
+                                                    {{ form_row(property.feature) }}
+                                                </div>
+                                            </span>
+                                            <span class="col-md-3 text-right">
+                                                <a href="{{ path('admin_catalogfeaturevalue_edit', {'website': websiteId(), 'catalogfeature': feature.id, 'catalogfeaturevalue': value.value.id}) }}"
+                                                   data-toggle="tooltip" title="{{ "Éditer la valeur"|trans }}"
+                                                   class="swal-product-value btn btn-transparent btn-circle">
+                                                    {{ 'fas fa-pencil-alt'|fontawesome(null, 14, 'dark') }}
+                                                </a>
+                                                {% include 'admin/core/form/modal-delete-collection.html.twig' with {
+                                                    'isNew': false,
+                                                    'entityId': property.vars.data.id,
+                                                    'interfaceName': property.vars.errors.form.config.dataClass|interfaceName
+                                                } %}
+                                            </span>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="{{ id }}-collection"
+         data-index="{{ data|length }}"
+         class="collection col-12"
+         data-prototype="{{ macro.field_prototype(prototype)|e('html_attr') }}">
+    </div>
+
+    <div class="col-12 text-right mb-4">
+        <button role="button" class="add-collection btn full-prototype-btn w-100"
+                data-collection-target="append"
+                data-target="#{{ id }}-collection">
+            <img data-src="{{ asset('build/admin/images/theme/plus-rounded.svg', 'admin') }}"
+                 src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                 class="img-fluid rounded-add-img lazyload"
+                 width="20" height="20" alt="{{ 'Ajouter'|trans }}"><br>
+            <span class="d-inline-block">
+                {{ 'Ajouter une valeur'|trans }}
+            </span>
+        </button>
+    </div>
+
+{%- endblock _product_values_widget -%}

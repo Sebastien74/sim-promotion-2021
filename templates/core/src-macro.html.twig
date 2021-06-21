@@ -1,0 +1,79 @@
+{% macro encore_absolute_link_tags(entry_point, webpack, preload) %}
+
+    {% set params = 'admin-' in app.request.uri
+        ? '?isAdmin=' ~ app.session.get('SECURITY_IS_ADMIN') ~ '&userSecret=' ~ app.session.get('SECURITY_USER_SECRET') ~ '&token=' ~ admin_app_secret : null %}
+
+    {% set as = webpack == 'fonts' ? 'font' : 'style' %}
+
+    {% for file in encore_entry_css_files(entry_point, webpack) %}
+        {% if preload %}
+            <link rel="stylesheet" href="{{ preload(absolute_url(asset(file)), { as: as, nopush: true }) }}" />
+        {% else %}
+            <link href="{{ absolute_url(asset(file)) ~ params }}" rel="stylesheet" />
+        {% endif %}
+    {% endfor %}
+
+{% endmacro %}
+
+{% macro encore_absolute_responsive_link_tags(websiteTemplate, webpack, preload) %}
+
+    {% set params = 'admin-' in app.request.uri
+        ? '?isAdmin=' ~ app.session.get('SECURITY_IS_ADMIN') ~ '&userSecret=' ~ app.session.get('SECURITY_USER_SECRET') ~ '&token=' ~ admin_app_secret : null %}
+
+    {% if isMobile() %}
+        {% for file in encore_entry_css_files('front-' ~ websiteTemplate ~ '-mobile', webpack) %}
+            {% if preload %}
+                <link rel="stylesheet" href="{{ preload(absolute_url(asset(file)), { as: 'style', nopush: true }) }}" />
+            {% else %}
+                <link href="{{ absolute_url(asset(file)) ~ params }}" rel="stylesheet" />
+            {% endif %}
+        {% endfor %}
+    {% elseif isTablet() %}
+        {% for file in encore_entry_css_files('front-' ~ websiteTemplate ~ '-tablet', webpack) %}
+            {% if preload %}
+                <link rel="stylesheet" href="{{ preload(absolute_url(asset(file)), { as: 'style', nopush: true }) }}" />
+            {% else %}
+                <link href="{{ absolute_url(asset(file)) ~ params }}" rel="stylesheet" />
+            {% endif %}
+        {% endfor %}
+    {% elseif isDesktop() %}
+        {% for file in encore_entry_css_files('front-' ~ websiteTemplate ~ '-desktop', webpack) %}
+            {% if preload %}
+                <link rel="stylesheet" href="{{ preload(absolute_url(asset(file)), { as: 'style', nopush: true }) }}" />
+            {% else %}
+                <link href="{{ absolute_url(asset(file)) ~ params }}" rel="stylesheet" />
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% endmacro %}
+
+{% macro encore_entry_js_files(entry_point, webpack, comment = null, preload = false, defer = true) %}
+
+    {% set params = 'admin-' in app.request.uri
+        ? '?isAdmin=' ~ app.session.get('SECURITY_IS_ADMIN') ~ '&userSecret=' ~ app.session.get('SECURITY_USER_SECRET') ~ '&token=' ~ admin_app_secret : null %}
+
+    <!-- {{ comment }} javaScript -->
+    {% for file in encore_entry_js_files(entry_point, webpack) %}
+        {% set src = preload ? preload(absolute_url(asset(file)) ~ params, { as: 'script', nopush: true }) : absolute_url(asset(file)) %}
+        <script {% if defer %}defer {% endif %}src="{{ src }}" nonce="{{ csp_nonce() }}"></script>
+    {% endfor %}
+
+{% endmacro %}
+
+{% macro entry_js_url(url, preload = true, defer = true, comment = null) %}
+
+    {% set params = 'admin-' in app.request.uri
+        ? '?isAdmin=' ~ app.session.get('SECURITY_IS_ADMIN') ~ '&userSecret=' ~ app.session.get('SECURITY_USER_SECRET') ~ '&token=' ~ admin_app_secret : null %}
+
+    {% if preload %}
+        <div data-href="{{ absolute_url(asset(file)) ~ params }}"
+             data-nonce="{{ csp_nonce() }}"
+             data-as="script"
+             data-comment="{{ comment }}"
+             data-crossorigin="anonymous"></div>
+    {% else %}
+        <script src="{{ url ~ params }}" nonce="{{ csp_nonce() }}" crossorigin="anonymous"{% if defer %} defer="defer"{% endif %}></script>
+    {% endif %}
+
+{% endmacro %}

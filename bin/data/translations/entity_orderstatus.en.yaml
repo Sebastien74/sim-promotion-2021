@@ -1,0 +1,5 @@
+add: 'Add status'
+adminName: 'Status (EC International)'
+delete: 'Delete status'
+plural: Status
+singular: 'Status (EC International)'

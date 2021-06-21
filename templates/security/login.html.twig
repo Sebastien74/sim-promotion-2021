@@ -1,0 +1,83 @@
+{% extends "security/base.html.twig" %}
+
+{% trans_default_domain 'security_cms' %}
+
+{% block title %}{{ "Connexion"|trans|striptags }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <!-- #login-form -->
+    <form id="login-form" class="form-horizontal form-material security"
+          action="{{ path('security_login') }}"
+          method="POST"
+          novalidate="novalidate">
+
+        {% set inputType = login_type == 'email' ? 'email' : 'text' %}
+        {% set inputName = login_type == 'email' ? 'email' : 'login' %}
+        {% set placeholder = login_type == 'email' ? 'E-mail'|trans : "Nom d'utilisateur"|trans %}
+
+        <div class="form-group mb-3">
+            <input type="{{ inputType }}"
+                   value="{{ last_username }}"
+                   name="{{ inputName }}"
+                   class="form-control pt-2 pb-2"
+                   placeholder="{{ placeholder|striptags }}"
+                   autocomplete="off"
+                   required autofocus />
+        </div>
+
+        <div class="form-group mb-3">
+            <input type="password"
+                   name="password"
+                   class="form-control pt-2 pb-2"
+                   placeholder="{{ 'Mot de passe'|trans|striptags }}"
+                   autocomplete="off" required />
+        </div>
+
+        {% include "security/includes/recaptcha-fields.html.twig" %}
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+
+        <div class="row mb-4">
+            <div class="col-sm-6 text-center text-sm-left">
+                <div class="form-group m-0">
+                    <div class="custom-control custom-checkbox d-inline-block">
+                        <input id="remember_me" type="checkbox" name="_remember_me" class="form-check-input" checked />
+                        <label class="form-check-label" for="remember_me">{{ 'Se rappeler de moi'|trans|raw }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 text-center text-sm-right">
+                <a href="{{ path("security_password_request", {"_locale": app.request.locale}) }}" id="to-recover" class="text-dark" data-toggle="preloader">
+                    <small class="text-italic">{{ 'Mot de passe oublié ?'|trans|raw }}</small>
+                </a>
+            </div>
+        </div>
+
+        {% if error %}
+            {% include 'security/includes/alert.html.twig' with {"alert": 'danger', "message": error.messageKey|trans(error.messageData, 'security')|raw} only %}
+        {% endif %}
+
+        {% include "security/includes/flashbag.html.twig" %}
+
+        <button class="btn btn-lg btn-info btn-block text-uppercase w-100" type="submit">{{ 'Se connecter'|trans|raw }}</button>
+
+        {% if website.security.adminRegistration %}
+            <a href="{{ path('security_register') }}"
+               class="btn btn-lg btn-outline-info btn-block text-uppercase w-100 mt-3">
+                {{ 'Inscrivez-vous'|trans|raw }}
+            </a>
+        {% endif %}
+
+    </form>
+    <!-- /#login-form -->
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'making'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/makings/' in uri %}
+    {% set module = 'making'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['making'][app.user.locale] is defined ? i18nsModules['making'][app.user.locale] : i18nsModules['making']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['making']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow {% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['making']['entity'].iconClass|iconHtml({'width': 15, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'makings' %} in{% endif %}">
+            <li>
+                <a href="{{ path('admin_making_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Liste des réalisations"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_makingcategory_index', {"website": websiteId}) }}"{% if '/makings/categories/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Liste des catégories"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_makingteaser_index', {"website": websiteId}) }}"{% if '/makings/teasers/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Configuration des teasers"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_makinglisting_index', {"website": websiteId}) }}"{% if '/makings/listings/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Configuration des index"|trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endif %}

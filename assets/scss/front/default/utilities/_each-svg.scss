@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-10-23, 8:07 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT EACH SVG :
+    ===============
+
+------------------------------------------------------------------ */
+
+@each $suffix, $color in $app-colors {
+
+    svg.#{$suffix} {
+        fill: $color !important;
+        * {
+            fill: $color !important;
+        }
+    }
+}

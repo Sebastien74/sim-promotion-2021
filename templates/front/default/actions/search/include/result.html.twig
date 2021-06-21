@@ -1,0 +1,52 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="result mb-4">
+    
+    {% set entity = result.entity %}
+
+    {% if categoryName is defined and categoryName == 'pdf' %}
+
+        <a href="{{ asset(result.url) }}" target="_blank">{{ entity.filename }}</a>
+        
+    {% else %}
+
+        {% set i18n = entity|i18n %}
+        {% set date = entity.publicationStart is defined
+            ? entity.publicationStart|localizedDate('none', 'none', app.request.locale, null, 'dd/MM/Y')
+            : null %}
+
+        {% if i18n.title is defined and i18n.title %}
+            <h3 class="title mb-2">
+                {% if result.url is defined and result.url %}
+                <a href="{{ result.url }}" data-toggle="preloader">
+                    {% endif %}
+                    {{ i18n.title|escape|raw }}
+                    {% if result.url is defined and result.url %}
+                </a>
+                {% endif %}
+            </h3>
+        {% endif %}
+
+        {% if date %}
+            <small class="text-muted mb-3 d-inline-block w-100">{{ emt('Le'|trans) }} {{ date }}</small>
+        {% endif %}
+
+        {% if i18n.introduction is defined and i18n.introduction %}
+            <strong class="introduction w-100 d-inline-block mb-2">{{ i18n.introduction|striptags|truncate(150) }}</strong>
+        {% endif %}
+
+        {% if i18n.body is defined and i18n.body %}
+            <p class="body w-100">{{ i18n.body|striptags|truncate(150) }}</p>
+        {% endif %}
+
+        {% if result.url is defined and result.url %}
+            <div class="w-100 text-end">
+                <a href="{{ result.url }}" class="text-primary link" data-toggle="preloader">{{ emt("En savoir plus"|trans) }}
+                    {{ 'fas fa-chevron-right'|fontawesome(5, 8, 'ms-2') }}
+                </a>
+            </div>
+        {% endif %}
+        
+    {% endif %}
+
+</div>

@@ -1,0 +1,13 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="box1" data-component="hover-effect">
+
+    {% block media %}{% endblock %}
+
+    {% if imageTitle is defined and imageTitle is not empty %}
+        <h2 class="title col-12">{{ imageTitle|unescape|raw }}</h2>
+    {% endif  %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/include/hovereffect/buttons.html.twig' %}
+
+</div>

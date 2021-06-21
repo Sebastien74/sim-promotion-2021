@@ -1,0 +1,60 @@
+{% trans_default_domain 'front_default' %}
+
+{% if dispalyForm %}
+
+    {% if configuration.ajax %}
+        <div class="form-ajax-container">
+    {% endif %}
+
+    <div class="form-loader row text-center d-none">
+        <div class="col-12 my-auto">
+            <span class="spinner-border" role="status"></span>
+        </div>
+    </div>
+
+    {{ form_start(form, {"attr": {
+        "novalidate": "novalidate",
+        "class": formClass,
+        "action": path('front_form_view', {'website': website.id, 'url': url.id, 'filter': filter}),
+        "data-action": path('front_form_view', {'website': website.id, 'url': url.id, 'filter': filter}),
+        'id': "form-" ~ entity.slug,
+        'data-id': entity.id,
+        'data-redirection': urlRedirection,
+        'data-modal': modalId
+    }}) }}
+
+        {% if contact is defined and contact and not configuration.thanksModal %}
+            {% include 'front/' ~ websiteTemplate ~ '/actions/form/success.html.twig' with {"websiteTemplate": websiteTemplate, "form": entity, "contact": contact} only %}
+            <div class="d-none">
+        {% endif %}
+
+            {% include "front/" ~ websiteTemplate ~ "/include/recaptcha-fields.html.twig" with {'form': form, 'entity': entity.configuration} only %}
+            {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' with {'entity': entity} %}
+
+            <div id="alert-form-block" class="d-none">
+                {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'error', "message": emt("Veuillez remplir les champs obligatoires !!"|trans|raw)} only %}
+            </div>
+
+        {% if contact is defined and contact and not configuration.thanksModal %}
+            </div>
+        {% endif %}
+
+    {{ form_end(form) }}
+
+    {% set messageSuccess = messages['success_form'][0] is defined ? messages['success_form'][0] : null %}
+    {% set messageError = messages['error_form'][0] is defined ? messages['error_form'][0] : null %}
+    {% if messageSuccess or messageError %}
+        {% set alert = messageSuccess ? "success" : "error" %}
+        {% set message = messageSuccess ? messageSuccess : messageError %}
+        {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": alert, "message": message} only %}
+    {% endif %}
+
+    {% if configuration.ajax %}
+        </div>
+    {% endif %}
+
+{% else %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'info', "message": emt("Inscriptions terminées !!"|trans|raw)} only %}
+
+{% endif %}

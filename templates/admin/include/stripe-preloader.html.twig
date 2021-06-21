@@ -1,0 +1,13 @@
+{% trans_default_domain 'admin' %}
+
+{% set preloaderId = preloaderId is defined and preloaderId ? preloaderId : 'stripe-preloader' %}
+{% set preloaderClass = preloaderClass is defined and preloaderClass ? preloaderClass : null %}
+{% set hasFull = full is defined and full %}
+{% set visible = visible is defined and visible %}
+
+<div id="{{ preloaderId }}" class="progress stripe-preloader prototype-preloader{% if not visible %} d-none{% endif %}{% if hasFull %} full{% endif %}{% if preloaderClass %} {{ preloaderClass }}{% endif %}">
+    <div class="bg-stripe-loader"></div>
+    <div class="vertical-align">
+        <h4>{{ "Chargement en cours..."|trans }}</h4>
+    </div>
+</div>

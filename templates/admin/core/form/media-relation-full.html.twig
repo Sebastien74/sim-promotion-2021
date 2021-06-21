@@ -1,0 +1,79 @@
+{% trans_default_domain 'admin' %}
+
+{% set configuration = website().configuration %}
+{% set defaultLocale = configuration.locale %}
+{% set allLocales = configuration.allLocales %}
+
+{{ form_start(form, {"attr": {
+    "novalidate": "novalidate",
+    "action": path('admin_mediarelation_edit', {'website': websiteId(), 'mediarelation': entity.id}),
+    'id': 'form-' ~ entity.id }}) }}
+
+    <div class="ajax-content">
+        <div class="row">
+            <div class="col-md-8">
+                <h4 class="card-subtitle mb-4">
+                    {{ "fal fa-align-center"|fontawesome(null, 14, 'info-darken mr-2') }}{% if allLocales|length > 1 %}{{ "Descriptions"|trans }}{% else %}{{ "Description"|trans }}{% endif %}
+                </h4>
+                <div class="row">
+                    {{ form_row(form.i18n.titleForce) }}
+                    {{ form_row(form.i18n.title) }}
+                    {% if form.i18n.subTitle is defined %}
+                        {{ form_row(form.i18n.subTitle) }}
+                    {% endif %}
+                    {{ form_row(form.i18n.pictogram) }}
+                    {{ form_row(form.i18n.introduction) }}
+                    {{ form_row(form.i18n.body) }}
+                </div>
+                <h4 class="card-subtitle mb-4">{{ "fal fa-link"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Lien"|trans }}</h4>
+                <div class="row">
+                    {{ form_row(form.i18n.targetLink) }}
+                    {{ form_row(form.i18n.targetPage) }}
+                    {{ form_row(form.i18n.targetLabel) }}
+                    {% if form.i18n.targetAlignment is defined %}
+                        {{ form_row(form.i18n.targetAlignment) }}
+                    {% endif %}
+                    {{ form_row(form.i18n.targetStyle) }}
+                    {{ form_row(form.i18n.newTab) }}
+                    {% if form.i18n.externalLink is defined %}
+                        {{ form_row(form.i18n.externalLink) }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4 class="card-subtitle mb-4">{{ "fal fa-image"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Média"|trans }}</h4>
+                {% include 'admin/page/media/modal-btn.html.twig' with {"mediaRelationId": entity.id, 'classname': class} %}
+                {{ form_row(form.media.uploadedFile) }}
+                <div class="row">
+                    {% if form.media.copyright is defined %}
+                        <div class="col-12 p-0">{{ form_row(form.media.copyright) }}</div>
+                    {% endif %}
+                    {% if form.media.categories is defined %}
+                        <div class="col-12 p-0">{{ form_row(form.media.categories) }}</div>
+                    {% endif %}
+                    {% if is_granted("ROLE_INTERNAL") %}
+                        <div class="col-md-6 p-0">{{ form_row(form.maxWidth) }}</div>
+                        <div class="col-md-6 p-0">{{ form_row(form.maxHeight) }}</div>
+                    {% endif %}
+                    <div class="col-md-6 p-0">{{ form_row(form.downloadable) }}</div>
+                    <div class="col-md-6 p-0">{{ form_row(form.displayTitle) }}</div>
+                    <div class="col-md-6 p-0">{{ form_row(form.popup) }}</div>
+                    <div class="col-md-6 p-0">{{ form_row(form.isMain) }}</div>
+                    {% if form.media.notContractual is defined %}
+                        <div class="col-12 p-0">{{ form_row(form.media.notContractual) }}</div>
+                    {% endif %}
+                </div>
+                {% if is_granted("ROLE_INTERNAL") %}
+                    <h4 class="card-subtitle mb-4">{{ "fal fa-indent"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Alignement des contenus"|trans }}</h4>
+                    <div class="row">
+                        {{ form_row(form.i18n.titleAlignment) }}
+                        {{ form_row(form.i18n.bodyAlignment) }}
+                        {{ form_row(form.i18n.introductionAlignment) }}
+                    </div>
+                {% endif %}
+                {{ form_row(form.save) }}
+            </div>
+        </div>
+    </div>
+
+{{ form_end(form) }}

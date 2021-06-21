@@ -1,0 +1,26 @@
+{% set website = website is defined and website ? website : website() %}
+{% extends 'front/' ~ website.configuration.template ~ '/base.html.twig' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% trans_default_domain 'front_default' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-' ~ templateName, webpack, true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('front-' ~ websiteTemplate ~ '-' ~ templateName, webpack, 'Page', false, true) }}
+{% endblock %}
+
+{% block body %}
+
+    <!-- #content-cms -->
+    <div id="content-{{ templateName }}" class="template-page">
+        {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' %}
+    </div>
+    <!-- \#content-cms -->
+
+{% endblock %}

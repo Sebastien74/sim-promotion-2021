@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-11-11, 6:55 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT VENDOR MEDIA BLOCK :
+    =========================
+
+------------------------------------------------------------------ */
+
+.desc-bottom .gslide-media, .desc-top .gslide-media, .gslide-image img.zoomable {
+    max-width: 1300px !important;
+}
+
+.glightbox-clean .gslide-title, .glightbox-modern .gslide-title {
+    margin-bottom: 0 !important;
+    color: transparentize($white, .6) !important;
+    font-size: rem(13px) !important;
+}
+
+.glightbox-clean .gslide-description, .glightbox-modern .gslide-description {
+    background: transparent !important;
+}
+
+.glightbox-clean .gdesc-inner, .glightbox-modern .gdesc-inner {
+    padding: 20px 0 !important;
+}

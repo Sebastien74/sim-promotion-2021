@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+@import "../../bootstrap/mixins/breakpoints";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 4:25 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    MIXIN COLUMNS :
+    ==============
+
+------------------------------------------------------------------ */
+
+@mixin columns($size, $columns, $breakpoints) {
+
+    .card-columns.column-#{$size} {
+
+        @each $screen, $column in $columns {
+
+            $min: breakpoint-min($screen, $breakpoints);
+            $next: breakpoint-next($screen, $breakpoints);
+            $max: breakpoint-max($next);
+
+            @if $min != null and $max != null {
+                @media (min-width: $min) and (max-width: $max) {
+                    column-count: $column;
+                }
+            } @else if $max == null {
+                @include media-breakpoint-up($screen, $breakpoints) {
+                    column-count: $column;
+                }
+            } @else if $min == null {
+                @include media-breakpoint-down($next, $breakpoints) {
+                    column-count: $column;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{% trans_default_domain 'admin' %}
+
+{% if is_granted('ROLE_INTERNAL') %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/layouts/index' in uri %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_layout_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ 'fal fa-columns'|fontawesome(15, 15, 'white mr-3') }}{{ "Mises en page"|trans }}
+        </a>
+    </li>
+
+{% endif %}

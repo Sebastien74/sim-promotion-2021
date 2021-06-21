@@ -1,0 +1,69 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = "Fichier de log"|trans ~ " : " ~ file %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-development', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% set categories = {
+        'critical': {'bg': 'danger', 'color': 'white', 'icon': 'far fa-exclamation-triangle'},
+        'warning': {'bg': 'warning', 'color': 'white', 'icon': 'far fa-whistle'},
+        'error': {'bg': 'warning', 'color': 'dark', 'icon': 'far fa-whistle'},
+        'alert': {'bg': 'warning', 'color': 'dark', 'icon': 'far fa-whistle'}
+    } %}
+
+    <div id="log-page">
+
+        {% for log in logs|reverse %}
+
+            {% if log %}
+
+                {% set category = categories[log.status] is defined ? categories[log.status] : null %}
+                {% set bg = category and category['bg'] is defined ? category['bg'] : 'info' %}
+                {% set color = category and category['color'] is defined ? category['color'] : 'white' %}
+                {% set icon = category and category['icon'] is defined ? category['icon'] : 'far fa-info-circle' %}
+
+                <div class="card log-card">
+                    <div class="card-header card-title bg-{{ bg }} text-{{ color }}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ icon|fontawesome(null, 14, color ~ ' mr-2') }}{{ log.code }}
+                            </div>
+                            <div class="col-md-8 text-right">
+                                {% if log.date|isDateTime %}
+                                    {{ "far fa-calendar-alt"|fontawesome(null, 14, color ~ ' ml-2 mr-2') }}{{ log.date|localizedDate('full', 'none', app.request.locale, null, 'EEEE d MMMM YYYY')|capitalize }}
+                                    {{ "far fa-clock"|fontawesome(null, 14, color ~ ' ml-2 mr-2') }}{{ log.date|localizedDate('full', 'none', app.request.locale, null, 'HH:mm')|capitalize }}
+                                {% endif %}
+                                <span data-toggle="tooltip" title="{{ "Retourner à la liste des logs"|trans|striptags }}">
+                                    <a href="{{ path('admin_logs') }}" class="ml-2 text-{{ color }}" data-toggle="preloader">
+                                        {{ 'fas fa-reply'|fontawesome(null, 14, color) }}
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">{{ log.message }}</div>
+                </div>
+
+            {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

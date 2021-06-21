@@ -1,0 +1,86 @@
+{% trans_default_domain 'admin' %}
+
+{%- block _product_videos_widget %}
+
+    {% import _self as macro %}
+
+    {% macro field_prototype(property) %}
+
+        {% set data = property.vars.data is defined and property.vars.data ? property.vars.data : null %}
+        {% set isNew = data.id is defined and data.id ? false : true %}
+        {% set entityId = isNew ? uniqId() : property.vars.data.id %}
+        {% set position = isNew ? null : data.position %}
+        {% set interfaceName = property.vars.errors.form.config.dataClass|interfaceName %}
+
+        {% if isNew %}
+            <div class="prototype-block prototype mb-4">
+                <div class="row p-3 m-0">
+                    <div class="col-md-12">{{ form_widget(property.adminName) }}</div>
+                    {% include 'admin/core/form/modal-delete-collection.html.twig' with {
+                        'isNew': property.vars.data.id is defined and property.vars.data.id ? false : true,
+                        'entityId': isNew ? uniqId() : property.vars.data.id,
+                        'interfaceName': interfaceName
+                    } %}
+                </div>
+            </div>
+        {% endif %}
+
+    {% endmacro %}
+
+    {% set entity = form.parent.vars.data %}
+    {% set allLocales = entity.website.configuration.allLocales is defined ? entity.website.configuration.allLocales : 1 %}
+    {% set multiLocales = allLocales > 1 %}
+
+    <div class="col-12">
+        <ul id="videos-sortable" class="reset w-100 {% if multiLocales %}multi-locales{% else %}single-locale{% endif %}">
+            {% for property in form.children %}
+                {% set video = property.vars.data %}
+                <li class="ui-video" data-position="{{ video.position }}"
+                    data-id="{{ video.id }}" data-product="{{ entity.id }}"
+                    {% if video.id %}data-pos-path="{{ path('admin_catalogvideo_position', {'website': websiteId(), 'catalogvideo': video.id}) }}"{% endif %}>
+                    <div class="position-relative">
+                        <div class="side position-absolute">
+                            <div class="handle-video cursor btn btn-transparent" data-toggle="tooltip" title="{{ "Déplacer"|trans }}">{{ 'far fa-arrows-alt'|fontawesome(null, 15, 'dark') }}</div>
+                            <span class="delete-video">
+                            {% include 'admin/core/form/modal-delete-collection.html.twig' with {
+                                'isNew': false,
+                                'entityId': property.vars.data.id,
+                                'interfaceName': property.vars.errors.form.config.dataClass|interfaceName
+                            } %}
+                        </span>
+                        </div>
+                        <div class="row item-video m-0">
+                            <div class="d-none">{{ form_widget(property.adminName) }}</div>
+                            {% include 'admin/core/form/i18ns.html.twig' with {
+                                'i18ns': property.i18ns,
+                                'disableTitle': true,
+                                'disableVideoTitle': true
+                            } %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="{{ id }}-collection"
+         data-index="{{ data|length }}"
+         class="collection col-12"
+         data-prototype="{{ macro.field_prototype(prototype)|e('html_attr') }}">
+    </div>
+
+    <div class="col-12 text-right mb-4">
+        <button role="button" class="add-collection btn full-prototype-btn w-100"
+                data-collection-target="append"
+                data-target="#{{ id }}-collection">
+            <img data-src="{{ asset('build/admin/images/theme/plus-rounded.svg', 'admin') }}"
+                 src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                 class="img-fluid rounded-add-img lazyload"
+                 width="20" height="20" alt="{{ 'Ajouter'|trans }}"><br>
+            <span class="d-inline-block">
+                {{ 'Ajouter une video'|trans }}
+            </span>
+        </button>
+    </div>
+
+{%- endblock _product_videos_widget -%}

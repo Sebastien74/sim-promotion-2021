@@ -1,0 +1,5 @@
+add: 'Ajouter un email'
+adminName: 'Email (EC International)'
+delete: 'Supprimer l''email'
+plural: Emails
+singular: 'Email (EC International)'

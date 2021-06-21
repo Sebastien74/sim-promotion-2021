@@ -1,0 +1,64 @@
+{% trans_default_domain 'admin' %}
+
+{% set uri = app.request.uri %}
+{% set active = '/security/' in uri %}
+
+{% if 'user'|moduleActive(allModules) and not is_granted('ROLE_USERS_GROUP') and not 'secure-page'|moduleActive(allModules) and not 'user-extension'|moduleActive(allModules) %}
+
+    {% set module = 'user'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['user'][app.user.locale] is defined ? i18nsModules['user'][app.user.locale] : i18nsModules['user']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['user']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_user_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['user']['entity'].iconClass|iconHtml({'width': 19, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% elseif 'user'|moduleActive(allModules) or is_granted('ROLE_INTERNAL') %}
+
+    {% set module = 'user'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['user'][app.user.locale] is defined ? i18nsModules['user'][app.user.locale] : i18nsModules['user']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['user']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+
+        <a class="has-arrow{% if pageTag == 'security' %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['user']['entity'].iconClass|iconHtml({'width': 19, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'security' %} in{% endif %}">
+            <li>
+                {% set title = 'secure-page'|moduleActive(allModules) ? 'Liste des administrateurs'|trans : 'Liste des utilisateurs'|trans %}
+                <a href="{{ path('admin_user_index', {"website": websiteId}) }}"{% if 'security/users/' in requestUri and 'security/users/categories' not in requestUri %} class="active"{% endif %} data-toggle="preloader">{{ title }}</a>
+            </li>
+            {% if 'secure-page'|moduleActive(allModules) %}
+                <li>
+                    <a href="{{ path('admin_userfront_index', {"website": websiteId}) }}"{% if 'security/users-front' in requestUri %} class="active"{% endif %} data-toggle="preloader">{{ "Liste des utilisateurs front"|trans }}</a>
+                </li>
+            {% endif %}
+            {% if 'secure-page'|moduleActive(allModules) and is_granted('ROLE_INTERNAL') %}
+                <li>
+                    <a href="{{ path('admin_securityusercategory_index', {"website": websiteId}) }}"{% if 'security/categories' in requestUri %} class="active"{% endif %} data-toggle="preloader">{{ "Liste des catégories d'utilisateurs"|trans }}</a>
+                </li>
+            {% endif %}
+            {% if is_granted('ROLE_USERS_GROUP') %}
+                <li>
+                    <a href="{{ path('admin_securitygroup_index', {"website": websiteId}) }}"{% if 'security/groups' in requestUri %} class="active"{% endif %} data-toggle="preloader">{{ "Liste des groupes"|trans }}</a>
+                </li>
+            {% endif %}
+            {% if is_granted('ROLE_INTERNAL') %}
+                <li>
+                    <a href="{{ path('admin_securityrole_index', {"website": websiteId}) }}"{% if 'security/roles' in requestUri %} class="active"{% endif %} data-toggle="preloader">{{ "Liste des rôles"|trans }}</a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_securitycompany_index', {"website": websiteId}) }}"{% if 'security/compagnies' in requestUri %} class="active"{% endif %} data-toggle="preloader">{{ "Liste des entreprises"|trans }}</a>
+                </li>
+            {% endif %}
+            {% if 'user-extension'|moduleActive(allModules) %}
+                {% include '@cms_user_extension/admin/include/sidebar.html.twig' %}
+            {% endif %}
+        </ul>
+    </li>
+
+{% endif %}

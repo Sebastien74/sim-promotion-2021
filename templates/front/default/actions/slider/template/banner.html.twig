@@ -1,0 +1,27 @@
+{% trans_default_domain 'front_default' %}
+
+{% set fade = slider.effect == "fade" ? true : false %}
+
+<div class="marquee-banner overflow-hidden"
+     data-pause="{{ slider.pause }}"
+     data-autoplay="{{ slider.autoplay }}"
+     data-interval="{{ slider.intervalDuration }}">
+
+    {% set isFirst = true %}
+
+    {% for media in medias %}
+        {% set i18nMedia = media.i18n %}
+        {% set mediaConfig = media|thumbConfiguration(thumbConfiguration, true) %}
+        {% if media.media.filename is defined and media.media.filename %}
+            <div class="item float-start">
+                <div class="wrap d-inline-flex">
+                    <div class="inner my-auto">
+                        {{ media|thumb(mediaConfig, {"notInBox": true, 'popupGallery': slider.popup, 'fullPopup': slider.popup, 'colSize': colSize}) }}
+                    </div>
+                </div>
+            </div>
+            {% set isFirst = false %}
+        {% endif %}
+    {% endfor %}
+
+</div>

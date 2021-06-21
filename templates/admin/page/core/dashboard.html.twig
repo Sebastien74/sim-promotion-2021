@@ -1,0 +1,137 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = "Tableau de bord"|trans %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-dashboard', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="dashboard" class="container text-center pt-5 pb-5">
+
+        <div class="header mb-5 d-inline-block">
+            {{ seasonIcon()|fontawesome(63, 56, 'mb-2') }}
+            <h1 class="w-100 text-info">{{ "Ravi de vous revoir"|trans }}{% if app.request.locale == 'en' %}!{% else %} !{% endif %}</h1>
+            {% if app.user.lastLogin is defined and app.user.lastLogin %}
+                <p>{{ "Dernière connexion"|trans }} {{ app.user.lastLogin|ago }}</p>
+            {% endif %}
+            <div id="saying" class="mt-4">
+                <script language="javascript" charset="utf-8" src="https://dicocitations.lemonde.fr/dictonblog.js"></script>
+            </div>
+        </div>
+
+        <div class="row body">
+            <div class="{% if is_granted('ROLE_INTERNAL') %}col-lg-8 internal{% else %}col-12{% endif %} left">
+
+                <div class="row">
+
+                    {% if 'pages'|moduleActive(allModules) %}
+                        <div class="col-6 col-md-4 text-center my-auto">
+                            <a href="{{ path('admin_page_tree', {"website": websiteId}) }}" data-toggle="preloader" class="pt-3 pt-lg-5 pb-3 pb-lg-5 text-info d-inline-block">
+                                <span class="d-inline-block w-100 mb-4">{{ 'fal fa-network-wired'|fontawesome(70, 56, 'info') }}</span>
+                                <span class="entitled text-dark d-inline-block">{{ "Gérez vos pages"|trans }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if 'medias'|moduleActive(allModules) %}
+                        <div class="col-6 col-md-4 text-center my-auto">
+                            <a href="{{ path('admin_medias_library', {"website": websiteId}) }}" data-toggle="preloader" class="pt-3 pt-lg-5 pb-3 pb-lg-5 text-info d-inline-block">
+                                <span class="d-inline-block w-100 mb-4">{{ 'fal fa-photo-video'|fontawesome(70, 56, 'info') }}</span>
+                                <span class="entitled text-dark d-inline-block">{{ "Gérez vos médias"|trans }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if 'newscast'|moduleActive(allModules) %}
+                        <div class="col-6 col-md-4 text-center my-auto">
+                            <a href="{{ path('admin_newscast_index', {"website": websiteId}) }}" data-toggle="preloader" class="pt-3 pt-lg-5 pb-3 pb-lg-5 text-info d-inline-block">
+                                <span class="d-inline-block w-100 mb-4">{{ 'fal fa-newspaper'|fontawesome(70, 56, 'info') }}</span>
+                                <span class="entitled text-dark d-inline-block">{{ "Publiez une actu"|trans }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if 'form'|moduleActive(allModules) %}
+                        <div class="col-6 col-md-4 text-center my-auto">
+                            <a href="{{ path('admin_form_index', {"website": websiteId}) }}" data-toggle="preloader" class="pt-3 pt-lg-5 pb-3 pb-lg-5 text-info d-inline-block">
+                                <span class="d-inline-block w-100 mb-4">{{ 'fab fa-wpforms'|fontawesome(70, 56, 'info') }}</span>
+                                <span class="entitled text-dark d-inline-block">{{ "Gérez vos formulaires"|trans }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if 'slider'|moduleActive(allModules) %}
+                        <div class="col-6 col-md-4 text-center my-auto">
+                            <a href="{{ path('admin_slider_index', {"website": websiteId}) }}" data-toggle="preloader" class="pt-3 pt-lg-5 pb-3 pb-lg-5 text-info d-inline-block">
+                                <span class="d-inline-block w-100 mb-4">{{ 'fal fa-images'|fontawesome(70, 56, 'info') }}</span>
+                                <span class="entitled text-dark d-inline-block">{{ "Vos sliders"|trans }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-6 col-md-4 text-center my-auto">
+                        <a href="{{ path('admin_support', {'website': websiteId()}) }}" data-toggle="preloader" class="pt-3 pt-lg-5 pb-3 pb-lg-5 text-info d-inline-block">
+                            <span class="d-inline-block w-100 mb-4">{{ 'fas fa-user-headset'|fontawesome(70, 56, 'info') }}</span>
+                            <span class="entitled text-dark d-inline-block">{{ "Besoin d’aide ?"|trans }}</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            {% if is_granted('ROLE_INTERNAL') %}
+
+                <div class="col-lg-4 right">
+                    <div class="row">
+                        <div class="col-12 my-auto">
+
+                            <a href="{{ path('admin_notfoundurl_index', {'website': websiteId(), "type": 'front', "category": 'url'}) }}" data-toggle="preloader" class="w-100 text-center pt-3 pt-lg-5 pb-3 pb-lg-4 d-inline-block">
+                                <span class="count text-dark w-100 d-inline-block">{{ notFoundUrls|length }}</span>
+                                <span class="entitled text-dark w-100 d-inline-block">{{ 'far fa-unlink'|fontawesome(16, 16, 'info mr-2') }}{{ "Erreurs 404"|trans }}</span>
+                            </a>
+
+                            <a href="{{ path('admin_seo_edit', {'website': websiteId(), "entitylocale": defaultLocale}) }}" data-toggle="preloader" class="w-100 text-center pt-3 pt-lg-5 pb-3 pb-lg-4 d-inline-block">
+                                <span class="count text-dark w-100 d-inline-block">{{ noSeoCounts['total'] }}</span>
+                                {% if allLocales|length > 1 %}
+                                    <div class="w-100">
+                                        <ul class="reset">
+                                            {% for locale, count in noSeoCounts|unset('total') %}
+                                                <li class="small-count text-dark d-inline-block">
+                                                    <span class="flag d-inline-block" data-toggle="tooltip" title="{{ languageName(locale, app.user.locale) }}">
+                                                        <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                                                             data-src="{{ asset('/medias/icons/flags/' ~ locale ~ '.svg') }}"
+                                                             width="15" height="15"
+                                                             class="img-fluid fit-cover lazyload">
+                                                    </span>
+                                                    <span class="seo-count">{{ noSeoCounts[locale] }}</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                                <span class="entitled text-dark w-100 d-inline-block">{{ 'far fa-search'|fontawesome(16, 16, 'info mr-2') }}{{ "SEO manquant"|trans }}</span>
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}

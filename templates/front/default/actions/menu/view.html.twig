@@ -1,0 +1,46 @@
+{% trans_default_domain 'front_default' %}
+
+{% set webpack = 'front_' ~ websiteTemplate %}
+{% set template = 'front/' ~ websiteTemplate ~ '/actions/menu/' ~ menu.template ~ '.html.twig' %}
+{% set templateBySlug = 'front/' ~ websiteTemplate ~ '/actions/menu/' ~ menu.slug ~ '.html.twig' %}
+{% set information = website.information %}
+{% set informationI18n = informationI18n is defined ? informationI18n : information|i18n %}
+{% set infos = infos is defined ? infos : information|info(app.request.locale) %}
+{% set haveEmails = infos.emails.header is defined and infos.emails.header|length > 0 %}
+{% set havePhones = infos.phones.header is defined and infos.phones.header|length > 0 %}
+{% set companyName = informationI18n.title is defined and informationI18n.title ? informationI18n.title : emt("Agence Félix"|trans|raw) %}
+{% set logos = logos is defined ? logos : menu.website|logos %}
+{% set logo = logos.logo is defined and logos.logo ? logos.logo : null %}
+{% set networks = logos['social-networks'] is defined and logos['social-networks'] ? logos['social-networks'] : null %}
+{% set multiLingues = configuration.onlineLocales|length > 1 %}
+{% set haveRegistration = website.security.frontRegistration %}
+{% set microDataActive = microDataActive is defined ? microDataActive : website.seoConfiguration.microData %}
+{% set dropdownHover = menu.dropdownHover %}
+{% set dropdownClass = dropdownHover ? 'dropdown-hover' : 'dropdown-click' %}
+
+{% set alignment = 'mx-auto' %}
+{% if menu.alignment == 'left' %}
+    {% set alignment = 'me-auto' %}
+{% elseif menu.alignment == 'right' %}
+    {% set alignment = 'ms-auto' %}
+{% endif %}
+
+<!-- .menu-container -->
+<div id="menu-container-{{ menu.slug }}" class="menu-container position-relative{% if menu.fixedOnScroll %} has-sticky{% endif %} {{ dropdownClass }}"
+     data-expand="{{ menu.expand }}"
+     data-menu-type="{{ menu.template }}">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer le menu"|trans([], 'front_webmaster'),
+        'role': 'ROLE_NAVIGATION',
+        'path': path('admin_menu_edit', {'website': website.id, 'menu': menu.id, 'entitylocale': app.request.locale})
+    } only %}
+
+    {% if template|fileExist %}
+        {% include template %}
+    {% elseif templateBySlug|fileExist %}
+        {% include templateBySlug %}
+    {% endif %}
+
+</div>
+<!-- /.menu-container -->

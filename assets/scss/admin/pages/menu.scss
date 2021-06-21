@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-09-02, 1:10 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    MENU :
+    =====
+
+    1 ) Variables
+    2 ) List of Pages
+    3 ) Add link card
+    4 ) Configuration
+    5 ) Tree
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Variables
+-----------------------------------*/
+
+@import '../variables';
+
+/*-----------------------------------
+   2 ) List of Pages
+-----------------------------------*/
+
+#page-selector-menu {
+
+    .select2-container {
+        width: 93% !important;
+    }
+
+    .select2-selection--single:not([class*="bg-"]):not([class*="border-"]) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: 0;
+    }
+
+    .input-group-text {
+        border: 0;
+        color: $white;
+    }
+}
+
+#pages-list {
+    li {
+        list-style-type: disc !important;
+    }
+}
+
+/*-----------------------------------
+   3 ) Add link card
+-----------------------------------*/
+
+#add-link-card {
+    .form-group {
+        width: 100%;
+    }
+}
+
+/*-----------------------------------
+   4 ) Configuration
+-----------------------------------*/
+
+#menu-edit-page {
+
+    .card {
+
+        .form-group {
+
+            padding-right: 10px;
+            padding-left: 10px;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+}
+
+/*-----------------------------------
+   5 ) Tree
+-----------------------------------*/
+
+#nestable-list {
+    margin-top: -8px;
+}

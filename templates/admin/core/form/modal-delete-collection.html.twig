@@ -1,0 +1,13 @@
+{% trans_default_domain 'admin' %}
+
+{% set allModules = allModules is defined and allModules ? allModules : website()|modules %}
+
+{% if entityId and 'delete'|moduleActive(allModules) and ('admin_' ~ interfaceName ~ '_delete')|routeExist %}
+    <a class="btn btn-white sa-warning swal-delete-link"
+       href="{% if not isNew %}{{ path('admin_' ~ interfaceName ~ '_delete', {"website": websiteId(), (interfaceName): entityId}) }}{% endif %}"
+       data-toggle="tooltip"
+       title="{{ "Supprimer"|trans|striptags }}"
+       data-type="collection">
+        {{ 'fas fa-trash'|fontawesome(14, 14, 'dark') }}
+    </a>
+{% endif %}

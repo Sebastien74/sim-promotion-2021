@@ -1,0 +1,8 @@
+{% trans_default_domain 'front_default' %}
+
+{% for result in pageResults.items %}
+    {% include 'front/' ~ websiteTemplate ~ '/actions/search/include/result.html.twig' %}
+    {% if not loop.last %}
+        <hr>
+    {% endif %}
+{% endfor %}

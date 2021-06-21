@@ -1,0 +1,88 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% block title %}{{ "Erreurs 404"|trans }}{% endblock %}
+{% block pageTitle %}{{ "Erreurs 404"|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% set pages = [
+        { "title": 'Front'|trans, "type": 'front', "category": 'url', "count": all['front']['url']|length },
+        { "title": 'Front ressources'|trans, "type": 'front', "category": 'resource', "count": all['front']['resource']|length },
+        { "title": 'Admin'|trans, "type": 'admin', "category": 'url', "count": all['admin']['url']|length },
+        { "title": 'Admin ressources'|trans, "type": 'admin', "category": 'resource', "count": all['admin']['resource']|length }
+    ] %}
+
+    <div id="notfound-urls-index" class="card d-inline-block w-100">
+
+        <ul class="nav nav-tabs custom-tab large" role="tablist">
+            {% for page in pages %}
+                {% if is_granted('ROLE_INTERNAL') or loop.first %}
+                    <li class="nav-item">
+                        {% set active = page.type == type and page.category == category %}
+                        <a href="{{ path("admin_notfoundurl_index", {"website": websiteId(), "type": page.type, "category": page.category}) }}"
+                           class="nav-link{% if active %} active{% endif %}"
+                           data-toggle="preloader">
+                            {% if page.count > 0 %}
+                                <span class="mr-1 pr-2 pl-2 badge badge-{% if active %}white{% else %}info{% endif %}">{{ page.count }}</span>
+                            {% endif %}
+                            <span>{{ page.title }}</span>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if 'delete'|moduleActive(allModules) and pagination|length > 0 %}
+                <li class="nav-item bg-danger right">
+                    <a href="{{ path("admin_notfoundurl_delete_all", {"website": websiteId(), "type": type, "category": category}) }}"
+                       class="nav-link swal-delete-link">
+                        <span class="d-none d-sm-inline-block text-white">{{ "fas fa-trash"|fontawesome(null, 17, 'white mr-sm-2') }}<span>{{ 'Tout suprimer' }}</span></span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <table class="table table-striped mb-0">
+            <thead>
+                <tr>
+                    <th class="align-middle">{{ "Jour"|trans }}</th>
+                    <th class="align-middle column-url">{{ "URL"|trans }}</th>
+                    <th class="align-middle text-right">{{ "Actions"|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entity in pagination %}
+                    <tr id="entity-row-{{ entity.id }}">
+                        <td class="align-middle">{{ entity.createdAt|localizedDate('none', 'none', app.request.locale, null, "cccc dd MMMM Y HH:mm") }}</td>
+                        <td class="align-middle">{{ entity.url }}</td>
+                        <td class="align-middle text-right">
+                            {{ render_esi(controller('App\\Controller\\Admin\\Seo\\NotFoundUrlController::newRedirection', {"website": websiteId(), 'notfoundUrl': entity.id} )) }}
+                            {% if routeExist('admin_notfoundurl_delete') and 'delete'|moduleActive(allModules) %}
+                                <a href="{{ path('admin_notfoundurl_delete', {'website': websiteId(), 'notfoundurl': entity.id}) }}"
+                                   data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}"
+                                   data-target="#entity-row-{{ entity.id }}"
+                                   class="text-dark swal-delete-link">
+                                    {{ "fas fa-trash"|fontawesome(null, 14, 'dark ml-3') }}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% include 'admin/core/include/pagination.html.twig' %}
+
+    </div>
+
+
+
+{% endblock %}

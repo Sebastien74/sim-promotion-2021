@@ -1,0 +1,75 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% set pageTitle = "Configuration"|trans %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form, {"attr": {"novalidate": "novalidate", "action": app.request.uri, 'id': 'form-' ~ entity.id}}) }}
+        <div id="edit-form-{{ interface.name }}" class="card">
+            <div class="card-body p-0">
+                <ul class="nav nav-tabs custom-tab large" role="tablist">
+                    <li class="nav-item">
+                        <a id="nav-seo-tab" class="nav-link active" data-toggle="tab" href="#seo" role="tab" aria-selected="true">
+                            {{ 'fal fa-chart-line'|fontawesome(null, 17, 'dark mr-sm-2') }}
+                            <span class="d-none d-sm-inline-block">{{ 'Référencement'|trans }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="nav-social-tab" class="nav-link" data-toggle="tab" href="#social" role="tab" aria-selected="false">
+                            {{ 'fal fa-share-alt'|fontawesome(null, 17, 'dark mr-sm-2') }}
+                            <span class="d-none d-sm-inline-block">{{ 'Réseaux sociaux'|trans }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        {% set sitemap = defaultLocale|domain ~ "/sitemap.xml?preview=true" %}
+                        <a href="{{ sitemap }}" target="_blank" class="nav-link">
+                            {{ 'fal fa-sitemap'|fontawesome(null, 17, 'dark mr-sm-2') }}
+                            <span class="d-none d-sm-inline-block">{{ 'sitemap.xml'|trans }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        {% set robots = defaultLocale|domain ~ "/robots.txt?preview=true" %}
+                        <a href="{{ robots }}" target="_blank" class="nav-link">
+                            {{ 'fal fa-robot'|fontawesome(null, 17, 'dark mr-sm-2') }}
+                            <span class="d-none d-sm-inline-block">{{ 'robots.txt'|trans }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        {% set webmanifest = defaultLocale|domain ~ "/site.webmanifest" %}
+                        <a href="{{ webmanifest }}" target="_blank" class="nav-link">
+                            {{ 'fal fa-desktop'|fontawesome(null, 17, 'dark mr-sm-2') }}
+                            <span class="d-none d-sm-inline-block">{{ 'site.webmanifest'|trans }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item right bg-dark">
+                        <a href="{{ path('admin_clear_front_cache', {'website': websiteId()}) }}" class="nav-link text-white swal-delete-link">
+                            {{ 'fad fa-broom'|fontawesome(null, 17, 'white mr-sm-2 mt-1') }}{{ "Supprimer le cache"|trans }}
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane mr-4 ml-4 pt-4 active" id="seo" role="tabpanel" aria-labelledby="nav-seo-tab">
+                        {% include 'admin/page/seo/include/configuration.html.twig' %}
+                    </div>
+                    <div class="tab-pane mr-4 ml-4 pt-4" id="social" role="tabpanel" aria-labelledby="nav-social-tab">
+                        {% include 'admin/page/seo/include/social-network.html.twig' with {'socialsNetworks': form.website.information.socialNetworks} %}
+                    </div>
+                </div>
+                {% include 'admin/core/form/save/footer-only.html.twig' %}
+            </div>
+        </div>
+    {{ form_end(form) }}
+
+{% endblock %}

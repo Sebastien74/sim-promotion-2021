@@ -1,0 +1,143 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-09-13, 10:14 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    LIBRARY :
+    ========
+
+    1 ) Variables
+    2 ) Core
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Variables
+-----------------------------------*/
+
+@import '../variables';
+
+/*-----------------------------------
+   2 ) Core
+-----------------------------------*/
+
+#media-library-page {
+
+    #medias-preloader {
+        z-index: 5000 !important;
+        border-radius: 10px;
+    }
+
+    .dd3-content {
+        .btn-edit {
+            background-color: transparent;
+            border-color: transparent;
+            color: $dark;
+        }
+    }
+
+    #medias-card {
+
+        .card-header {
+            border-top-right-radius: $card-border-radius;
+            border-top-left-radius: $card-border-radius;
+            font-weight: 500 !important;
+        }
+
+        #medias-results-simplebar {
+            max-height: 60vh;
+        }
+    }
+
+    #medias-results {
+
+        .file {
+
+            &.active .check-pack-media-label {
+                box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5) !important;
+                border-radius: 10px;
+            }
+
+            .btn {
+
+                width: 25px;
+                height: 25px;
+                transition: all .2s;
+                padding: 0;
+                line-height: 24px;
+                text-align: center;
+                position: absolute;
+                border-radius: 0;
+                bottom: 11px;
+                display: none;
+
+                i {
+                    font-size: 10px;
+                }
+
+                &.check-pack-media-btn {
+                    right: 11px;
+                    top: 11px;
+                    border-bottom-left-radius: $card-border-radius / 2;
+                    border-top-right-radius: $card-border-radius;
+                }
+
+                &.open-media-crop {
+
+                    left: 11px;
+                    border-bottom-left-radius: $card-border-radius;
+                    border-top-right-radius: $card-border-radius / 2;
+
+                    i {
+                        font-size: 12px;
+                    }
+                }
+
+                &.open-media-edit {
+                    right: 11px;
+                    border-bottom-right-radius: $card-border-radius;
+                    border-top-left-radius: $card-border-radius / 2;
+                }
+            }
+
+            &:hover {
+                .btn.open-media-crop, .btn.open-media-edit {
+                    display: inline-block !important;
+                    transition: all .2s;
+                }
+            }
+
+            &.active {
+                .btn.check-pack-media-btn {
+                    display: block !important;
+                }
+            }
+        }
+    }
+}
+
+/*-----------------------------------
+   2 ) Modal edition
+-----------------------------------*/
+
+#media-edition-modal {
+
+    .card-subtitle {
+        display: none !important;
+    }
+
+    #media-tab-content {
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        #desktop {
+            .dropify-clear {
+                display: none !important;
+            }
+        }
+    }
+}

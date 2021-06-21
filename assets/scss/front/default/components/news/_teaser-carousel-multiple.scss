@@ -1,0 +1,134 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-10-23, 7:53 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT NEWS TEASER CAROUSEL MULTIPLES :
+    =====================================
+
+    1 ) Import
+    2 ) Core
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Import
+-----------------------------------*/
+
+@import "../../utilities/mixins";
+@import "../../variables";
+
+/*-----------------------------------
+   2 ) Core
+-----------------------------------*/
+
+.carousel.newscasts-teaser-multiple-carousel {
+
+    .carousel-inner {
+
+        .carousel-item.active,
+        .carousel-item-next,
+        .carousel-item-prev {
+            display: flex;
+        }
+
+        .carousel-item-right,
+        .carousel-item-left {
+            transform: translateX(0);
+        }
+
+        .item-col {
+
+            .card {
+
+                .card-body {
+
+                    padding: 1rem 25px;
+                    height: 70px;
+
+                    .title {
+                        font-size: rem(14px);
+                        line-height: rem(14px);
+                        color: $dark !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include mediaQuery(min-md) {
+
+    .carousel.newscasts-teaser-multiple-carousel {
+
+        .carousel-inner  {
+
+            .carousel-item-right.active, .carousel-item-next {
+                transform: translateX(33.333%);
+            }
+
+            .carousel-item-left.active, .carousel-item-prev {
+                transform: translateX(-33.333%);
+            }
+        }
+
+        .carousel-item.active {
+
+            .item-col.col-md-4 {
+
+                flex: 0 0 30%;
+                max-width: 30%;
+
+                &:first-child {
+                    flex: 0 0 40%;
+                    max-width: 40%;
+                }
+            }
+
+            .item-col.col-md-6 {
+                flex: 0 0 40%;
+                max-width: 40%;
+
+                &:first-child {
+                    flex: 0 0 60%;
+                    max-width: 60%;
+                }
+            }
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+
+            position: initial;
+            opacity: 1;
+
+            svg {
+                height: 30px;
+                width: 20px;
+            }
+        }
+    }
+}
+
+@include mediaQuery(max-md) {
+
+    .carousel.newscasts-teaser-multiple-carousel {
+
+        .carousel-inner {
+
+            .carousel-item {
+
+                > div {
+                    display: none;
+
+                    &:first-child {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+}

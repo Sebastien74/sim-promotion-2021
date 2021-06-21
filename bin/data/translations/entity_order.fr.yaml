@@ -1,0 +1,5 @@
+add: 'Ajouter une commande'
+adminName: 'Commande (EC International)'
+delete: 'Supprimer la commande'
+plural: Commandes
+singular: 'Commande (EC International)'

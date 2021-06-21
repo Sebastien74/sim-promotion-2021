@@ -1,0 +1,65 @@
+{% trans_default_domain 'front_default' %}
+
+<div id="carousel-products-card-{{ product.id }}"
+     class="carousel slide"
+     data-bs-ride="carousel"
+     data-component="carousel-bootstrap">
+
+    {% if medias|length > 1 %}
+        <ol class="carousel-indicators">
+            {% for media in medias %}
+                <li data-bs-target="#carousel-products-card-{{ product.id }}" data-bs-slide-to="{{ loop.index - 1 }}"{% if loop.first %} class="active"{% endif %}></li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+
+    <div class="carousel-inner">
+
+        {% set popup = popup is defined ? popup : false %}
+
+        {% for media in medias %}
+
+            <div class="carousel-item {% if popup %} popup-gallery{% endif %}{% if loop.first %} active{% endif %}">
+
+                {% set i18nMedia = media.i18n %}
+                {% set mediaConfig = media|thumbConfiguration(thumbConfiguration) %}
+                {{ media|thumb(mediaConfig, {'isInBox': popup, 'popupGallery': popup}) }}
+
+                {% if i18nMedia %}
+
+                    {% set mediaTitle = i18nMedia.title %}
+                    {% set mediaTitleForce = i18nMedia.titleForce ? i18nMedia.titleForce : 2 %}
+                    {% set mediaTitleAlignment = i18nMedia.titleAlignment ? i18nMedia.titleAlignment : 'text-left' %}
+                    {% set mediaIntro = i18nMedia.introduction %}
+                    {% set mediaIntroAlignment = i18nMedia.introductionAlignment ? i18nMedia.introductionAlignment : 'text-left' %}
+                    {% set mediaBody = i18nMedia.body %}
+                    {% set mediaBodyAlignment = i18nMedia.bodyAlignment ? i18nMedia.bodyAlignment : 'text-left' %}
+
+                    {% if mediaTitle|striptags|length > 0 or mediaIntro|striptags|length > 0 or mediaBody|striptags|length > 0 %}
+                        <div class="carousel-caption d-none d-md-block">
+                            {% if mediaTitle|striptags|length > 0 %}
+                                <h{{ titleForce }} class="card-title {{ mediaTitleAlignment }}">{{ mediaTitle|unescape|raw }}</h{{ titleForce }}>
+                            {% endif %}
+                            {% if mediaIntro|striptags|length > 0 %}
+                                <p class="card-text introduction text-bold {{ mediaIntroAlignment }}">{{ mediaIntro|unescape|raw|nl2br }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% if medias|length > 1 %}
+        <a class="carousel-control-prev" href="#carousel-products-card-{{ product.id }}" role="button" data-bs-slide="prev">
+            {{ "fal fa-chevron-left"|fontawesome(null, 30, 'white') }}
+        </a>
+        <a class="carousel-control-next" href="#carousel-products-card-{{ product.id }}" role="button" data-bs-slide="next">
+            {{ "fal fa-chevron-right"|fontawesome(null, 30, 'white') }}
+        </a>
+    {% endif %}
+
+</div>

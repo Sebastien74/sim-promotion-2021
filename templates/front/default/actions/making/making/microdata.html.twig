@@ -1,0 +1,46 @@
+{% trans_default_domain 'front_default' %}
+
+{% set mediaPath = i18nMainMedia|thumb(null, {'path': true}) %}
+
+{% if not mediaPath %}
+    {% set mediaRelations = making|i18nMedias %}
+    {% set mediaPath = mediaRelations[0] is defined ? mediaRelations[0]|thumb(null, {'path': true}) : null %}
+{% endif %}
+
+<!-- Microdata - Making -->
+<script type="application/ld+json" nonce="{{ csp_nonce() }}">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ seo.canonical }}"
+        },
+        "headline": "{{ seo.title|striptags }}",
+        {% if mediaPath %}
+        "image": [
+            "{{ mediaPath|imagine_filter('microdata_1x1') }}",
+            "{{ mediaPath|imagine_filter('microdata_4x3') }}",
+            "{{ mediaPath|imagine_filter('microdata_16x9') }}"
+        ],
+        {% endif %}
+        {% if seo.publishedDate %}
+        "datePublished": "{{ seo.publishedDate|date('Y-m-d H:i:s P') }}",
+        {% endif %}
+        {% if seo.updatedAt %}
+        "dateModified": "{{ seo.updatedAt|date('Y-m-d H:i:s P') }}",
+        {% endif %}
+        "author": {
+            "@type": "{{ seo.microdata.authorType }}",
+            "name": "{{ seo.microdata.author }}"
+        },
+        "publisher": {
+            "@type": "{{ seo.microdata.companyType }}",
+            "name": "{{ seo.microdata.companyName }}",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ seo.microdata.companyLogo }}"
+            }
+        }
+    }
+</script>

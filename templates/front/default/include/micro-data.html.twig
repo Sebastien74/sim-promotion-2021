@@ -1,0 +1,50 @@
+{% trans_default_domain 'front_default' %}
+
+{% if seo %}
+
+    {% set phone = phones.microdata is defined and phones.microdata|length > 0 ? phones.microdata[0] : null %}
+    {% set havePhone = phone and phone.number is defined and phone.number %}
+    {% set haveLogo = seo.microdata.companyLogo is defined and seo.microdata.companyLogo %}
+    {% set haveNetworks = networks|length > 0 %}
+    {% set type = seo.microdata.companyType is defined and seo.microdata.companyType
+        ? seo.microdata.companyType : "Organization" %}
+
+    <!-- Microdata -->
+    <script type="application/ld+json" nonce="{{ csp_nonce() }}">
+        {
+            "@context": "https://schema.org",
+            "@type": "{{ type }}",
+            "legalName": "{{ seo.microdata.companyName }}",
+            "url": "{{ app.request.getSchemeAndHttpHost() }}"{% if havePhone or haveLogo or haveNetworks %},{% endif %}
+            {% if havePhone %}
+
+            "contactPoint" : [{
+                "@type" : "ContactPoint",
+                "telephone" : "{{ phone.number }}",
+                "contactType" : "customer service"
+            }]{% if haveLogo or haveNetworks %},{% endif %}
+        {% endif %}
+            {% if haveLogo %}
+
+            "logo": "{{ seo.microdata.companyLogo }}"{% if haveNetworks %},{% endif %}
+        {% endif %}
+            {% if haveNetworks %}
+
+            "sameAs" : [
+            {% for network in networks %}
+                "{{ network.link }}"{% if not loop.last %},{% endif %}
+
+        {% endfor %}
+            ]
+            {% endif %}
+        }
+    </script>
+
+    {% if seo.microdata.script %}
+        <!-- Microdata -->
+        <script type="application/ld+json" nonce="{{ csp_nonce() }}">
+            {{ seo.microdata.script }}
+        </script>
+    {% endif %}
+
+{% endif %}

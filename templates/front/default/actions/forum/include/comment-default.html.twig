@@ -1,0 +1,87 @@
+{% trans_default_domain 'front_default' %}
+
+<!-- .comment -->
+<div id="comment-card-{{ comment.id }}" class="card comment mb-3">
+
+    <div id="{{ comment.id }}" class="ajax-container">
+
+        <div class="card-body">
+            <p class="mb-3">
+                <strong class="author d-inline-block">{{ comment.authorName }}</strong>
+                {% if not forum.hideDate %}
+                    <small class="date text-muted d-inline-block">
+                        - {{ emt("Publié le"|trans|raw) }} {{ comment.createdAt|localizedDate('none', 'none', app.request.locale, null, forum.formatDate) }}
+                    </small>
+                {% endif %}
+            </p>
+            <p class="message mb-0">{{ comment.message|raw }}</p>
+        </div>
+
+        {% if forumCookieActive %}
+
+            <div class="card-footer">
+                {% if forum.widgets|length > 0 %}
+                    <ul class="reset">
+                        {% if 'likes' in forum.widgets and app.user %}
+                            <li class="d-inline-block me-3">
+                                {{ "fad fa-thumbs-up"|fontawesome(null, 17, 'me-2') }}{{ emt("J’aime"|trans|raw) }}
+                            </li>
+                        {% endif %}
+                        {% if 'comments' in forum.widgets %}
+                            <li class="d-inline-block cursor me-3"
+                                data-toggle="collapse"
+                                data-target="#collapse-comment-{{ comment.id }}"
+                                aria-expanded="{% if submit %}true{% else %}false{% endif %}"
+                                aria-controls="collapse-comment-{{ comment.id }}">
+                                {{ "fad fa-comments-alt"|fontawesome(null, 17, 'me-2') }}{{ emt("Commenter"|trans|raw) }}
+                            </li>
+                        {% endif %}
+                        {% if 'shares' in forum.widgets %}
+                            {% include 'front/' ~ websiteTemplate ~ '/actions/forum/include/share.html.twig' %}
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            {% if 'comments' in forum.widgets %}
+                <div class="collapse p-3{% if submit %} show{% endif %}" id="collapse-comment-{{ comment.id }}">
+                    <div class="form-loader-container">
+                        <div class="form-loader row m-0 text-center d-none">
+                            <div class="col-12 my-auto">
+                                <span class="spinner-border" role="status"></span>
+                            </div>
+                        </div>
+                        {{ form_start(form, {
+                            'attr': {
+                                "id": "forum-comment-form-" ~ comment.id,
+                                "class": forum.recaptcha ? 'recaptcha forum-comment-form' : 'forum-comment-form',
+                                "action": path('front_forum_comment', {"request": app.request, 'comment': comment.id}),
+                                "novalidate": "novalidate"
+                            }}) }}
+                            <div class="row">
+                                {{ form_row(form.message) }}
+                                <div class="col-12 text-center text-lg-end">
+                                    <span class="forum-comment-submit btn btn-outline-primary hbtn hb-fill-right"
+                                          data-target="#comment-card-{{ comment.id }}">
+                                        {{ emt("Poster"|trans|raw) }}
+                                    </span>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
+                        {% for comment in comment.comments %}
+                            <div class="w-100 bg-light mt-4 pt-2 pb-2 pe-3 ps-3">
+                                <p class="mb-0">{{ comment.message|raw }}</p>
+                                <small class="date text-muted d-inline-block">
+                                    {{ emt("Publié le"|trans|raw) }} {{ comment.createdAt|localizedDate('none', 'none', app.request.locale, null, forum.formatDate) }}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+</div>
+<!-- \.comment -->

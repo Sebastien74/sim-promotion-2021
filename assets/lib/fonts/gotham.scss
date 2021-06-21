@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-10-31, 1:26 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS ROBOTO :
+    ====================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Gotham", sans-serif;
+
+$fonts: (
+    'Gotham-Bold': ('weight': 700, 'style': normal),
+    'Gotham-Book': ('weight': 400, 'style': normal),
+    'Gotham-BookItalic': ('weight': 400, 'style': italic),
+    'Gotham-Light': ('weight': 300, 'style': normal),
+    'Gotham-Medium': ('weight': 500, 'style': normal),
+);
+
+@include font-face("Gotham", $fonts);

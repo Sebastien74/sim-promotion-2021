@@ -1,0 +1,79 @@
+//===================================
+// Fill Transitions Variables/Arrays
+//===================================
+
+// properties array:
+// [suffix],
+// [:before top],
+// [:before right],
+// [:before bottom],
+// [:before left],
+// [:before width],
+// [:before height],
+// [:before opacity],
+// [:hover:before width],
+// [:hover:before height],
+// [:hover:before opacity]
+
+$fillproperties: () !default;
+
+/*-- a - Group 1 --*/
+
+@if $enable-hover-buttons-fill-on {
+    $fillproperties: append($fillproperties, "-on" 0 auto auto 0 100% 100% 0 100% 100% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-bottom {
+    $fillproperties: append($fillproperties, "-bottom" 0 auto auto 0 100% 0 1 100% 100% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-left {
+    $fillproperties: append($fillproperties, "-left" 0 0 auto auto 0 100% 1 100% 100% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-top {
+    $fillproperties: append($fillproperties, "-top" auto auto 0 0 100% 0 1 100% 100% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-right {
+    $fillproperties: append($fillproperties, "-right" 0 auto auto 0 0 100% 1 100% 100% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-middle {
+    $fillproperties: append($fillproperties, "-middle" auto auto 0 0 100% 0 1 100% 50% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-middle2 {
+    $fillproperties: append($fillproperties, "-middle2" 0 0 auto auto 0 100% 1 50% 100% 1, $separator: auto);
+}
+
+
+/*-- b - Group 2 --*/
+
+@if $enable-hover-buttons-fill-on-rev {
+    $fillproperties: append($fillproperties, "-on-rev" 0 auto auto 0 100% 100% 1 100% 100% 0, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-bottom-rev {
+    $fillproperties: append($fillproperties, "-bottom-rev" 0 auto auto 0 100% 100% 1 100% 0 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-left-rev {
+    $fillproperties: append($fillproperties, "-left-rev" 0 0 auto auto 100% 100% 1 0 100% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-top-rev {
+    $fillproperties: append($fillproperties, "-top-rev" auto auto 0 0 100% 100% 1 100% 0 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-right-rev {
+    $fillproperties: append($fillproperties, "-right-rev" 0 auto auto 0 100% 100% 1 0 100% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-middle-rev {
+    $fillproperties: append($fillproperties, "-middle-rev" auto auto 0 0 100% 50% 1 100% 0% 1, $separator: auto);
+}
+
+@if $enable-hover-buttons-fill-middle2-rev {
+    $fillproperties: append($fillproperties, "-middle2-rev" 0 0 auto auto 50% 100% 1 0 100% 1, $separator: auto);
+}

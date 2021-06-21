@@ -1,0 +1,17 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'tab'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/tabs/' in uri %}
+    {% set module = 'tab'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['tab'][app.user.locale] is defined ? i18nsModules['tab'][app.user.locale] : i18nsModules['tab']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['tab']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_tab_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['tab']['entity'].iconClass|iconHtml({'width': 13, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

@@ -1,0 +1,20 @@
+{% set i18n = mediaRelation.i18n is defined and mediaRelation.i18n ? mediaRelation.i18n : null %}
+{% set newTab = i18n.newTab is defined and i18n.newTab %}
+{% set link = i18n|i18nLink %}
+{% set style = link.style ? link.style : 'btn btn-outline-primary' %}
+{% set websiteTemplate = websiteTemplate is defined ? websiteTemplate : website().configuration.template %}
+
+<div class="file w-100">
+    <a href="{{ asset(desktop.path) }}"
+       class="{{ style }}{% if 'btn' in style %} hbtn hb-fill-right{% endif %}"
+       title="{{ desktop.attr.title|striptags }}"
+       {% if downloadable %} download="{{ desktop.attr.title|striptags }}"{% endif %}
+       {% if newTab %} target="_blank"{% endif %}>
+        {{ 'front'|fileIcon(extension)|fontawesome(null, 17, 'me-2 float-start file-btn-icon') }}
+        {% if i18n.targetLabel is defined and i18n.targetLabel|striptags|length > 0 %}
+            {{ i18n.targetLabel|unescape|raw }}
+        {% else %}
+            {{ desktop.attr.title }}
+        {% endif %}
+    </a>
+</div>

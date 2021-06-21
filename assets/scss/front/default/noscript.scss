@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 8:54 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT NOSCRIPT :
+    ================
+
+------------------------------------------------------------------ */
+
+[data-simplebar] {
+    overflow: auto;
+}
+
+#preloader .no-js {
+    font-size: rem(25px);
+}

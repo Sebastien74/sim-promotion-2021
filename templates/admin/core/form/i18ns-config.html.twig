@@ -1,0 +1,87 @@
+{% trans_default_domain 'admin' %}
+
+{% set configuration = website().configuration %}
+{% set defaultLocale = configuration.locale %}
+{% set allLocales = configuration.allLocales %}
+
+{% if configFieldsI18ns is defined and configFieldsI18ns %}
+
+    <div class="col-12">
+        <h4 class="card-subtitle mb-4">{{ "fal fa-cog"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Configuration des contenus"|trans }}</h4>
+    </div>
+
+    {% if allLocales|length > 1 %}
+        <div class="locales-tab-container">
+    {% endif %}
+
+        {% if allLocales|length > 1 %}
+            <ul class="nav nav-tabs w-100" role="tablist">
+                {% for i18n in i18ns %}
+                    {% set locale = i18n.vars.value.locale %}
+                    <li class="nav-item" data-toggle="tooltip" title="{{ languageName(locale, app.user.locale) }}">
+                        <a class="nav-link{% if locale == defaultLocale %} active{% endif %}" data-toggle="tab"
+                           id="i18n-config-{{ locale }}-tab"
+                           aria-selected="{% if locale == defaultLocale %}true{% else %}false{% endif %}"
+                           href="#i18n-config-tab-{{ locale }}" role="tab">
+                            <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                                 data-src="{{ asset('/medias/icons/flags/' ~ locale ~ '.svg') }}" class="img-fluid lazyload" height="14" width="19">
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if allLocales|length > 1 %}
+            <div class="tab-content tab-content-border w-100">
+        {% endif %}
+
+            {% set isConfigI18ns = i18ns.vars['attr']['data-config'] is defined and i18ns.vars['attr']['data-config'] %}
+
+            {% for i18n in i18ns %}
+
+                {% set locale = i18n.vars.value.locale %}
+
+                {% if allLocales|length > 1 %}
+                    <div id="i18n-config-tab-{{ locale }}"
+                         class="tab-pane fade{% if locale == defaultLocale %} show active{% endif %}"
+                         role="tabpanel"
+                         aria-labelledby="i18n-config-{{ locale }}-tab">
+                        <div class="p-20 pb-0">
+                            <div class="row">
+                {% endif %}
+
+                    {% for field in i18n.children %}
+                        {% if field.vars.name not in configFields and isConfigI18ns %}
+                            {{ form_row(i18n[field.vars.name]) }}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for field in i18n.children %}
+                        {% if field.vars.name in configFields %}
+                            {% if allLocales|length == 1 and locale != configuration.locale %}
+                                <div class="d-none">
+                            {% endif %}
+                                    {{ form_row(i18n[field.vars.name]) }}
+                            {% if allLocales|length == 1 and locale != configuration.locale %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                {% if allLocales|length > 1 %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+
+        {% if allLocales|length > 1 %}
+            </div>
+        {% endif %}
+
+    {% if allLocales|length > 1 %}
+        </div>
+    {% endif %}
+
+{% endif %}

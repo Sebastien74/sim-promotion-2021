@@ -1,0 +1,16 @@
+{% trans_default_domain 'front_default' %}
+
+{% set layout = entity.layout %}
+{% set websiteSession = app.request.session.get('frontWebsite') %}
+{% set websiteArray = websiteSession ? websiteSession : website(false, true) %}
+{% set seoUrl = seo.url is defined ? seo.url : [] %}
+{% set isIndex = interface is defined and interface.name == 'page' and entity.isIndex %}
+{% set transitions = transitions is defined ? transitions|json_encode : null %}
+{% set layoutRenders = layout|layoutRenders(websiteArray, isIndex, seoUrl, transitions) %}
+{% set zones = layoutRenders['zones'] is defined ? layoutRenders['zones'] : [] %}
+
+{% for zone in zones %}
+    {% if zone.cols is defined %}
+        {% include 'front/' ~ websiteTemplate ~ '/include/zone.html.twig' %}
+    {% endif %}
+{% endfor %}

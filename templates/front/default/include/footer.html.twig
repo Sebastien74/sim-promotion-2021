@@ -1,0 +1,78 @@
+{% trans_default_domain 'front_default' %}
+
+{% set infos = infos is defined ? infos : website.information|info(app.request.locale) %}
+{% set phones = infos.phones.footer is defined and infos.phones.footer|length > 0 ? infos.phones.footer : [] %}
+{% set emails = infos.emails.footer is defined and infos.emails.footer|length > 0 ? infos.emails.footer : [] %}
+{% set addressesDefault = infos.addresses.locales[website.configuration.locale].footer is defined and infos.addresses.locales[website.configuration.locale].footer|length > 0
+    ? infos.addresses.locales[website.configuration.locale].footer : [] %}
+{% set addressesCurrent = infos.addresses.locales[app.request.locale].footer is defined and infos.addresses.locales[app.request.locale].footer|length > 0
+    ? infos.addresses.locales[app.request.locale].footer : addressesDefault %}
+{% set logo = logos.footer is defined and logos.footer ? logos.footer : null %}
+{% set footerDescription = information.introduction is defined and information.introduction|striptags|length > 0 ? information.introduction : null %}
+{% set footerDescription = seo.footerDescription is defined and seo.footerDescription|striptags|length > 0 ? seo.footerDescription : footerDescription %}
+
+<!-- #footer -->
+<footer id="footer" class="footer text-center position-relative text-lg-start pt-0 pt-lg-5 pb-4 bg-dark">
+
+    <div class="container pt-5">
+
+        <div class="row mb-5">
+            <div class="col-lg-4">
+                <h3>{{ companyName|raw }}</h3>
+                {% for address in addressesCurrent %}
+                    <address class="text-white{% if not loop.last %} mb-3{% endif %}">
+                        {% if address.address %}
+                            {{ address.address }}<br>
+                        {% endif %}
+                        {% if address.zipCode %}
+                            {{ address.zipCode }}
+                        {% endif %}
+                        {% if address.city %}
+                            {{ address.city }}{% if address.country %}, {% endif %}
+                        {% endif %}
+                        {% if address.country %}
+                            {{ address.country|countryName|capitalize }}
+                        {% endif %}
+                        {% if address.phones|length > 0 %}
+                            <br>
+                            {% for phone in address.phones %}
+                                {{ phone|phone(website, false) }}
+                            {% endfor %}
+                        {% endif %}
+                    </address>
+                {% endfor %}
+            </div>
+            <div class="col-lg-8 pt-5 pt-lg-0">
+                {% if networks %}
+                    <h3>{{ emt("Suivez-nous :"|trans|raw) }}</h3>
+                    <ul class="socials-list d-inline-block reset">
+                        {% for name, infos in networks %}
+                            <li class="d-inline-block me-0 {% if not loop.last %}me-md-3{% endif %}">
+                                <a href="{{ infos.link }}"
+                                   target="_blank"
+                                   class="{{ name }}"
+                                   aria-label="{{ name|striptags|capitalize }}"
+                                   data-bs-toggle="tooltip"
+                                   title="{{ infos.title|striptags }}" rel="noopener noreferrer">
+                                    {% if infos.dirname %}
+                                        {{ imgRender({'src': asset(infos.dirname), 'width': 40, 'height': 40, 'title': name|striptags, 'class': name, 'only_html': true}) }}
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="footer-bottom" class="d-inline-block w-100">
+            {% if mainMenus.footer.entity is defined and mainMenus.footer.entity %}
+                {% set menuArgs = mainMenus.footer.arguments|merge({'allModules': allModules, 'infos': infos, 'logos': logos}) %}
+                {% include mainMenus.footer.template with menuArgs only %}
+            {% endif %}
+        </div>
+
+    </div>
+
+</footer>
+<!-- \#footer -->

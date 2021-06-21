@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-03, 10:17 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS PLAYFAIR DISPLAY :
+    ==============================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Playfairdisplay", serif;
+
+$fonts: (
+    'Playfairdisplay-Regular': ('weight': 400, 'style': normal),
+    'Playfairdisplay-Italic': ('weight': 400, 'style': italic),
+    'Playfairdisplay-Medium': ('weight': 500, 'style': normal),
+    'Playfairdisplay-MediumItalic': ('weight': 500, 'style': italic),
+    'Playfairdisplay-SemiBold': ('weight': 600, 'style': normal),
+    'Playfairdisplay-SemiBoldItalic': ('weight': 600, 'style': italic),
+    'Playfairdisplay-Bold': ('weight': 700, 'style': normal),
+    'Playfairdisplay-BoldItalic': ('weight': 700, 'style': italic),
+    'Playfairdisplay-ExtraBold': ('weight': 800, 'style': normal),
+    'Playfairdisplay-ExtraBoldItalic': ('weight': 800, 'style': italic),
+    'Playfairdisplay-Black': ('weight': 900, 'style': normal),
+    'Playfairdisplay-BlackItalic': ('weight': 900, 'style': italic),
+);
+
+@include font-face("Playfairdisplay", $fonts, serif);

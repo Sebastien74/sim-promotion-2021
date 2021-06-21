@@ -1,0 +1,82 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-02-05, 2:58 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    SECURITY FORM :
+    ===============
+
+------------------------------------------------------------------ */
+
+.form-field-none {
+    height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    min-height: 0 !important;
+}
+
+button[type="submit"] {
+    border-radius: 0;
+}
+
+.form-material .form-group {
+    overflow: hidden;
+}
+
+.form-material .form-control {
+    background-color: rgba(0, 0, 0, 0);
+    background-position: center bottom, center calc(100% - 1px);
+    background-repeat: no-repeat;
+    background-size: 0 2px, 100% 1px;
+    padding: 0;
+    transition: background 0s ease-out 0s;
+}
+
+.form-material .form-control,
+.form-material .form-control.focus,
+.form-material .form-control:focus {
+    background-image: linear-gradient($primary, $primary), linear-gradient($gray-200, $gray-200);
+    border: 0 none;
+    border-radius: 0;
+    box-shadow: none;
+    float: none;
+}
+
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+    background-image: linear-gradient($danger, $danger), linear-gradient($gray-200, $gray-200) !important;
+    background-size: 100% 2px, 100% 1px;
+    outline: 0 none;
+    transition-duration: 0.3s;
+}
+
+.form-material .form-control.focus,
+.form-material .form-control:focus {
+    background-size: 100% 2px, 100% 1px;
+    outline: 0 none;
+    transition-duration: 0.3s;
+}
+
+.form-control-line .form-group {
+    overflow: hidden;
+}
+
+.custom-control-label {
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 22px;
+}
+
+.form-control-line .form-control {
+
+    border: 0;
+    border-radius: 0;
+    padding-left: 0;
+    border-bottom: 1px solid $gray-200;
+
+    &:focus {
+        border-bottom: 1px solid $primary;
+    }
+}

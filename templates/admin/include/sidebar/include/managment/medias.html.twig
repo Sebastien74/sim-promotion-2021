@@ -1,0 +1,37 @@
+{% trans_default_domain 'admin' %}
+
+{% set uri = app.request.uri %}
+{% set moduleActive = 'medias'|moduleActive(allModules) or is_granted('ROLE_INTERNAL') %}
+{% set website = website is defined and website ? website : website() %}
+{% set configuration = website.configuration %}
+{% set active = '/medias/' in uri %}
+
+{% if moduleActive and configuration.mediasCategoriesStatus %}
+
+    {% set module = 'medias'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['medias'][app.user.locale] is defined ? i18nsModules['medias'][app.user.locale] : i18nsModules['medias']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['medias']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['medias']['entity'].iconClass|iconHtml({'width': 19, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if active %} in{% endif %}">
+            <li><a href="{{ path('admin_medias_library', {"website": websiteId}) }}" data-toggle="preloader">{{ "Bibliothèque"|trans }}</a></li>
+            <li><a href="{{ path('admin_mediacategory_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Catégories de médias"|trans }}</a></li>
+        </ul>
+    </li>
+
+{% elseif moduleActive %}
+
+    {% set module = 'medias'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['medias'][app.user.locale] is defined ? i18nsModules['medias'][app.user.locale] : i18nsModules['medias']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['medias']['entity'].adminName %}
+
+    <li{% if '/medias/' in uri %} class="active"{% endif %}>
+        <a href="{{ path('admin_medias_library', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['medias']['entity'].iconClass|iconHtml({'width': 19, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

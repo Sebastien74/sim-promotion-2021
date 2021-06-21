@@ -1,0 +1,17 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'slider'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/sliders/' in uri %}
+    {% set module = 'slider'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['slider'][app.user.locale] is defined ? i18nsModules['slider'][app.user.locale] : i18nsModules['slider']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['slider']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_slider_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['slider']['entity'].iconClass|iconHtml({'width': 17, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

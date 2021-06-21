@@ -1,0 +1,39 @@
+{% trans_default_domain 'front_default' %}
+
+<!-- Favicons -->
+
+{% if logos['favicon'] is defined and logos['favicon'] %}
+    <link rel="shortcut icon" href="{{ absolute_url(asset(logos['favicon'])) }}" />
+{% endif %}
+
+{% if logos['favicon-32x32'] is defined and logos['favicon-32x32'] %}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ absolute_url(asset(logos['favicon-32x32'])) }}" />
+{% endif %}
+
+{% if logos['favicon-16x16'] is defined and logos['favicon-16x16'] %}
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ absolute_url(asset(logos['favicon-16x16'])) }}" />
+{% endif %}
+
+{% if logos['favicon-apple-touch-icon'] is defined and logos['favicon-apple-touch-icon'] %}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ absolute_url(asset(logos['favicon-apple-touch-icon'])) }}" />
+{% endif %}
+
+{% if logos['webmanifest'] is defined and logos['webmanifest'] %}
+    <link rel="manifest" href="{{ absolute_url(asset(logos['webmanifest'])) }}" />
+{% endif %}
+
+{% set color = 'favicon'|color(website, 'mask-icon') %}
+{% if logos['mask-icon'] is defined and logos['mask-icon'] and color.isActive is defined and color.isActive %}
+    <link rel="mask-icon" href="{{ absolute_url(asset(logos['mask-icon'])) }}"{% if color %} color="{{ color.color }}"{% endif %} />
+{% endif %}
+
+<!-- Themes -->
+{% set color = 'favicon'|color(website, 'msapplication-TileColor') %}
+{% if color and color.isActive is defined and color.isActive %}
+    <meta name="msapplication-TileColor" content="{{ color.color }}" />
+{% endif %}
+
+{% set color = 'favicon'|color(website, 'theme-color') %}
+{% if color and color.isActive is defined and color.isActive %}
+    <meta name="theme-color" content="{{ color.color }}" />
+{% endif %}

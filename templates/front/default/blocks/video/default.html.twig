@@ -1,0 +1,72 @@
+{% trans_default_domain 'front_default' %}
+
+{% set formatsVideo = ['mp4', 'm4v', 'ogv', 'webm'] %}
+{% set soundControl = block.soundControls %}
+{% set i18n = block|i18n %}
+{% set i18nVideo = i18n.targetLink %}
+{% set i18nMedia = block|i18nMedia %}
+
+{% if i18nVideo %}
+
+    <!-- .video-block -->
+    <div class="video-block h-100">
+        {{ i18nVideo|video }}
+    </div>
+    <!-- \.video-block -->
+
+{% elseif i18nMedia %}
+
+    {% set haveVideo = false %}
+    {% for video in i18nMedia.media.mediaScreens %}
+        {% if video.filename is defined and video.filename %}
+            {% set haveVideo = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if haveVideo %}
+
+        {% set havePoster = i18nMedia.media.screen is defined and i18nMedia.media.screen == 'poster'
+            and i18nMedia.media.filename is defined and i18nMedia.media.filename %}
+
+        <!-- .video-block-html -->
+        <div class="video-block-html w-100">
+
+            <video preload="none"
+                   id="video-{{ block.id }}"
+                   class="html-video video-fluid lazy-video w-100"
+                   {% if havePoster %}poster="{{ asset(i18nMedia|thumb(null, {'path': true})) }}"{% endif %}
+                   {% if block.autoplay %} muted autoplay loop playsinline{% endif %}
+                   {% if block.controls %} controls{% endif %}>
+                {% for video in i18nMedia.media.mediaScreens %}
+                    {% if video.filename is defined and video.filename and video.screen in formatsVideo %}
+                        <source data-src="{{ asset(video|thumb(null, {'path': true})) }}"
+                                type="video/{{ video.screen }}">
+                    {% endif %}
+                {% endfor %}
+            </video>
+
+            {% if soundControl %}
+                <button data-bs-toggle="tooltip"
+                        data-placement="right"
+                        title="{{ "Activer le son"|trans|striptags }}"
+                        aria-label="{{ "Activer le son"|trans|striptags }}"
+                        data-play-text="{{ "Activer le son"|trans|striptags }}"
+                        data-pause-text="{{ "Couper le son"|trans|striptags }}"
+                        data-play-btn="{{ asset('build/front/' ~ websiteTemplate ~ '/images/volume.svg', 'front_default') }}"
+                        data-pause-btn="{{ asset('build/front/' ~ websiteTemplate ~ '/images/volume-mute.svg', 'front_default') }}"
+                        class="position-absolute d-inline-block sound-control btn btn-primary hbtn hb-fill-right p-0">
+                    <div class="play">
+                        {{ 'fal fa-volume'|fontawesome(24, 25) }}
+                    </div>
+                    <div class="pause d-none">
+                        {{ 'fal fa-volume-slash'|fontawesome(24, 25) }}
+                    </div>
+                </button>
+            {% endif %}
+
+        </div>
+        <!-- \.video-block-html -->
+
+    {% endif %}
+
+{% endif %}

@@ -1,0 +1,11 @@
+{% trans_default_domain 'front_default' %}
+
+<div id="results" class="results row">
+    {% for product in products %}
+        <div class="col-md-6 col-lg-4 item{% if not loop.last %} mb-5{% endif %}">
+            <div class="container-fluid">
+            {% include 'front/' ~ websiteTemplate ~ '/actions/catalog/include/card.html.twig' %}
+            </div>
+        </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,407 @@
+#####################################
+#       Admin Form managers         #
+#####################################
+
+services:
+
+    #####################################
+    #           Action                  #
+    #####################################
+
+    App\Form\Manager\Module\AddLinkManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Module\CampaignManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Module\CatalogFeatureValueManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Module\CatalogManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Module\CatalogProductManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Module\EventManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Module\FormCalendarManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+
+    App\Form\Manager\Module\FormManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Module\ForumManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Module\MakingManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Module\NewscastManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Module\SliderManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Module\StepFormManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Module\TableManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    #####################################
+    #               Api                 #
+    #####################################
+
+    App\Form\Manager\Api\GoogleManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Api\FacebookManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    #####################################
+    #           Core                    #
+    #####################################
+
+    App\Form\Manager\Core\ConfigurationManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+            $requestStack: '@request_stack'
+            $i18nRuntime: '@App\Twig\Translation\i18nRuntime'
+            $colorRuntime: '@App\Twig\Content\ColorRuntime'
+            $mediaRuntime: '@App\Twig\Content\MediaRuntime'
+
+    App\Form\Manager\Core\EntityConfigurationManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Core\GlobalManager:
+        public: true
+        lazy: true
+        arguments:
+            $requestStack: '@request_stack'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $cacheService: '@App\Service\Core\CacheService'
+            $translator: '@translator'
+            $indexHelper: '@App\Helper\Admin\IndexHelper'
+            $serviceSubscriber: '@App\Service\Core\SubscriberService'
+            $kernel: '@kernel'
+
+    App\Form\Manager\Core\IconManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+
+    App\Form\Manager\Core\SearchManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Core\SupportManager:
+        public: true
+        lazy: true
+        arguments:
+            $mailer: '@App\Service\Core\MailerService'
+            $translator: '@translator'
+
+    App\Form\Manager\Core\SessionManager:
+        public: true
+        lazy: true
+
+    App\Form\Manager\Core\TreeManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Core\WebsiteManager:
+        public: true
+        lazy: true
+        arguments:
+            $fixtures: '@App\Service\DataFixtures\WebsiteFixture'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+
+    #####################################
+    #               Gdpr                #
+    #####################################
+
+    App\Form\Manager\Gdpr\CookieManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    #####################################
+    #          Information              #
+    #####################################
+
+    App\Form\Manager\Information\InformationManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Information\SocialNetworkManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    #####################################
+    #           Layout                  #
+    #####################################
+
+    App\Form\Manager\Layout\PageManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Layout\PageDuplicateManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $layoutDuplicateManager: '@App\Form\Manager\Layout\LayoutDuplicateManager'
+            $urlManager: '@App\Form\Manager\Seo\UrlManager'
+            $layoutManager: '@App\Form\Manager\Layout\LayoutManager'
+
+    App\Form\Manager\Layout\ActionManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Layout\BlockManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Layout\LayoutConfigurationManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Layout\LayoutDuplicateManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $zoneDuplicateManager: '@App\Form\Manager\Layout\ZoneDuplicateManager'
+
+    App\Form\Manager\Layout\ZoneDuplicateManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $colDuplicateManager: '@App\Form\Manager\Layout\ColDuplicateManager'
+            $layoutManager: '@App\Form\Manager\Layout\LayoutManager'
+
+    App\Form\Manager\Layout\ColDuplicateManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $blockDuplicateManager: '@App\Form\Manager\Layout\BlockDuplicateManager'
+
+    App\Form\Manager\Layout\BlockDuplicateManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Layout\ZoneManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Layout\ZoneConfigurationManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Layout\LayoutManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    #####################################
+    #           Media                   #
+    #####################################
+
+    App\Form\Manager\Media\MediaLibraryManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+            $translator: '@translator'
+
+    App\Form\Manager\Media\MediaManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $uploader: '@App\Service\Core\Uploader'
+            $requestStack: '@request_stack'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $translator: '@translator'
+
+    App\Form\Manager\Media\ModalLibraryManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Media\SearchManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $authorizationChecker: '@security.authorization_checker'
+
+    #####################################
+    #             Seo                   #
+    #####################################
+
+    App\Form\Manager\Seo\ImportRedirectionManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $fileReader: '@App\Service\Core\XlsxFileReader'
+            $kernel: '@kernel'
+
+    App\Form\Manager\Seo\UrlManager:
+        public: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Seo\RedirectionManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    #####################################
+    #           Security                #
+    #####################################
+
+    App\Form\Manager\Security\Admin\CompanyManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+
+    App\Form\Manager\Security\Admin\UserManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $passwordEncoder: '@security.password_encoder'
+            $pictureManager: '@App\Form\Manager\Security\PictureManager'
+
+    App\Form\Manager\Security\Admin\RoleManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Security\Front\UserManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $passwordEncoder: '@security.password_encoder'
+            $pictureManager: '@App\Form\Manager\Security\PictureManager'
+
+    #####################################
+    #         Translation               #
+    #####################################
+
+    App\Form\Manager\Translation\i18nManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Form\Manager\Translation\UnitManager:
+        public: true
+        lazy: true
+        arguments:
+            $extractor: '@App\Service\Translation\Extractor'
+            $kernel: '@kernel'
+            $entityManager: '@doctrine.orm.entity_manager'

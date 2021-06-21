@@ -1,0 +1,27 @@
+{% trans_default_domain 'front_default' %}
+
+{% set onlyLink = downloadable is defined and not downloadable and popup is defined and not popup and not popupGallery and imageLink.link is defined and imageLink.link is not empty %}
+
+{% if onlyLink %}
+    <a href="{{ imageLink.link }}"{% if imageLink.targetBlank %} target="_blank"{% else %} data-toggle="preloader"{% endif %}>
+{% endif %}
+
+    <div class="box14" data-component="hover-effect">
+
+        {% block media %}{% endblock %}
+
+        <div class="box-content">
+
+            {% if imageTitle is defined and imageTitle is not empty %}
+                <h2 class="title col-12">{{ imageTitle|unescape|raw }}</h2>
+            {% endif %}
+
+            {% include 'front/' ~ websiteTemplate ~ '/include/hovereffect/buttons.html.twig' %}
+
+        </div>
+
+    </div>
+
+{% if onlyLink %}
+    </a>
+{% endif %}

@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-10-23, 10:38 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT VENDOR TITLE HEADER BLOCK :
+    ================================
+
+------------------------------------------------------------------ */
+
+$height: 191px;
+
+.title-header-block  {
+
+    min-height: $height;
+
+    picture:first-child {
+        img {
+            min-height: $height;
+            object-fit: cover;
+            object-position: 50% 50%;
+        }
+    }
+
+    &:after {
+        content: ' ';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: initial !important;
+        background-size: cover !important;
+        background: url("../../../../../medias/images/front/default/shadow.svg") repeat-x;
+    }
+}

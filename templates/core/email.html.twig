@@ -1,0 +1,45 @@
+{% trans_default_domain 'front' %}
+
+{% set hasBtn = options.btn is defined %}
+{% set btnClasses = hasBtn ? " btn btn-" ~ options.btn ~ " hbtn hb-fill-right" : null %}
+{% set labelHTML = '' %}
+
+{% if icon %}
+    {% set labelHTML = '<span class="icon-wrap mr-2">' ~ 'fal fa-at'|fontawesome(14, 14, null, null, false) ~ "</span>" %}
+{% elseif options.icon is defined %}
+    {% set labelHTML = '<span class="icon-wrap mr-2">' ~ options.icon|fontawesome(14, 14, null, null, false) ~ "</span>" %}
+{% elseif entitled %}
+    {% set labelHTML = '<span class="entitled">' ~ "E-mail"|trans|raw ~ '</span>' %}
+{% elseif options.img is defined and options.webpack is defined %}
+    {% set width = options.width is defined ? options.width : 20 %}
+    {% set height = options.height is defined ? options.height : 20 %}
+    {% set labelHTML = '<img data-src="' ~ asset(options.img, options.webpack) ~ '"
+                             src="' ~ asset("build/vendor/images/lazy-point.svg", "vendor") ~ '"
+                             class="img-fluid lazyload mr-2"
+                             title="' ~ 'E-mail'|trans|striptags ~ '"
+                             alt="' ~ 'E-mail'|trans|striptags ~ '"
+                             width="' ~ width ~ '"
+                             height="' ~ height ~ '" />' %}
+{% endif %}
+
+{% if not hasBtn and labelHTML %}
+    {{ labelHTML|raw }}
+{% endif %}
+
+<a href="#" data-mailto="{{ email|encrypt(website) }}"
+   class="email-link d-inline-block loading{{ btnClasses }}"
+   data-id="{{ website.id }}"
+   aria-label="{{ "E-mail"|trans|striptags }}"
+   data-toggle="tooltip" title="{{ "Envoyer un email"|trans|raw }}">
+    {% if hasBtn and labelHTML %}
+        {{ labelHTML|raw }}
+    {% endif %}
+    {% if options.text is defined %}
+        {{ options.text }}
+    {% else %}
+        <span class="email-text">
+            <div class="spinner-border me-1" role="status"></div>
+            {{ "Chargement de l'adresse mail"|trans|raw }}
+        </span>
+    {% endif %}
+</a>

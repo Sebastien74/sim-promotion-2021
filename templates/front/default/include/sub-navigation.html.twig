@@ -1,0 +1,82 @@
+{% trans_default_domain 'front_default' %}
+
+{% if website.configuration.subNavigation %}
+
+    {% set pages = page|subNavigation %}
+    {% set subNavigationLevel = pages|length > 0 ? pages[0].level : null %}
+    {% set currentLevel = page.level is defined ? page.level : null %}
+
+    {% if subNavigationLevel != currentLevel and pages|length > 0
+        or subNavigationLevel == currentLevel and pages|length > 1 %}
+
+        <!-- .sub-navigation-container -->
+        <div class="sub-navigation-container mt-4 mb-4">
+
+            {% if not isDesktop() %}
+
+                {% set currentTitle = "Afficher les pages associées"|trans %}
+                {% for page in pages|merge([page]) %}
+                    {% set i18nUrl = website|i18nUrl(page, app.request.locale, true) %}
+                    {% set seo = i18nUrl ? i18nUrl|seo(page) : null %}
+                    {% set title = seo.titleH1 is defined ? seo.titleH1 : (seo.title ? seo.title : page.adminName) %}
+                    {% set urlCode = seo.url.code is defined ? seo.url.code : null %}
+                    {% if title and urlCode %}
+                        {% set currentUri = masterRequest().requestUri|trim('/') %}
+                        {% set isActive = currentUri == urlCode %}
+                        {% if isActive %}
+                            {% set currentTitle = title %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+                <div class="dropdown dropdown-container {% if isTablet() %}container{% else %}w-100{% endif %}">
+                    <a class="btn btn-primary hbtn hb-fill-right dropdown-toggle w-100"
+                       href="#"
+                       role="button"
+                       id="dropdown-sub-navigation"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false">{{ emt(currentTitle) }}<br><small class="text-italic">{{ emt("Afficher les pages associées"|trans|raw) }}</small></a>
+                    <div class="dropdown-menu bg-secondary pt-3 pb-3 text-center" aria-labelledby="dropdown-sub-navigation">
+                        {% for page in pages %}
+                            {% set i18nUrl = website|i18nUrl(page, app.request.locale, true) %}
+                            {% set seo = i18nUrl ? i18nUrl|seo(page) : null %}
+                            {% set title = seo.titleH1 is defined ? seo.titleH1 : (seo.title ? seo.title : page.adminName) %}
+                            {% set urlCode = seo.url.code is defined ? seo.url.code : null %}
+                            {% if urlCode and title != currentTitle %}
+                                <a class="dropdown-item text-white" href="{{ path('front_index', {'url': urlCode}) }}"
+                                   data-toggle="preloader">
+                                    {{ title }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% else %}
+
+                <nav class="nav justify-content-center">
+                    {% for page in pages %}
+                        {% set i18nUrl = website|i18nUrl(page, app.request.locale, true) %}
+                        {% set seo = i18nUrl ? i18nUrl|seo(page) : null %}
+                        {% set title = seo.titleH1 is defined ? seo.titleH1 : (seo.title ? seo.title : page.adminName) %}
+                        {% set urlCode = seo.url.code is defined ? seo.url.code : null %}
+                        {% if title and urlCode %}
+                            {% set currentUri = masterRequest().requestUri|trim('/') %}
+                            {% set isActive = currentUri == urlCode %}
+                            <a class="nav-link text-bold d-flex align-items-center
+                           {% if not isActive %}text-dark{% endif %}
+                           {% if isActive %} active-item rounded-btn btn btn-primary hbtn hb-fill-right{% else %} link{% endif %}{% if not loop.last %} me-3{% endif %}"
+                               href="{{ path('front_index', {'url': urlCode}) }}" data-toggle="preloader">
+                                {{ title }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </nav>
+
+            {% endif %}
+        </div>
+        <!-- /.sub-navigation-container -->
+
+    {% endif %}
+{% endif %}

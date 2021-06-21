@@ -1,0 +1,41 @@
+{% trans_default_domain 'exception' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set isPreview = 'preview' in app.request.uri %}
+{% set website = website is not defined or not website ? website(true) : website %}
+
+{% set template = isPreview ? website().configuration.template : template %}
+{% set websiteTemplate = websiteTemplate is not defined or not websiteTemplate ? website.configuration.template : websiteTemplate %}
+{% set webpack = webpack is not defined or not webpack ? 'front_' ~ website.configuration.template : webpack %}
+
+{% set base = template == "admin" and not isPreview or '/admin-' in app.request.uri and not isPreview
+    ? 'admin/base.html.twig' : 'front/' ~ template ~ '/base.html.twig' %}
+{% extends base %}
+
+{% set errorTitle = "Erreur"|trans|raw ~ " " ~ status_code %}
+{% block pageTitle %}{{ errorTitle }}{% endblock %}
+{% block title %}{{ errorTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if not isPreview and template == 'admin' and app.user or not isPreview and '/admin-' in app.request.uri and app.user %}
+        {{ resources.encore_absolute_link_tags('admin-error', 'admin', true) }}
+    {% else %}
+        {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-error', webpack, true) }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% if template != "admin" %}
+        {% include 'front/' ~ template ~ '/template/error.html.twig' %}
+    {% else %}
+        {% include 'admin/error.html.twig' %}
+    {% endif %}
+
+{% endblock %}

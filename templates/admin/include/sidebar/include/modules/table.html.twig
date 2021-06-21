@@ -1,0 +1,17 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'table'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/tables/' in uri %}
+    {% set module = 'table'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['table'][app.user.locale] is defined ? i18nsModules['table'][app.user.locale] : i18nsModules['table']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['table']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_table_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['table']['entity'].iconClass|iconHtml({'width': 15, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

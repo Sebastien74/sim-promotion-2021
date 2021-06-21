@@ -1,0 +1,52 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'catalog'|moduleActive(allModules, true) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/catalogs/' in uri %}
+    {% set catalog = 'catalog'|moduleActive(allModules, true) %}
+    {% set realEstate = 'real-estate-programs'|moduleActive(allModules, true) %}
+    {% set module = realEstate ? realEstate : catalog %}
+    {% set moduleCode = realEstate ? 'real-estate-programs' : 'catalog' %}
+    {% set i18n = i18nsModules[moduleCode][app.user.locale] is defined ? i18nsModules[moduleCode][app.user.locale] : i18nsModules[moduleCode]['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules[moduleCode]['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules[moduleCode]['entity'].iconClass|iconHtml({'width': 17, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'catalogs' %} in{% endif %}">
+            <li>
+                <a href="{{ path('admin_catalog_index', {"website": websiteId}) }}"
+                   {% if '/catalogs/catalogs/' in uri %}class="active"{% endif %}
+                   data-toggle="preloader">{{ "Liste des catalogues"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_catalogproduct_index', {"website": websiteId}) }}"
+                   {% if '/catalogs/products/' in uri %}class="active"{% endif %}
+                   data-toggle="preloader">{{ "Liste des produits"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_catalogfeature_index', {"website": websiteId}) }}"
+                   {% if '/catalogs/features/' in uri %}class="active"{% endif %}
+                   data-toggle="preloader">{{ "Liste des caractéristiques"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_catalogcategory_index', {"website": websiteId}) }}"
+                   {% if '/catalogs/categories/' in uri %}class="active"{% endif %}
+                   data-toggle="preloader">{{ "Liste des catégories"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_productteaser_index', {"website": websiteId}) }}"
+                   {% if '/catalogs/teasers/' in uri %}class="active"{% endif %}
+                   data-toggle="preloader">{{ "Configuration des teasers"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_cataloglisting_index', {"website": websiteId}) }}"
+                   {% if '/catalogs/listings/' in uri %}class="active"{% endif %}
+                   data-toggle="preloader">{{ "Configuration des index"|trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endif %}

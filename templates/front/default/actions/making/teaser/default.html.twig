@@ -1,0 +1,41 @@
+{% trans_default_domain 'front_default' %}
+
+{% for post in posts %}
+
+    <div class="item position-relative">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer la réalisation"|trans([], 'front_webmaster'),
+            'role': 'ROLE_MAKING',
+            'toolBoxClass': 'ms-5',
+            'path': path('admin_making_edit', {'website': website.id, 'making': post.entity.id})
+        } only %}
+
+        {% if post.title %}
+            <a href="{{ path('front_making_view', {'pageUrl': post.pageUrl, 'url': post.url}) }}">
+                <h2 class="text-primary mb-4">{{ post.title|raw }}</h2>
+            </a>
+        {% endif %}
+
+        {% if post.beforeMedias and post.afterMedias %}
+            <div class="row">
+                <div class="col-6">
+                    <h3>{{ emt("Avant"|trans) }}</h3>
+                    {% for mediaRelation in post.beforeMedias %}
+                        {% set i18nMedia = mediaRelation|i18n %}
+                        {{ mediaRelation|thumb(null, {'isInBox': false, 'popupGallery': false}) }}
+                    {% endfor %}
+                </div>
+                <div class="col-6">
+                    <h3>{{ emt("Après"|trans) }}</h3>
+                    {% for mediaRelation in post.afterMedias %}
+                        {% set i18nMedia = mediaRelation|i18n %}
+                        {{ mediaRelation|thumb(null, {'isInBox': false, 'popupGallery': false}) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endfor %}

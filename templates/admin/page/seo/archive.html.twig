@@ -1,0 +1,131 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = "URLS archivées"|trans %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-seo', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% if not archive %}
+        {% include 'admin/include/alert.html.twig' with {"alert": "info", "message": "Aucune URL archivée."|trans} only %}
+    {% endif %}
+
+    {% set domains = {} %}
+    {% for websiteLocale in allLocales %}
+        {% set localeDomain = websiteLocale|domain %}
+        {% if localeDomain %}
+            {% set domains = {(websiteLocale): localeDomain}|merge(domains) %}
+        {% endif %}
+    {% endfor %}
+
+    {% for label, urls in archive %}
+        <div class="card urls-archived-card">
+            <div class="card-body">
+                <h4 class="card-title float-left">
+                    {{ label }}
+                    <button class="index-delete-show btn btn-outline-dark btn-md ml-3" data-toggle="tooltip"
+                            title="{{ "Afficher les cases à cocher de suppression"|trans|striptags }}"
+                            data-display="{{ "Afficher les cases à cocher de suppression"|trans|striptags }}"
+                            data-hide="{{ "Masquer"|trans|striptags }}">{{ "fas fa-trash"|fontawesome(null, 14, 'dark') }}</button>
+                    <button class="index-delete-submit btn btn-danger ml-3 d-none" data-toggle="tooltip" title="{{ "Supprimer la sélection"|trans|striptags }}">{{ "fas fa-trash"|fontawesome(null, 14, 'white') }}</button>
+                </h4>
+                <table class="table table-striped data-table" data-length="5" data-height="290">
+                    <thead>
+                        <th>{{ "Nom d'administration"|trans }}</th>
+                        <th>{{ "URL code"|trans }}</th>
+                        {% if 'delete'|moduleActive(allModules) or 'edit'|moduleActive(allModules) %}
+                            <th class="text-right">
+                                {% if 'delete'|moduleActive(allModules) %}
+                                    <div class="delete-index-all-wrap custom-control custom-checkbox float-right ml-3 d-none" data-toggle="tooltip"
+                                         title="{{ "Tout cocher"|trans|striptags }}"
+                                         data-checked="{{ "Tout cocher"|trans|striptags }}"
+                                         data-unchecked="{{ "Tout décocher"|trans|striptags }}">
+                                        <input type="checkbox" class="custom-control-input delete-index-all" id="delete-index-all-{{ loop.index }}">
+                                        <label class="custom-control-label" for="delete-index-all-{{ loop.index }}"></label>
+                                    </div>
+                                {% endif %}
+                                {{ "Actions"|trans }}
+                            </th>
+                        {% endif %}
+                    </thead>
+                    <tbody>
+                    {% for url in urls %}
+                        <tr id="entity-row-{{ url.entity.id }}" class="delete-pack-parent-row">
+                            <td class="align-middle">
+                                {% if url.entity.adminName is defined and url.entity.adminName %}
+                                    {{ url.entity.adminName }}
+                                {% endif %}
+                            </td>
+                            <td class="align-middle">
+                                <ul class="reset">
+                                    {% for entityUrl in url.entity.urls %}
+                                        <li class="italic">
+                                            <small class="text-info-darken">
+                                                {% if allLocales|length > 1 %}
+                                                    <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                                                         data-src="{{ asset('/medias/icons/flags/' ~ entityUrl.locale ~ '.svg') }}"
+                                                         data-toggle="tooltip" title="{{ entityUrl.locale|languageName }}"
+                                                         class="img-fluid lazyload mr-2" height="11" width="15">
+                                                {% endif %}
+                                                {% if domains[entityUrl.locale] is defined %}{{ domains[entityUrl.locale] }}{% endif %}{{ url.uri }}
+                                            </small>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            {% if 'delete'|moduleActive(allModules) or 'edit'|moduleActive(allModules) %}
+                                <td class="align-middle text-right">
+                                    {% if 'edit'|moduleActive(allModules) %}
+                                        {% set path = path('admin_url_archive_restore', {
+                                            'website': websiteId(),
+                                            'classname': url.interface.classname|url_encode,
+                                            'id': url.entity.id
+                                        }) %}
+                                        <a href="{{ path }}"
+                                           data-toggle="tooltip" title="{{ url.restore|striptags }}"
+                                           data-target="#entity-row-{{ url.entity.id }}">
+                                            {{ "fal fa-redo-alt"|fontawesome(null, 14, 'dark') }}
+                                        </a>
+                                    {% endif %}
+                                    {% if 'delete'|moduleActive(allModules) %}
+                                        {% set path = path('admin_url_archive_delete', {
+                                            'website': websiteId(),
+                                            'classname': url.interface.classname|url_encode,
+                                            'id': url.entity.id
+                                        }) %}
+                                        <a href="{{ path }}"
+                                           data-toggle="tooltip" title="{{ url.delete|striptags }}"
+                                           data-target="#entity-row-{{ url.entity.id }}"
+                                           class="swal-delete-link ml-3">
+                                            {{ "fas fa-trash"|fontawesome(null, 14, 'dark') }}
+                                        </a>
+                                        <div class="custom-control custom-checkbox delete-input-index-wrap ml-3 d-none position-relative">
+                                            <input type="checkbox" class="custom-control-input delete-input-index" id="delete-input-{{ url.entity.id }}"
+                                                   data-path="{{ path }}">
+                                            <label class="custom-control-label" for="delete-input-{{ url.entity.id }}"></label>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

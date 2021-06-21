@@ -1,0 +1,9 @@
+{% trans_default_domain 'gdpr' %}
+
+{% extends "gdpr/services/base-placeholder.html.twig" %}
+
+{% set service = 'iframe' %}
+{% set code = 'iframe' %}
+{% set image = asset('build/gdpr/images/iframe-gdpr.svg', 'gdpr') %}
+{% set image_title = 'iframe'|capitalize %}
+{% set message = "Pour afficher l'iframe, vous devez activer les cookies."|trans|raw %}

@@ -1,0 +1,213 @@
+{% trans_default_domain 'front_default' %}
+
+{% set blockType = block.blockType is defined and block.blockType ? block.blockType.slug : null %}
+{% set i18n = i18n is defined ? i18n : null %}
+{% set isInBox = true %}
+
+{% if blockType and i18n %}
+
+    {% if blockType == 'layout-titleheader' and title|striptags|length > 0 %}
+
+        {% if title|striptags|length > 0 %}
+            {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with {
+                'block': product,
+                'i18nMedia': i18nMainMedia,
+                'fullSize': true,
+                'page': page,
+                'pageTitle': title,
+                'template': websiteTemplate,
+                'thumbConfiguration': thumbConfigurationHeader} %}
+        {% endif %}
+
+    {% elseif blockType == 'layout-title' and title|striptags|length > 0 %}
+
+        <h{{ titleForce }} class="title mt-4 mb-4 {{ titleAlignment }}">{{ i18n.title|unescape|raw }}</h{{ titleForce }}>
+
+    {% elseif blockType == 'layout-date' %}
+
+        <small class="date mb-4 d-inline-block">
+            {{ product.publicationStart|localizedDate('none', 'none', app.request.locale, null, product.category.formatDate) }}
+        </small>
+
+    {% elseif blockType == 'layout-intro' and intro|striptags|length > 0 %}
+
+        <p class="introduction text-bold {{ introAlignment }}">{{ intro|unescape|raw|nl2br }}</p>
+
+    {% elseif blockType == 'layout-body' and body|striptags|length > 0 %}
+
+        <div class="body {{ bodyAlignment }}{% if i18n.headerTable %} header-table{% endif %}">{{ body|unescape|raw }}</div>
+
+    {% elseif blockType == 'layout-video' and i18nVideo|striptags|length > 0 %}
+
+        <div class="video mb-4">{{ i18nVideo|video }}</div>
+
+    {% elseif blockType == 'layout-gallery' and medias|length > 0 %}
+
+        {% include 'front/' ~ websiteTemplate ~ '/include/gallery.html.twig' with {'gallery': product, 'slug': 'product'} %}
+
+    {% elseif blockType == 'layout-slider' %}
+
+        {% include 'front/' ~ websiteTemplate ~ '/actions/catalog/include/carousel.html.twig' with {'popup': true} %}
+
+    {% elseif blockType == 'layout-link' %}
+
+        {% include 'front/' ~ websiteTemplate ~ '/blocks/link/default.html.twig' with {'i18n': i18n} %}
+
+    {% elseif blockType == 'layout-image' %}
+
+        {% set image = product|mainMedia|thumb %}
+
+        {% if image %}
+            <div class="image">{{ image }}</div>
+        {% endif %}
+
+    {% elseif blockType == 'layout-catalog-lots-table' and product.lots|length > 0 %}
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>{{ "Lot N°"|trans|raw }}</th>
+                    <th>{{ "Type"|trans|raw }}</th>
+                    <th>{{ "Surface"|trans|raw }}</th>
+                    <th>{{ "Surface balcon / terrasse"|trans|raw }}</th>
+                    <th>{{ "Prix (€)"|trans|raw }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for lot in product.lots %}
+                        <tr>
+                            {% set reference = "n/c"|trans %}
+                            {% if lot.reference %}
+                                {% set reference = lot.reference %}
+                            {% endif %}
+                            <td data-title="{{ "Lot N°"|trans|raw ~ " " ~ reference }}">
+                                {{ reference|raw  }}
+                            </td>
+                            {% set type = "n/c"|trans %}
+                            {% if lot.type %}
+                                {% set type = lot.type %}
+                            {% endif %}
+                            <td data-title="{{ "Type :"|trans|raw ~ " " ~ type }}">
+                                {{ type|raw  }}
+                            </td>
+                            {% set surface = "n/c"|trans %}
+                            {% if lot.surface %}
+                                {% set surface = lot.surface %}
+                                {% if 'm²' not in surface %}
+                                    {% set surface = surface ~ "m²" %}
+                                {% endif %}
+                            {% endif %}
+                            <td data-title="{{ "Surface :"|trans|raw ~ " " ~ surface }}">
+                                {{ surface|raw }}
+                            </td>
+                            {% set balconySurface = "n/c"|trans %}
+                            {% if lot.balconySurface %}
+                                {% set balconySurface = lot.balconySurface %}
+                                {% if 'm²' not in balconySurface %}
+                                    {% set balconySurface = balconySurface ~ "m²" %}
+                                {% endif %}
+                            {% endif %}
+                            <td data-title="{{ "Surface balcon / terrasse :"|trans|raw ~ " " ~ balconySurface }}">
+                                {{ balconySurface|raw }}
+                            </td>
+                            {% set sold = "n/c"|trans %}
+                            {% if lot.sold %}
+                                {% set sold = "Vendu"|trans %}
+                            {% elseif lot.price > 0 %}
+                                {% set sold = lot.price|format_currency('EUR', {rounding_mode: 'ceiling', fraction_digit: 0}) %}
+                            {% endif %}
+                            <td data-title="{{ "Prix (€) :"|trans|raw ~ " " ~ sold }}">
+                                {{ sold|raw  }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% elseif blockType == 'layout-contact' %}
+
+        {% set contactPage = mainPages['contact'] is defined ? mainPages['contact'] : null %}
+        {% include 'front/' ~ websiteTemplate ~ '/actions/information/view.html.twig' with {'information': websiteInformation, 'contactPage': contactPage} %}
+
+    {% elseif blockType == 'layout-catalog-benefits' and product.values|length > 0 %}
+
+        <h2 class="title fw-300 mb-4">{{ "Prestations"|trans|raw }}</h2>
+
+        <ul class="reset benefits-list">
+            {% for featureValue in product.values %}
+                {% set value = featureValue.value %}
+                {% set valueI18n = value|i18n %}
+                {% set feature = featureValue.feature %}
+                {% set featureI18n = feature|i18n %}
+                <li{% if not loop.last %} class="mb-3"{% endif %}>
+                    {% set icon = value.iconClass ? value.iconClass : 'fontawesome/light/plus.svg' %}
+                    <span class="icon d-inline-flex float-start bg-primary position-relative me-2">{{ icon|iconHtml({'height': 20, 'class': 'vertical-align'}) }}</span>{{ valueI18n.title|raw }}
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% elseif blockType == 'layout-map' and product.informations[0].addresses[0] is defined %}
+
+        {% set information = product.informations[0] %}
+        {% set address = information.addresses[0] %}
+
+        <div class="map-container">
+            <div id="product-map-{{ product.id }}" class="map-box" data-layer="" data-multiple="">
+                <div class="data-map d-none"
+                     data-zoom="11"
+                     data-min-zoom="5"
+                     data-max-zoom="20"
+                     data-latitude="{{ address.latitude }}"
+                     data-longitude="{{ address.longitude }}"
+                     data-marker-clusters=""
+                     data-enlarge-txt="{{ "Agrandir le plan"|trans|raw }}"
+                     data-direction-txt="{{ "Itinéraire"|trans|raw }}">
+                        <div class="point"
+                             data-id="3"
+                             data-category="category"
+                             data-marker="{{ asset('uploads/' ~ website.uploadDirname ~ '/marker-blue.svg')}}"
+                             data-marker-width="30" data-marker-height="30"
+                             data-latitude="{{ address.latitude }}"
+                             data-longitude="{{ address.longitude }}"
+                             data-media=""
+                             data-title=""
+                             data-body=""
+                             data-link=""
+                             data-link-label="{{ "En savoir plus"|trans|raw }}"
+                             data-link-label-icon="{{ "En savoir plus"|trans|raw }}"
+                             data-link-target=""
+                             data-name="{{ title }}"
+                             data-address="{{ address.address|unescape|raw }}"
+                             data-zip-code="{{ address.zipCode|unescape|raw }}"
+                             data-city="{{ address.city|unescape|raw }}"
+                             data-department="{{ address.department|unescape|raw }}"
+                             data-region="{{ address.region|unescape|raw }}"
+                             data-country="{{ address.country|countryName }}"
+                             data-google-map-url="{{ address.googleMapUrl }}"
+                             data-google-map-direction-url="{{ address.googleMapDirectionUrl }}">
+                            {% for phone in information.phones %}
+                                <div class="phone" data-number="{{ phone.number }}" data-href="{{ phone.tagNumber }}"></div>
+                            {% endfor %}
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    {% elseif blockType == 'layout-back-button' %}
+
+        {% set indexPage = product|indexPage %}
+        {% set pageUrl = indexPage ? website|i18nUrl(indexPage) : website|i18nUrl(page) %}
+        {% set btnLabel = i18nCategory.targetLabel is defined and i18nCategory.targetLabel ? i18nCategory.targetLabel : emt("Retourner à la liste des produits"|trans) %}
+        <a href="{{ path('front_index', {'url': pageUrl}) }}" class="btn btn-outline-primary hbtn hb-fill-right" data-bs-toggle="preloader">
+            {{ btnLabel }}{{ "fal fa-chevron-right"|fontawesome(null, 11, 'ms-2') }}
+        </a>
+
+    {% elseif blockType == 'layout-share' %}
+
+        {% include 'front/' ~ websiteTemplate ~ '/blocks/share/default.html.twig' %}
+
+    {% endif %}
+
+{% endif %}

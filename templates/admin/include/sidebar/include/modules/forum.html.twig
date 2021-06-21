@@ -1,0 +1,17 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'forum'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/forums/' in uri %}
+    {% set module = 'forum'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['forum'][app.user.locale] is defined ? i18nsModules['forum'][app.user.locale] : i18nsModules['forum']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['forum']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_forum_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['forum']['entity'].iconClass|iconHtml({'width': 13, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

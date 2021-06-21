@@ -1,0 +1,17 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'faq'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/faqs/' in uri %}
+    {% set module = 'faq'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['faq'][app.user.locale] is defined ? i18nsModules['faq'][app.user.locale] : i18nsModules['faq']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['faq']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_faq_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['faq']['entity'].iconClass|iconHtml({'width': 11, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

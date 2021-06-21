@@ -1,0 +1,41 @@
+<address class="address">
+
+    {% if address.name is defined and address.name %}
+        <strong class="name">{{ address.name }}</strong>
+    {% endif %}
+    {% if address.address is defined and address.address %}
+        <div class="address">{{ address.address }}</div>
+    {% endif %}
+    {% if address.zipCode is defined and address.zipCode %}
+        <span class="zip-code">{{ address.zipCode }}</span>
+    {% endif %}
+    {% if address.city is defined and address.city %}
+        <span class="dash"> - </span>
+        <span class="city">{{ address.city }}</span>
+    {% endif %}
+    {% if address.department is defined and address.department %}
+        <br>
+        <span class="department">{{ address.department }}</span>
+    {% endif %}
+    {% if address.region is defined and address.region %}
+        <span class="dash"> - </span>
+        <span class="region">{{ address.region }}</span>
+    {% endif %}
+    {% if address.country is defined and address.country %}
+        <span class="dash"> - </span>
+        <span class="country">{{ address.country|countryName }}</span>
+    {% endif %}
+
+    {% set phones = address.phones is defined and address.phones|length > 0 ? address.phones : [] %}
+    {% set emails = address.emails is defined and address.emails|length > 0 ? address.emails : [] %}
+
+    <ul class="reset">
+        {% for email in address.emails %}
+            <li>{{ email.email|email(website, false) }}</li>
+        {% endfor %}
+        {% for phone in address.phones %}
+            <li>{{ phone|phone(website, false) }}</li>
+        {% endfor %}
+    </ul>
+
+</address>

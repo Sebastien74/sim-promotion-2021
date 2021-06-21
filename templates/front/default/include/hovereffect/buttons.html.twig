@@ -1,0 +1,72 @@
+{% trans_default_domain 'front_default' %}
+
+{% set media = media is defined ? media : ( mediaRelation.media is defined ? mediaRelation.media : null) %}
+{% set uploadDirname = media.website.uploadDirname is defined ? media.website.uploadDirname : website().uploadDirname %}
+{% set class = iconsClass is defined ? iconsClass : null %}
+{% set popupGallery = popupGallery is defined and popupGallery %}
+{% set popupClass = popupGallery and imgClass is defined and imgClass ? 'glightbox ' ~ imgClass : 'image-popup glightbox' %}
+{% set onlyLink = onlyLink is defined and onlyLink %}
+{% set parentEntity = parentEntity is defined and parentEntity ? parentEntity : media %}
+{% set i18nEntity = parentEntity|i18n %}
+{% set downloadable = downloadable is defined ? downloadable : (mediaRelation.downloadable is defined ? mediaRelation.downloadable : false) %}
+{% set hasDownloadable = downloadable and filepathDesktop %}
+{% set popup = popup is defined ? popup : (mediaRelation.popup is defined ? mediaRelation.popup : false) %}
+{% set hasPopup = popup or popupGallery %}
+{% set filepathDesktop = filepathDesktop is defined ? filepathDesktop : (media.filename is defined ? 'uploads/' ~ uploadDirname ~ "/" ~ media.filename : null) %}
+{% set title = desktop.attr.title is defined ? desktop.attr.title : (i18nEntity.title is defined ? i18nEntity.title : (media.filename is defined ? media.filename : null)) %}
+{% set author = desktop.attr.author is defined ? desktop.attr.author : (media.copyright is defined ? media.copyright : null) %}
+
+{% set targetLink = targetLink is defined and targetLink ? targetLink : null %}
+{% set externalLink = i18nEntity.externalLink is defined ? i18nEntity.externalLink : null %}
+{% set targetBlank = targetBlank is defined and targetBlank ? targetBlank : (i18nEntity.newTab is defined ? i18nEntity.newTab : null) %}
+
+{% set imageLink = imageLink is defined ? imageLink : (i18nEntity ? i18nEntity|i18nLink : null ) %}
+{% if not targetLink and imageLink.link is defined and imageLink.link %}
+    {% set targetLink = imageLink.link %}
+    {% set targetBlank = imageLink.targetBlank %}
+{% endif %}
+
+{% set haveLink = onlyLink or targetLink %}
+{% set onlyOne = hasDownloadable and not hasPopup and not haveLink or not hasDownloadable and hasPopup and not haveLink or not hasDownloadable and not hasPopup and haveLink %}
+
+<ul class="icon reset hover-buttons-wrap{% if class %} {{ class }}{% endif %}{% if onlyOne %} only-one{% endif %}">
+
+    {% if hasDownloadable %}
+        <li>
+            <a href="{{ asset(filepathDesktop) }}" download="{{ title|striptags }}">
+                <span {% if onlyOne %}class="vertical-align"{% endif %}>
+                    {{ 'fal fa-download'|fontawesome(null, 50, 'white') }}
+                    <strong class="d-inline-block w-100 fw-100 text-white">{{ emt("Téléchagrer"|trans) }}</strong>
+                </span>
+            </a>
+        </li>
+    {% endif %}
+
+    {% if hasPopup %}
+        <li>
+            {% set popupPath = desktopMedia.path is defined and desktopMedia.path ? desktopMedia.path : filepathDesktop %}
+            <a href="{{ asset(popupPath) }}"
+               title="{{ title }}{% if author %} &#64;{{ author }}{% endif %}"
+               class="{{ popupClass }}">
+                <span {% if onlyOne %}class="vertical-align"{% endif %}>
+                    {{ 'fal fa-search'|fontawesome(null, 50, 'white') }}
+                    <strong class="d-inline-block w-100 fw-100 text-white">{{ emt("Agrandir"|trans) }}</strong>
+                </span>
+            </a>
+        </li>
+    {% endif %}
+
+    {% if haveLink %}
+        {% set title = mediaRelation.i18n.targetLabel is defined and mediaRelation.i18n.targetLabel ? mediaRelation.i18n.targetLabel : null %}
+        <li>
+            {% set element = onlyLink ? "span" : "a" %}
+            <{{ element }} class="link-box"{% if not onlyLink %} href="{{ targetLink }}"{% if targetBlank %} target="_blank"{% else %} data-toggle="preloader"{% endif %}{% if externalLink %} rel="noopener noreferrer"{% endif %}{% endif %}>
+                <span {% if onlyOne %}class="vertical-align"{% endif %}>
+                    {{ 'fal fa-plus'|fontawesome(null, 50, 'white') }}
+                    <strong class="d-inline-block w-100 fw-100 text-white">{{ emt("En savoir plus"|trans) }}</strong>
+                </span>
+            </{{ element }}>
+        </li>
+    {% endif %}
+
+</ul>

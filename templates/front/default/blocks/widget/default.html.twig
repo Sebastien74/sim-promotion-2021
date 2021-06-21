@@ -1,0 +1,15 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+
+{% if i18n and i18n.introduction %}
+    <!-- .widget-block -->
+    <div class="widget-block">
+        {% if block.controls %}
+            {{ i18n.introduction|iframe }}
+        {% else %}
+            {{ i18n.introduction|raw }}
+        {% endif %}
+    </div>
+    <!-- \.widget-block -->
+{% endif %}

@@ -1,0 +1,96 @@
+{% trans_default_domain 'admin' %}
+
+{% set title = "Dans quelles villes vos utilisateurs se trouvent-ils ?"|trans %}
+
+<div id="cities-donuts-card" class="card h-100 mb-0">
+    <div class="card-body">
+        <h4 class="card-title">{{ title }}</h4>
+        <div class="row">
+            <div class="col-12 my-auto">
+                {% if data %}
+                    <ul id="cities-bars" class="bars reset">
+                        {% set count = 0 %}
+                        {% for country, sessions in data %}
+                            {% for session in sessions %}
+                                {% set count = count + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for city, sessions in data %}
+                            {% if loop.index <= 8 %}
+                                <li class="data mb-2">
+                                    {% set title = city == 'undefined' ? 'N/C' : city|capitalize %}
+                                    <small class="text-muted">{{ title }}</small>
+                                    {% set percent = (sessions|length * 100) / count %}
+                                    <div class="progress" data-toggle="tooltip" title="{{ percent|round(2, 'common') }}%">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ percent|round(2, 'common') }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="mb-0 mt-5 mb-5 text-center">{{ "Aucune donnée"|trans }}</p>
+                {% endif %}
+            </div>
+            {% if data %}
+                <div class="w-100 mt-3">
+                    <div class="row m-0">
+                        <div class="col-md-6">
+                            {% if data|length > 8 %}
+                                <small class="text-italic cursor" data-toggle="modal" data-target="#cities-modal">{{ "Tout voir"|trans }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <small class="text-italic">{{ "Sessions par ville"|trans }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/page/seo/analytics/includes/dates-range.html.twig' with {'route': 'toto'} %}
+            </div>
+            <div class="col-md-6 text-right">
+{#                <a href="">{{ "Vue d'ensemble"|trans }}{{ "fal fa-chevron-right"|fontawesome(null, 10, 'ml-2') }}</a>#}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if data|length > 8 %}
+    <div class="modal fade analytics-modal" id="cities-modal" tabindex="-1" role="dialog" aria-labelledby="cities-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border">
+                <div class="modal-header">
+                    <h4 class="modal-title col-12">{{ title }}</h4>
+                    <button class="close" data-dismiss="modal" aria-label="{{ "Fermer"|trans }}">
+                        {{ 'fal fa-times'|fontawesome(20, 20, 'dark') }}
+                    </button>
+                </div>
+                <div class="modal-body pb-4">
+                    <ul id="modal-cities-bars" class="bars reset row">
+                        {% set count = 0 %}
+                        {% for country, sessions in data %}
+                            {% for session in sessions %}
+                                {% set count = count + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for city, sessions in data %}
+                            <li class="data col-md-6 mb-2">
+                                {% set title = city == 'undefined' ? 'N/C' : city|capitalize %}
+                                <small class="text-muted">{{ title }}</small>
+                                {% set percent = (sessions|length * 100) / count %}
+                                <div class="progress" data-toggle="tooltip" title="{{ percent|round(2, 'common') }}%">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ percent|round(2, 'common') }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

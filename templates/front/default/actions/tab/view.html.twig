@@ -1,0 +1,130 @@
+{% trans_default_domain 'front_default' %}
+
+{% if tabs['main'] is defined %}
+
+    <!-- .tab-container -->
+    <div class="tab-container position-relative">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer le groupe d'onglets"|trans([], 'front_webmaster'),
+            'role': 'ROLE_FAQ',
+            'path': path('admin_tabcontent_tree', {'website': website.id, 'tab': tab.id})
+        } only %}
+
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab-{{ tab.id }}" role="tablist">
+                {% set active = true %}
+                {% for tabItem in tabs['main'] %}
+                    {% set i18n = tabItem|i18n %}
+                    {% set tabTitle = i18n and i18n.subtitle ? i18n.subtitle : tabItem.adminName %}
+                    {% if tabTitle %}
+                        <a class="nav-item nav-link{% if active %} active{% endif %}"
+                           id="nav-tab-action-{{  tab.id ~ '-' ~ tabItem.id }}"
+                           data-bs-toggle="tab"
+                           href="#nav-action-{{  tab.id ~ '-' ~ tabItem.id }}"
+                           role="tab"
+                           aria-controls="nav-action-{{  tab.id ~ '-' ~ tabItem.id }}"
+                           aria-selected="{% if active %}true{% else %}false{% endif %}">{{ tabTitle }}</a>
+                        {% set active = false %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </nav>
+
+        <div class="tab-content" id="nav-tab-content-{{ tab.id }}">
+
+            {% set active = true %}
+            {% for tabItem in tabs['main'] %}
+                {% set i18n = tabItem|i18n %}
+                <div class="tab-pane fade{% if active %} show active{% endif %}"
+                     id="nav-action-{{  tab.id ~ '-' ~ tabItem.id }}"
+                     role="tabpanel"
+                     aria-labelledby="nav-tab-action-{{  tab.id ~ '-' ~ tabItem.id }}">
+
+                        <div class="row p-3">
+
+                            {% set i18nMedia = tabItem|i18nMedia %}
+                            {% set haveMedia = i18nMedia and i18nMedia.media.filename is defined and i18nMedia.media.filename %}
+                            {% set mediaConfig = i18nMedia|thumbConfiguration(thumbConfiguration) %}
+
+                            {% if haveMedia %}
+                                <div class="col-md-4">
+                                    {{ i18nMedia|thumb(mediaConfig) }}
+                                </div>
+                            {% endif %}
+
+                            <div class="col-md-{% if haveMedia %}8{% else %}12{% endif %}">
+                                {% include 'front/' ~ websiteTemplate ~ '/actions/tab/content-tab.html.twig' with {'i18n': i18n} only %}
+                            </div>
+
+                            {% set children = tabs[tabItem.id] is defined ? tabs[tabItem.id] : [] %}
+
+                            {% if children %}
+                                <div class="col-12 mt-4">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="nav flex-column nav-pills" id="v-pills-tab-action-{{ tab.id }}" role="tablist" aria-orientation="vertical">
+                                                {% set subActive = true %}
+                                                {% for child in children %}
+                                                    {% set i18n = child|i18n %}
+                                                    {% set subtabTitle = i18n and i18n.subtitle ? i18n.subtitle : child.adminName %}
+                                                    <a class="nav-link{% if subActive %} active{% endif %}"
+                                                       id="v-pills-tab-action-{{ tab.id ~ '-' ~ child.id }}"
+                                                       data-bs-toggle="pill" href="#v-pills-action-{{ tab.id ~ '-' ~ child.id }}"
+                                                       role="tab" aria-controls="v-pills-action-{{ tab.id ~ '-' ~ child.id }}"
+                                                       aria-selected="true">{{ subtabTitle|unescape|raw }}</a>
+                                                    {% set subActive = false %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-9">
+                                            <div class="tab-content" id="v-pills-action-{{ tab.id }}">
+
+                                                {% set subActive = true %}
+
+                                                {% for child in children %}
+
+                                                    {% set i18n = child|i18n %}
+
+                                                    <div class="tab-pane fade{% if subActive %} show active{% endif %}"
+                                                         id="v-pills-action-{{ tab.id ~ '-' ~ child.id }}"
+                                                         role="tabpanel"
+                                                         aria-labelledby="v-pills-tab-action-{{ tab.id ~ '-' ~ child.id }}">
+
+                                                        <div class="row">
+
+                                                            {% if haveMedia %}
+                                                                <div class="col-md-4">{{ i18nMedia|thumb }}</div>
+                                                            {% endif %}
+
+                                                            <div class="col-md-{% if haveMedia %}8{% else %}12{% endif %}">
+                                                                {% include 'front/' ~ websiteTemplate ~ '/actions/tab/content-tab.html.twig' with {'i18n': i18n} only %}
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    {% set subActive = false %}
+
+                                                {% endfor %}
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+                {% set active = false %}
+            {% endfor %}
+        </div>
+
+    </div>
+    <!-- \.tab-container -->
+
+{% endif %}

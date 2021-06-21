@@ -1,0 +1,60 @@
+{% trans_default_domain 'admin' %}
+
+{% set website = website is defined ? website : website() %}
+{% set isMultiWebsite = isMultiWebsite() %}
+
+<li class="user-pro{% if not isMultiWebsite %} pb-3{% endif %}">
+
+    <span data-toggle="preloader">
+        <a href="{{ path('admin_dashboard', {"website": websiteId()}) }}"
+           id="dashboard-btn" class="overflow-hidden"
+           data-toggle="tooltip"
+           data-placement="right"
+           title="{{ "Tableau de bord"|trans|striptags }}"
+           alt="{{ "Tableau de bord"|trans|striptags }}">
+            {% if customAdmin is defined and not customAdmin %}
+                {{ imgRender({'src': asset('medias/icons/fontawesome/brands/cloudversify.svg'), 'width': 50, 'height': 50, 'class': 'img-white float-left', 'title': "Tableau de bord"|trans}) }}
+            {% elseif logos.admin is defined and logos.admin %}
+                {{ imgRender({'src': asset(logos.admin), 'width': 50, 'height': 50, 'class': 'float-left', 'title': "Tableau de bord"|trans}) }}
+            {% else %}
+                {{ imgRender({'src': asset('medias/icons/fontawesome/brands/cloudversify.svg'), 'width': 50, 'height': 50, 'class': 'img-white float-left', 'title': "Tableau de bord"|trans}) }}
+            {% endif %}
+            <span class="cms-name hide-menu float-left">
+                {% if customAdmin is defined and not customAdmin %}
+                    {{ "Administration"|trans|raw }}
+                {% else %}
+                    {{ "Agence Félix CMS"|trans|raw }}
+                {% endif %}
+                <br>
+                <small class="cms-version text-italic float-left">{{ "Vesrion"|trans|raw }} {{ symfonyVersion() }}</small>
+            </span>
+        </a>
+    </span>
+
+    <ul class="pb-0">
+        {% set domain = app.user.locale is defined ? app.user.locale|domain() : null %}
+        {% set scheme = not domain ? path('front_index') : domain %}
+        <li><a href="{{ scheme }}" target="_blank">{{ 'far fa-desktop'|fontawesome(19, 17, 'white mr-2') }}{{ "Accéder au site"|trans }}</a></li>
+        {% if customAdmin %}
+            <li><a href="{{ path('admin_support', {'website': website.id}) }}" data-toggle="preloader">{{ 'fas fa-user-headset'|fontawesome(19, 17, 'white mr-2') }}{{ "Support"|trans }}</a></li>
+            {% if website.configuration.adminAdvertising or is_granted('ROLE_INTERNAL') %}
+                <li><a href="{{ path('admin_advertising', {'website': website.id}) }}" data-toggle="preloader">{{ 'fal fa-plus-square'|fontawesome(15, 17, 'white mr-2') }}{{ "Nos extensions"|trans }}</a></li>
+            {% endif %}
+        {% endif %}
+        <li><a href="{{ path('security_logout') }}" class="d-md-none text-danger" data-toggle="preloader">{{ 'fas fa-power-off'|fontawesome(17, 17, '#dc3545', 'mr-2') }}{{ "Déconnexion"|trans }}</a></li>
+    </ul>
+
+    {% if app.user %}
+        {{ render_esi(controller(
+            'App\\Controller\\Admin\\Core\\WebsiteController::websitesSelector',
+            { 'website': websiteId() }
+        )) }}
+    {% endif %}
+
+    {% if isMultiWebsite %}
+        <span class="sidebar-website-info text-white d-inline-block w-100 pl-3 pt-2 pr-2 pb-2 mt-3">
+            {{ 'fas fa-pen-fancy'|fontawesome(14, 14, 'white mr-2') }} {{ website.adminName }}
+        </span>
+    {% endif %}
+
+</li>

@@ -1,0 +1,55 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="container position-relative">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer la réalisation"|trans([], 'front_webmaster'),
+        'role': 'ROLE_MAKING',
+        'toolBoxClass': 'ms-5',
+        'path': path('admin_making_edit', {'website': website.id, 'making': making.id})
+    } only %}
+
+    {% if title %}
+        <a href="{{ path('front_making_view', {'pageUrl': url.code, 'url': i18nUrl}) }}">
+            <h2 class="text-primary mb-4">{{ title|raw }}</h2>
+        </a>
+    {% endif %}
+
+    {% if beforeMedias and afterMedias %}
+        <div class="row">
+            <div class="col-6">
+                <h3>{{ emt("Avant"|trans) }}</h3>
+                {% for mediaRelation in beforeMedias %}
+                    {% set i18nMedia = mediaRelation|i18n %}
+                    {{ mediaRelation|thumb(null, {'isInBox': false, 'popupGallery': false}) }}
+                {% endfor %}
+            </div>
+            <div class="col-6">
+                <h3>{{ emt("Après"|trans) }}</h3>
+                {% for mediaRelation in afterMedias %}
+                    {% set i18nMedia = mediaRelation|i18n %}
+                    {{ mediaRelation|thumb(null, {'isInBox': false, 'popupGallery': false}) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if subTitle or intro or body %}
+
+        <div class="content mt-4">
+            {% if subTitle %}
+                <h3>{{ subTitle|raw }}</h3>
+            {% endif %}
+
+            {% if intro %}
+                <p class="introduction">{{ intro|raw }}</p>
+            {% endif %}
+
+            {% if body %}
+                <div class="body">{{ body|raw }}</div>
+            {% endif %}
+        </div>
+
+    {% endif %}
+
+</div>

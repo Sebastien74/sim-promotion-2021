@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+{% set website = website is defined ? website : website() %}
+{% set configuration = website.configuration %}
+{% set adminTheme = configuration.adminTheme %}
+{% set logos = website|logos %}
+{% set websiteInformation = website.information %}
+{% set information = websiteInformation|i18n %}
+{% set cacheClearDate = website.cacheClearDate is defined and website.cacheClearDate ? website.cacheClearDate|date('Y-m-d') : null %}
+{% set isCustomPath = logos['security-logo'] is defined and logos['security-logo'] or not adminTheme %}
+{% set companyName = isCustomPath and information.title is defined and information.title ? information.title : "Agence Félix CMS"|trans|striptags %}
+{% set faviconPath = isCustomPath and logos['favicon'] is defined and logos['favicon'] ? asset(logos['favicon']) : asset('build/security/images/favicon.ico', 'security') %}
+{% set logoPath = isCustomPath and logos['security-logo'] ? asset(logos['security-logo']) : (not adminTheme ? asset('build/security/images/security.svg', 'security') : asset('build/security/images/logo.png', 'security')) %}
+{% set bgPath = logos['security-bg'] is defined and logos['security-bg'] ? asset(logos['security-bg'])
+    : (adminTheme ? asset('build/security/images/login-register-waves.jpg', 'security') : asset('build/security/images/login-register.jpg', 'security')) %}
+
+<html lang="{{ app.request.locale }}"
+      data-cache="{{ cacheClearDate }}"
+      data-nonce="{{ csp_nonce() }}">
+
+    {% trans_default_domain 'security_cms' %}
+
+    {% import 'core/src-macro.html.twig' as resources %}
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="{{ companyName }}" />
+        <meta name="author" content="{{ companyName }}" />
+
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ faviconPath }}" />
+        <title>{% block title %}{{ "Bienvenue !!"|trans|striptags }}{% endblock %} - {{ companyName }}</title>
+
+        {% block stylesheets %}
+            {{ resources.encore_absolute_link_tags('font-firasans', 'fonts', true) }}
+            {{ resources.encore_absolute_link_tags('security', 'security', true) }}
+        {% endblock %}
+
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" nonce="{{ csp_nonce() }}"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" nonce="{{ csp_nonce() }}"></script>
+        <![endif]-->
+    </head>
+
+    <body{% if not adminTheme %} class="base-theme"{% endif %}>
+
+        {% include 'security/includes/preloader.html.twig' %}
+
+        <!-- #wrapper -->
+        <section id="wrapper" class="login-register login-sidebar" style="background-image: url({{ bgPath }});">
+
+            <aside class="login-box row">
+
+                <!-- #content -->
+                <div id="content" class="col-12 p-3 p-sm-4 my-auto">
+                    <a href="{{ app.request.getSchemeAndHttpHost() }}" class="header w-100 d-inline-block text-center mb-5 mt-5 mt-md-0">
+                        <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                             alt="Logo"
+                             data-src="{{ logoPath }}"
+                             id="logo" height="150"
+                             class="img-fluid lazyload" />
+                    </a>
+                    <div class="row">
+                        <div class="col-sm-8 col-md-12 offset-sm-2 offset-md-0">
+                            {% block body %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+                <!-- /#content -->
+
+                {% if adminTheme is not empty %}
+                    <!-- #contact-info -->
+                    <div id="contact-info" class="col-12 text-center p-3 p-sm-4 align-self-end">
+                        <address>
+                            <b>{{ "Agence Félix - Agence de Publicité"|trans|raw }}</b> <br>
+                            <small class="d-inline-block">{{ "4BIS Avenue du Pont de Tasset <br/> 74960 Cran-Gevrier / Annecy <br/> FRANCE"|trans|raw }}</small>
+                        </address>
+                        <ul class="reset">
+                            <li><a href="tel:{{ "+33450671855"|trans|raw }}" id="website-phone">{{ 'fal fa-phone-rotary'|fontawesome(15, 15, 'primary me-2') }}{{ "+33(0)4 50 67 18 55"|trans|raw }}</a></li>
+                            <li><a href="{{ "https://www.felix-creation.fr"|trans|raw }}" id="website-url" target="_blank" rel="noopener noreferrer">{{ 'fal fa-desktop'|fontawesome(14, 12, 'primary me-2') }}{{ "felix-creation.fr"|trans|raw }}</a></li>
+                            <li><a href="mailto:{{ "support@felix-creation.fr"|trans|raw }}" id="website-support">{{ 'fal fa-at'|fontawesome(null, 12, 'primary me-2') }}{{ "support@felix-creation.fr"|trans|raw }}</a></li>
+                        </ul>
+                    </div>
+                    <!-- /#contact-info -->
+                {% endif %}
+
+            </aside>
+
+        </section>
+        <!-- /#wrapper -->
+
+        {% include "security/includes/recaptcha.html.twig" %}
+
+        {% block javascripts %}
+            {{ resources.encore_entry_js_files('security', 'security', 'Security', false, true) }}
+        {% endblock %}
+
+    </body>
+
+</html>

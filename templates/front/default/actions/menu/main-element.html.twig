@@ -1,0 +1,61 @@
+{% trans_default_domain 'front_default' %}
+
+{% set infos = link|linkMenu(tree) %}
+
+{% if infos.i18n and infos.online %}
+
+    {% set path = infos.path and 'http' not in infos.path ? app.request.getSchemeAndHttpHost() ~ infos.path : infos.path %}
+    {% set pushMicroData = microDataActive and link.level == 1 and not infos.externalLink and not infos.children %}
+
+    <li class="nav-item level-{{ link.level}}{% if infos.children %} dropdown{% if link.level >= 2 %} dropdown-submenu{% endif %}{% endif %}{% if infos.media %} item-logo{% endif %} text-center text-{{ expand }}-start{% if infos.active %} active{% endif %}"
+        {% if pushMicroData %} itemscope="itemscope" itemtype="http://www.schema.org/SiteNavigationElement"{% endif %}>
+
+        <a class="nav-link float-{{ expand }}-start link-level-{{ link.level }}{% if infos.children and not dropdownHover %} dropdown-toggle{% endif %}{% if dropdownItem %} dropdown-item{% endif %}{% if infos.active %} active{% endif %} {{ infos.class }}"
+           href="{{ path }}"{% if infos.children and not dropdownHover %} id="navbar-link-{{ link.id }}"{% endif %} title="{{ infos.title|striptags }}"
+           {% if infos.children and not dropdownHover %} role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"{% elseif infos.newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+           {% if infos.externalLink %} rel="noopener noreferrer"{% endif %}
+           {% if pushMicroData %} itemprop="url"{% endif %}>
+
+            {% if infos.media %}
+                {{ infos.media|thumb }}
+                <span class="d-lg-none"{% if pushMicroData %} itemprop="name"{% endif %}>{{ infos.title|unescape|raw }}</span>
+            {% else %}
+                {% if pushMicroData %}<span itemprop="name">{% endif %}{{ infos.title|unescape|raw }}{% if pushMicroData %}</span>{% endif %}
+            {% endif %}
+
+            {% if infos.children and isDesktop() %}
+                <span class="caret position-absolute ms-2{% if dropdownHover %} dropdown-toggle{% endif %}"
+                      {% if dropdownHover %} id="navbar-link-{{ link.id }}" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"{% endif %}>
+                    {% set icon = link.level == 1 ? 'down' : 'right' %}
+                    {{ ('fal fa-chevron-' ~ icon)|fontawesome(null, 8) }}
+                </span>
+            {% endif %}
+
+        </a>
+
+        {% if infos.children and not isDesktop() %}
+            <span class="caret position-absolute ms-2{% if dropdownHover %} dropdown-toggle{% endif %}"
+                  {% if dropdownHover %} id="navbar-link-{{ link.id }}" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"{% endif %}>
+                {% set icon = link.level == 1 ? 'down' : 'right' %}
+                {{ ('fal fa-chevron-' ~ icon)|fontawesome(null, 8) }}
+            </span>
+        {% endif %}
+
+        {% if infos.children %}
+            <ul class="dropdown-menu" aria-labelledby="navbar-link-{{ link.id }}">
+                {% for subLink in infos.children %}
+                    {% include 'front/' ~ websiteTemplate ~ '/actions/menu/main-element.html.twig' with {
+                        'dropdownHover': dropdownHover,
+                        'websiteTemplate': websiteTemplate,
+                        'expand': expand,
+                        'link': subLink,
+                        'tree': tree,
+                        'dropdownItem': true,
+                        'microDataActive': microDataActive } only %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </li>
+
+{% endif %}

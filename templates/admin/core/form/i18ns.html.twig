@@ -1,0 +1,125 @@
+{% trans_default_domain 'admin' %}
+
+{% set website = website() %}
+{% set configuration = website.configuration %}
+{% set defaultLocale = configuration.locale %}
+{% set allLocales = configuration.allLocales %}
+{% set allModules = allModules is defined and allModules ? allModules : website|modules %}
+{% set disableTitle = disableTitle is defined or form.children.i18ns.vars.attr.disableTitle is defined and form.children.i18ns.vars.attr.disableTitle %}
+
+{% if not disableTitle %}
+    <div class="col-12">
+        <h4 class="card-subtitle mb-4">
+            {{ "fal fa-align-center"|fontawesome(null, 14, 'info-darken mr-2') }}{% if allLocales|length > 1 %}{{ "Descriptions"|trans }}{% else %}{{ "Description"|trans }}{% endif %}
+        </h4>
+    </div>
+{% endif %}
+
+{% if allLocales|length > 1 %}
+    <div class="locales-tab-container">
+{% endif %}
+
+    {% set tabUniqId = uniqId() %}
+
+    {% if allLocales|length > 1 %}
+        <ul class="nav nav-tabs w-100" role="tablist">
+            {% for i18n in i18ns %}
+                {% set locale = i18n.vars.value.locale %}
+                <li class="nav-item{% if locale not in allLocales %} d-none{% endif %}" data-toggle="tooltip" title="{{ languageName(locale, app.user.locale) }}">
+                    <a class="nav-link{% if locale == defaultLocale %} active{% endif %}" data-toggle="tab"
+                       id="i18n-{{ locale ~ tabUniqId }}-tab"
+                       aria-selected="{% if locale == defaultLocale %}true{% else %}false{% endif %}"
+                       href="#i18n-tab-{{ locale ~ tabUniqId }}" role="tab">
+                        <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                             data-src="{{ asset('/medias/icons/flags/' ~ locale ~ '.svg') }}" class="img-fluid lazyload" height="14" width="19">
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if allLocales|length > 1 %}
+        <div class="bg-white tab-content tab-content-border w-100">
+    {% endif %}
+
+        {% for i18n in i18ns %}
+
+            {% set locale = i18n.vars.value.locale %}
+
+            {% if allLocales|length > 1 %}
+                <div id="i18n-tab-{{ locale ~ tabUniqId }}" class="tab-pane fade{% if locale == defaultLocale %} show active{% endif %}" role="tabpanel" aria-labelledby="i18n-{{ locale ~ tabUniqId }}-tab">
+                    <div class="p-20 pb-0">
+                        <div class="row">
+            {% endif %}
+
+                {% for field in i18n.children %}
+                    {% if configFields is not defined or field.vars.name not in configsFieldsSet %}
+                        {% if allLocales|length == 1 and locale != configuration.locale %}
+                            <div class="d-none">
+                        {% endif %}
+
+                        {% if field.vars.name == "video" and disableVideoTitle is not defined %}
+                            <div class="col-12">
+                                <h4 class="card-subtitle mb-4">{{ "fal fa-video"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Vidéo"|trans }}</h4>
+                            </div>
+                        {% endif %}
+
+                        {% if field.vars.attr.group is defined and "add-title" in field.vars.attr.group and "target" in field.vars.name %}
+                            <div class="col-12">
+                                <h4 class="card-subtitle mb-4">{{ "fal fa-link"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Lien"|trans }}</h4>
+                            </div>
+                        {% endif %}
+
+                            {% set entityToEdit = entity.action is defined and entity.action ? entity.action.entity|find(field.vars.value) : null %}
+                            {% set entityInterfaceName = entityToEdit.interface.name is defined and entityToEdit.interface.name ? entityToEdit.interface.name : null %}
+                            {% set isActionFilter = field.vars.name == 'actionFilter' %}
+                            {% set displayTemplates = i18n[field.vars.name].vars.attr.displayTemplates is defined ? i18n[field.vars.name].vars.attr.displayTemplates : false %}
+                            {% set actionFilterButton = isActionFilter
+                                and field.vars.value is defined
+                                and field.vars.value
+                                and routeExist('admin_' ~ entityToEdit.interface.name ~ '_edit')
+                                and entityToEdit
+                                and entityToEdit.interface.module is defined
+                                and entityToEdit.interface.module|moduleActive(allModules) %}
+
+                            {% if actionFilterButton or displayTemplates %}
+                                <div class="col-md-{% if displayTemplates and actionFilterButton and allLocales|length == 1 %}5{% elseif displayTemplates and actionFilterButton and allLocales|length > 1 %}10{% else %}12{% endif %} p-0">
+                            {% endif %}
+
+                                {{ form_row(i18n[field.vars.name]) }}
+
+                            {% if actionFilterButton or displayTemplates %}
+                                </div>
+                                {% if actionFilterButton %}
+                                    <div class="col-md-2 align-self-end">
+                                        <div class="form-group">
+                                            <a href="{{ path('admin_' ~ entityInterfaceName ~ '_edit', {'website': websiteId(), (entityInterfaceName): entityToEdit.id}) }}"
+                                               data-toggle="tooltip" title="{{ "Éditer"|trans|striptags }}" class="btn btn-info w-100">
+                                                {{ 'fas fa-pencil-alt'|fontawesome(null, 14, 'mr-2') }}{{ "Éditer"|trans }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+
+                        {% if allLocales|length == 1 and locale != configuration.locale %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+            {% if allLocales|length > 1 %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% endfor %}
+
+    {% if allLocales|length > 1 %}
+        </div>
+    {% endif %}
+
+{% if allLocales|length > 1 %}
+    </div>
+{% endif %}

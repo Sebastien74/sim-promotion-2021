@@ -1,0 +1,158 @@
+#####################################
+#           Fixtures                #
+#####################################
+
+services:
+
+    App\Service\DataFixtures\ApiFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\BlockTypeFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\ColorFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+
+    App\Service\DataFixtures\CommandFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+
+    App\Service\DataFixtures\ConfigurationFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+
+    App\Service\DataFixtures\DefaultMediasFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $uploader: '@App\Service\DataFixtures\UploadedFileFixture'
+            $kernel: '@kernel'
+
+    App\Service\DataFixtures\GdprFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $uploader: '@App\Service\DataFixtures\UploadedFileFixture'
+            $kernel: '@kernel'
+
+    App\Service\DataFixtures\InformationFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\LayoutFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\MenuFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+
+    App\Service\DataFixtures\MapFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+            $uploader: '@App\Service\DataFixtures\UploadedFileFixture'
+            $kernel: '@kernel'
+
+    App\Service\DataFixtures\NewscastFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+            $layoutGenerator: '@App\Service\Content\LayoutGeneratorService'
+
+    App\Service\DataFixtures\NewsletterFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+
+    App\Service\DataFixtures\PageFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+            $layoutManager: '@App\Form\Manager\Layout\LayoutManager'
+            $kernel: '@kernel'
+    App\Service\DataFixtures\SecurityFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\SeoFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\ThumbnailFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\TodoFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\DataFixtures\TransitionFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $translator: '@translator'
+
+    App\Service\DataFixtures\TranslationsFixture:
+        public: true
+        lazy: true
+        arguments:
+            $extractor: '@App\Service\Translation\Extractor'
+
+    App\Service\DataFixtures\UploadedFileFixture:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $uploader: '@App\Service\Core\Uploader'
+
+    App\Service\DataFixtures\WebsiteFixture:
+        public: true
+        lazy: true
+        arguments:
+            $subscriber: '@App\Service\Core\SubscriberService'
+            $entityService: '@App\Service\Development\EntityService'
+            $websiteRepository: '@App\Repository\Core\WebsiteRepository'
+            $kernel: '@kernel'

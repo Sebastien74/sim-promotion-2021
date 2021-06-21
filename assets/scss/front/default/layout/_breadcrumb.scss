@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2020-11-11, 6:37 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT BREADCRUMB LAYOUT :
+    =========================
+
+------------------------------------------------------------------ */
+
+#breadcrumb {
+
+    border-radius: 0;
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        display: none;
+    }
+
+    .separator {
+        margin: -1px 5px 0 5px;
+    }
+}

@@ -1,0 +1,46 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = contact|i18n %}
+{% set i18nUrl = website|i18nUrl(i18n.targetPage) %}
+{% set title = i18n and i18n.title|striptags|length > 0 ? i18n.title : "Une question ?"|trans %}
+{% set body = i18n and i18n.body|striptags|length > 0 ? i18n.body : "<p>" ~ "Contactez-nous.</p>"|trans ~ "</p>" %}
+{% set contactLabel = i18n and i18n.targetLabel|striptags|length > 0 ? i18n.targetLabel : "Contact en ligne"|trans %}
+{% set email = i18n and i18n.targetLink|striptags|length > 0 ? i18n.targetLink : null %} {## Replace 'null' value by default email ##}
+{% set phone = i18n and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : null %} {## Replace 'null' value by default phone ##}
+{% set phoneHref = i18n and i18n.help|striptags|length > 0 ? i18n.help : phone|replace({' ': ''}) %}
+
+<!-- .contact-action-container -->
+<div id="contact-container-{{ contact.slug }}" class="contact-action-container position-relative">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer les informations"|trans([], 'front_webmaster'),
+        'role': 'ROLE_CONTACT',
+        'path': path('admin_contact_index', {'website': website.id, 'contact': contact.id})
+    } only %}
+
+    <div class="row">
+        <div class="col-lg-7 my-auto">
+            {% if title %}
+                <h2 class="title mb-3 mb-lg-0 text-primary">{{ title }}</h2>
+            {% endif %}
+            {% if title %}
+                <div class="body">{{ body|raw }}</div>
+            {% endif %}
+        </div>
+        <div class="col-lg-5 mt-4 my-lg-auto">
+            {% if i18nUrl or email %}
+                {% set href = i18nUrl ? path('front_index', {'url': i18nUrl}) : 'mailto:' ~ email %}
+                <a href="{{ href }}" class="btn btn-primary hbtn hb-fill-right"{% if i18nUrl %} data-toggle="preloader"{% endif %}>{{ contactLabel }}</a>
+            {% endif %}
+            {% if (i18nUrl or email) and phone %}
+                <span class="me-2 ms-2 or">{{ emt('ou'|trans) }}</span>
+            {% endif %}
+            {% if phone %}
+                <a href="tel:{{ phoneHref }}" class="btn btn-info hbtn hb-fill-right">{{ phone }}</a>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+<!-- \.contact-action-container -->
+

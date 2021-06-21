@@ -1,0 +1,107 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block metaTitle %}{{ "Connectez-vous"|trans|raw }} - {{ companyName }}{% endblock %}
+{% block metaRobots %}noindex{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with { 'title': emt("Connectez-vous"|trans|raw) } %}
+
+    <div class="container-fluid mt-5 mb-5 form-security-container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+
+                {% set allModules = allModules is defined and allModules ? allModules : website()|modules %}
+
+                {% if secureActive %}
+
+                    {% set pathArgs = app.request.get('tpl-form') ? {'tpl-form': true} : {} %}
+
+                    <form class="form-horizontal security" id="form-login" action="{{ path('security_front_login', pathArgs) }}" method="POST" novalidate="novalidate">
+
+                        {% set inputType = login_type == 'email' ? 'email' : 'text' %}
+                        {% set inputName = login_type == 'email' ? 'email' : 'login' %}
+                        {% set placeholder = login_type == 'email' ? 'E-mail'|trans : "Nom d'utilisateur"|trans %}
+
+                        <div class="form-group">
+                            <input type="{{ inputType }}"
+                                   value="{{ last_username }}"
+                                   name="{{ inputName }}"
+                                   class="form-control"
+                                   placeholder="{{ placeholder|striptags }}"
+                                   autocomplete="off"
+                                   required autofocus /></div>
+
+                        <div class="form-group">
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   placeholder="{{ 'Mot de passe'|trans|striptags }}"></div>
+
+                        {% include "security/includes/recaptcha-fields.html.twig" %}
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+
+                        <div class="row mb-2">
+                            <div class="col-sm-6 text-center text-sm-start">
+                                <div class="form-group m-0">
+                                    <div class="form-check d-inline-block">
+                                        <input id="remember_me" type="checkbox" name="_remember_me" class="form-check-input" checked>
+                                        <label class="form-check-label" for="remember_me">{{ emt('Se rappeler de moi'|trans|raw) }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-center text-sm-end">
+                                <a href="{{ path("security_front_password_request", {"_locale": app.request.locale}) }}" id="to-recover" class="text-dark" data-toggle="preloader">
+                                    <small class="text-italic">{{ emt('Mot de passe oublié ?'|trans|raw) }}</small>
+                                </a>
+                            </div>
+                        </div>
+
+                        {% if error %}
+                            {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'danger', "message": error.messageKey|trans(error.messageData, 'security')|raw} only %}
+                        {% endif %}
+
+                        {% include "front/" ~ websiteTemplate ~ "/include/flashbag.html.twig" %}
+
+                        <button id="submit"
+                                name="submit"
+                                type="submit"
+                                class="btn btn-primary btn-block text-uppercase"
+                                data-toggle="preloader">{{ emt('Se connecter'|trans|raw) }}</button>
+
+                        {% if website.security.frontRegistration %}
+                            <a href="{{ path('security_front_register') }}"
+                               class="btn btn-outline-primary btn-block text-uppercase mt-4" data-toggle="preloader">
+                                {{ emt('Inscrivez-vous'|trans|raw) }}
+                            </a>
+                        {% endif %}
+
+                    </form>
+
+                {% else %}
+
+                    {% set message = app.request.get('tpl-form')
+                        ? "Pour afficher le formulaire, activer <strong>Modules sécurisés</strong>."
+                        : "Pour afficher le formulaire, activer <strong>Pages sécurisées</strong>." %}
+                    {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": "warning", "message": emt(message)} only %}
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% trans_default_domain 'front_default' %}
+
+{% set accordionId = uniqId() %}
+{% set i18n = faq|i18n %}
+{% set title = i18n.title is defined ? i18n.title : null %}
+{% set titleForce = 3 %}
+
+<div id="accordion-{{ accordionId }}" class="faq-accordion">
+
+    {% if title %}
+        <h3 class="faq-title mb-4">{{ title|raw }}</h3>
+    {% endif %}
+
+    {% set isActive = true %}
+    {% set titleForce = title ? titleForce + 1 : titleForce %}
+
+    {% for question in faq.questions %}
+
+        {% set i18n = question|i18n %}
+
+        {% if i18n %}
+
+            {% set title = i18n.title is defined ? i18n.title : null %}
+            {% set titleAlignment = i18n.titleAlignment is defined and i18n.titleAlignment ? i18n.titleAlignment : 'text-start' %}
+            {% set intro = i18n.introduction is defined ? i18n.introduction : null %}
+            {% set introAlignment = i18n.introductionAlignment is defined and i18n.introductionAlignment ? i18n.introductionAlignment : 'text-start' %}
+            {% set body = i18n.body is defined ? i18n.body : null %}
+            {% set bodyAlignment = i18n.bodyAlignment is defined and i18n.bodyAlignment ? i18n.bodyAlignment : 'text-start' %}
+            {% set i18nMedia = question|i18nMedia %}
+            {% set mediaConfig = i18nMedia|thumbConfiguration(thumbConfiguration) %}
+
+            <div class="card bg-white">
+
+                <div class="card-header bg-white p-0" id="heading-{{ loop.index ~ "-" ~ accordionId }}">
+                    <h{{ titleForce }} class="title text-uppercase text-bold cursor mt-0 mb-0 {{ titleAlignment }}{% if not isActive %} collapsed{% endif %}"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapse-{{ loop.index ~ "-" ~ accordionId }}"
+                        aria-expanded="{% if isActive %}true{% else %}false{% endif %}"
+                        aria-controls="collapse-{{ loop.index ~ "-" ~ accordionId }}">
+                        {{ title|unescape|raw }}
+                        {{ "fas fa-chevron-up"|fontawesome(null, 17, 'float-end') }}
+                    </h{{ titleForce }}>
+                </div>
+
+                <div id="collapse-{{ loop.index ~ "-" ~ accordionId }}"
+                     class="collapse{% if isActive %} show{% endif %}"
+                     aria-labelledby="heading-{{ loop.index ~ "-" ~ accordionId }}"
+                     data-parent="#accordion-{{ accordionId }}">
+
+                    <div class="card-body p-0 pt-4">
+                        <div class="content">
+                            {% if intro|striptags|length > 0 %}
+                                <p class="introduction text-bold {{ introAlignment }}">{{ intro|unescape|raw|nl2br }}</p>
+                            {% endif %}
+                            {% if body|striptags|length > 0 %}
+                                <div class="body {{ bodyAlignment }}{% if i18n.headerTable %} header-table{% endif %}">{{ body|unescape|raw }}</div>
+                            {% endif %}
+                            {% if i18nMedia %}
+                                <div class="mt-4">
+                                    {{ i18nMedia|thumb(mediaConfig) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% set isActive = false %}
+
+        {% endif %}
+
+    {% endfor %}
+
+</div>

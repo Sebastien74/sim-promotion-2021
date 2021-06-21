@@ -1,0 +1,57 @@
+{% trans_default_domain 'front' %}
+
+{% set websiteSession = app.request.session.get('frontWebsite') %}
+{% set websiteArray = websiteSession ? websiteSession : website(false, true) %}
+{% set apiI18ns = websiteArray|apiI18ns %}
+{% set apiFacebook = apiI18ns|apiI18n('facebook', app.request.locale) %}
+{% set phoneTrack = apiFacebook.phoneTrack is defined ? apiFacebook.phoneTrack : false %}
+{% set microDataActive = website.seoConfiguration.microData %}
+{% set hasBtn = options.btn is defined %}
+{% set btnClasses = hasBtn ? " btn btn-" ~ options.btn ~ " hbtn hb-fill-right" : null %}
+{% set itemprop = phone.type == 'fixe' or phone.type == 'mobile' ? "telephone" : (phone.type == 'fax' ? 'faxNumber' : null) %}
+{% set labelHTML = '' %}
+
+{% if icon and (phone.type == 'office' or phone.type == 'fixe') %}
+    {% set labelHTML = '<span class="icon-wrap mr-2">' ~ 'fal fa-phone'|fontawesome(14, 14, null, null, false) ~ "</span>" %}
+{% elseif icon and phone.type == 'mobile' %}
+    {% set labelHTML = '<span class="icon-wrap mr-2">' ~ 'fal fa-mobile'|fontawesome(14, 14, null, null, false) ~ "</span>" %}
+{% elseif icon and phone.type == 'fax' %}
+    {% set labelHTML = '<span class="icon-wrap mr-2">' ~ 'fal fa-fax'|fontawesome(14, 14, null, null, false) ~ "</span>" %}
+{% elseif options.icon is defined %}
+    {% set labelHTML = '<span class="icon-wrap mr-2">' ~ options.icon|fontawesome(14, 14, null, null, false) ~ "</span>" %}
+{% elseif entitled %}
+    {% set entitled = phone.type == 'fax' ? 'Fax.'|trans|raw : 'Tél.'|trans|raw %}
+    {% set labelHTML = '<span class="entitled">' ~ entitled ~ '</span>' %}
+{% elseif options.img is defined and options.webpack is defined %}
+    {% set width = options.width is defined ? options.width : 20 %}
+    {% set height = options.height is defined ? options.height : 20 %}
+    {% set labelHTML = '<img data-src="' ~ asset(options.img, options.webpack) ~ '"
+                             src="' ~ asset("build/vendor/images/lazy-point.svg", "vendor") ~ '"
+                             class="img-fluid lazyload mr-2"
+                             title="' ~ 'Téléphone'|trans|striptags ~ '"
+                             alt="' ~ 'Téléphone'|trans|striptags ~ '"
+                             width="' ~ width ~ '"
+                             height="' ~ height ~ '" />' %}
+{% endif %}
+
+{% if not hasBtn and labelHTML %}
+    {{ labelHTML|raw }}
+{% endif %}
+
+<a href="#" data-tel="{{ phone.tagNumber|encrypt(website) }}"
+   class="phone-link d-inline-block loading {% if phoneTrack %} fb-phone-track{% endif %} {% if isMobile() %}has-mobile{% else %}has-desktop{% endif %}{{ btnClasses }}"
+   aria-label="{{ "Téléphone"|trans|striptags }}"
+   data-text="{{ phone.number|encrypt(website) }}"
+   data-id="{{ website.id }}"{% if microDataActive and itemprop %} itemscope="itemscope" itemtype="https://schema.org/Organization"{% endif %}>
+    {% if hasBtn and labelHTML %}
+        {{ labelHTML|raw }}
+    {% endif %}
+    {% if options.text is defined %}
+        {{ options.text }}
+    {% else %}
+        <span class="phone-text d-inline-block"{% if microDataActive and itemprop %} itemprop="{{ itemprop }}"{% endif %}>
+            <div class="spinner-border me-1" role="status"></div>
+            {{ "Chargement du numéro de téléphone"|trans|raw }}
+        </span>
+    {% endif %}
+</a>

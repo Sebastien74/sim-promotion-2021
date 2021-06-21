@@ -1,0 +1,68 @@
+{% trans_default_domain 'front_default' %}
+
+{% set infos = information|info(app.request.locale) %}
+{% set haveAddress = infos.addresses.contact is defined and infos.addresses.contact|length > 0 %}
+{% set haveEmails = infos.emails.contact is defined and infos.emails.contact|length > 0 %}
+{% set havePhones = infos.phones.contact is defined and infos.phones.contact|length > 0 %}
+
+{% if haveEmails or havePhones or haveAddress %}
+
+    <!-- .information-container -->
+    <div class="information-container text-center">
+
+        <div class="card bg-light">
+            <div class="card-body pt-5 pb-5 pt-lg-4 pb-lg-4">
+
+                {% if haveEmails or havePhones %}
+
+                    <!-- .contact-information -->
+                    <div class="contact-information mb-5">
+                        <div class="icon-wrap">
+                            {{ 'fal fa-info'|fontawesome(15, 30) }}
+                        </div>
+                        <h2 class="title">{{ emt('Contact'|trans|raw) }}</h2>
+                        {% if haveEmails %}
+                            <address class="mb-0">
+                                <ul class="reset emails">
+                                    {% for email in infos.emails.contact %}
+                                        <li>{{ email.email|email(website, false) }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </address>
+                        {% endif %}
+                        {% if havePhones %}
+                            <address class="mb-0">
+                                <ul class="reset phones">
+                                    {% for phone in infos.phones.contact %}
+                                        <li>{{ phone|phone(website, false) }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </address>
+                        {% endif %}
+                    </div>
+                    <!-- \.contact-information -->
+
+                {% endif %}
+
+                {% if haveAddress %}
+                    <!-- .address-information -->
+                    <div class="address-information">
+                        <div class="icon-wrap">
+                            {{ 'fal fa-map-signs'|fontawesome(30, 30) }}
+                        </div>
+                        {% set entitled = infos.addresses.contact|length > 1 ? 'Adresses'|trans|raw : 'Adresse'|trans|raw %}
+                        <h2 class="title mb-4">{{ emt(entitled) }}</h2>
+                        {% for address in infos.addresses.contact %}
+                            {{ address|address(website, 'contact') }}
+                        {% endfor %}
+                    </div>
+                    <!-- \.address-information -->
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+    <!-- \.information-container -->
+
+{% endif %}

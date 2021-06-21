@@ -1,0 +1,44 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="catalog-teaser splide mt-5"
+     data-items="{{ teaser.itemsPerSlide }}"
+     data-items-mini-pc="3"
+     data-items-tablet="2"
+     data-items-mobile="1"
+     data-fade="loop"
+     data-scroll="1"
+     data-pause="1"
+     data-autoplay="1"
+     data-arrows="1"
+     data-dots="0"
+     data-interval="1500">
+    <div class="splide__track">
+        <ul class="splide__list">
+            {% for post in posts %}
+                {% set product = post.entity is defined ? post.entity : null %}
+                {% set mediaRelation = post.mediaRelation %}
+                {% set path = post.pageUrl and post.url
+                    ? path('front_catalogproduct_view', {'pageUrl': post.pageUrl, 'url': post.url})
+                    : path('front_catalogproduct_view_only', {'url': post.url}) %}
+                {% if product %}
+                    <li class="splide__slide">
+                        <a href="{{ path }}" class="card ms-3 me-3">
+                            {{ mediaRelation|thumb(post.mediaConfig, {
+                                "btn_link": false,
+                                'popupGallery': false,
+                                'fullPopup': false,
+                                'placeholder': true,
+                                'lazyLoad': true,
+                                'class': 'w-100' }) }}
+                            <div class="title-container position-relative">
+                                <h3 class="title text-dark mt-3 mb-0 fw-300">{{ post.title|raw }}</h3>
+                                {% include 'front/' ~ websiteTemplate ~ '/actions/catalog/include/add-cart-btn.html.twig' with {'productId': product.id } only %}
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>

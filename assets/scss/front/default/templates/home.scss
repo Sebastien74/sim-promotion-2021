@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-10-09, 8:55 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    TEMPLATE HOME :
+    ===============
+
+    1 ) Title header
+
+------------------------------------------------------------------ */
+
+@import "../utilities/mixins";
+@import "../variables";
+
+/*-----------------------------------
+   1 ) Title header
+-----------------------------------*/
+
+#content-home {
+
+    .teaser-news-container {
+        .card-block, .cols-group, .content-box, .box9, .loader-image-wrapper, picture, .content-box img {
+            height: 100%;
+        }
+    }
+}

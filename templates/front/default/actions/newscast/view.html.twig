@@ -1,0 +1,82 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set i18n = news|i18n %}
+{% set category = news.category %}
+{% set mainMediaInHeader = category.mainMediaInHeader %}
+{% set i18nCategory = category ? category|i18n : category %}
+{% set hasLayout = layout is defined and layout and not news.customLayout %}
+{% set templateRepo = hasLayout and layout.zones|length > 0 ? 'layout' : 'view' %}
+{% set template = layout and layout.slug and layout.zones|length > 0
+    ? 'front/' ~ websiteTemplate ~ '/actions/newscast/view/include/layout.html.twig'
+    : 'front/' ~ websiteTemplate ~ '/actions/newscast/view/default.html.twig' %}
+
+{% if i18n %}
+    {% set title = i18n.title %}
+    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : 'text-start' %}
+    {% set intro = i18n.introduction %}
+    {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : 'text-start' %}
+    {% set body = i18n.body %}
+    {% set bodyAlignment = i18n.bodyAlignment ? i18n.bodyAlignment : 'text-start' %}
+    {% set i18nVideo = i18n.video %}
+    {% set haveMainMedia = news|haveMainMedia %}
+    {% set i18nMainMedia = haveMainMedia ? news|mainMedia : category|i18nMedia %}
+    {% set medias = news|i18nMedias %}
+    {% set link = i18n|i18nLink %}
+    {% set linkAlignment = link and link.alignment ? link.alignment : 'text-start' %}
+    {% set linkStyle = link.style ? link.style : 'btn btn-primary' %}
+{% endif %}
+
+{% block microData %}
+    {% if website.seoConfiguration.microData and i18n %}
+        {% include 'front/' ~ websiteTemplate ~ '/actions/newscast/view/include/microdata.html.twig' with {
+            'seo': seo,
+            'website': website,
+            'news': news,
+            'haveMainMedia': haveMainMedia,
+            'i18nMainMedia': i18nMainMedia
+        } only %}
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-news', webpack, true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('front-' ~ websiteTemplate ~ '-news', webpack, 'Page', false, true) }}
+{% endblock %}
+
+{% block body %}
+
+    {% if i18n %}
+
+        <!-- .news-view-container -->
+        <div class="news-view-container position-relative">
+
+            {% include 'core/webmaster-edit.html.twig' with {
+                'title': "Éditer l'actualité"|trans([], 'front_webmaster'),
+                'role': 'ROLE_NEWSCAST',
+                'path': path('admin_newscast_edit', {'website': news.website.id, 'newscast': news.id})
+            } only %}
+
+            {% if news.customLayout and news.layout and news.layout.zones|length > 0 %}
+                {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' with {'entity': news} %}
+            {% elseif layout and layout.zones|length > 0 and (template)|fileExist %}
+                {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' with {'entity': templateCategory} %}
+            {% else %}
+                {% include template %}
+            {% endif %}
+
+        </div>
+        <!-- \.news-view-container -->
+
+    {% endif %}
+
+{% endblock %}

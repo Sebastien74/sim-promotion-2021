@@ -1,0 +1,569 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 10:50 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT HELPER VARIABLES :
+    ========================
+
+    1 ) Mixins
+    2 ) Enable library Modules
+    3 ) Colors system
+    4 ) Core
+        a - Breakpoints
+        b - Container
+        c - Fonts
+        d - Fonts sizes
+        e - Colors in background
+        f - Elements
+        g - Main
+        h - Border radius
+        i - Title header
+        j - Breadcrumb
+        k - Margins
+        l - Icon sizes
+        m - App
+    5 ) Buttons
+    6 ) Cards
+    7 ) Forms
+    8 ) Alerts
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Mixins
+-----------------------------------*/
+
+@import "utilities/mixins";
+
+/*-----------------------------------
+   2 ) Enable library Modules
+-----------------------------------*/
+
+@import "library";
+
+/*-----------------------------------
+   3 ) Colors system
+-----------------------------------*/
+
+$body-bg: #fff;
+
+$primary: #ef7427 !default;
+$secondary: #add4d3 !default;
+$success: #5d7808 !default;
+$info: #0081ac !default;
+$warning: #f0ad4e !default;
+$danger: #a82835 !default;
+$danger-light: #ee9da5 !default;
+$light: #dee2e6 !default;
+$dark: #2f2e2e !default;
+
+$white: #ffffff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #d7d7d7 !default;
+$gray-500: #adadad !default;
+$gray-600: #6c757d !default;
+$gray-700: #535353 !default;
+$gray-800: #3c3c3c !default;
+$gray-900: #212529 !default;
+$black: #000 !default;
+
+$facebook-color: #4267B2;
+$twitter-color: #1DA1F2;
+$google-color: #dd4b39;
+$google-plus-color: #dd4b39;
+$youtube-color: #bb0000;
+$instagram-color: #CC38A6;
+$linkedin-color: #006699;
+$pinterest-color: #BD081C;
+$tripadvisor-color: #01B089;
+$forum-color: #333;
+$spotify-color: #85bf3f;
+$dribble-color: #ea4c89;
+$dropbox-color: #007ee5;
+$flickr-color: #ff0084;
+$tumblr-color: #32506d;
+$skype-color: #00aff0;
+$github-color: #171515;
+$email-color: $gray-300;
+
+$default-colors: 'primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', 'dark', 'white';
+$app-colors: () !default;
+$app-colors: map-merge((
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
+    "danger-light": $danger-light,
+    "light": $light,
+    "dark": $dark,
+    "white": $white,
+), $app-colors);
+
+/*-----------------------------------
+   4 ) Core
+-----------------------------------*/
+
+/*-- a - Breakpoints --*/
+
+$xs: 320px;
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$xxl: 1600px;
+
+$grid-breakpoints: (
+    xs: 0,
+    sm: $sm,
+    md: $md,
+    lg: $lg,
+    xl: $xl,
+    xxl: $xxl
+) !default;
+
+/*-- b - Container --*/
+
+$container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+    xxl: 1320px
+) !default;
+
+/*-- c - Fonts --*/
+
+$font-primary: 'Roboto', sans-serif;
+$font-light: 'Roboto', sans-serif;
+$font-secondary: 'Roboto', sans-serif;
+$font-title: $font-primary;
+
+$fonts-weights: (100, 200, 300, 400, 500, 600, 700, 800, 900) !default;
+$font-weight-lighter: lighter !default; /* .font-weight-light */
+$font-weight-light: 300 !default; /* .font-weight-lighter */
+$font-weight-normal: 400 !default; /* .font-weight-normal */
+$font-weight-bold: 700 !default; /* .font-weight-bold */
+$font-weight-bolder: bolder !default; /* .font-weight-bolder */
+
+/*-- d - Fonts sizes --*/
+
+$browser-context: 16 !default;
+
+$font-size-base: rem($browser-context);
+$font-size-h1: rem(40px);
+$font-size-h2: rem(30px);
+$font-size-h3: rem(25px);
+$font-size-h4: rem(20px);
+$font-size-h5: rem($browser-context);
+$font-size-h6: rem($browser-context);
+$font-size-sub-title: $font-size-base;
+$font-size-paragraph: $font-size-base;
+$font-size-news-teaser-control: 30px;
+$font-size-card-title: $font-size-h2;
+$font-size-small: 80%;
+
+/*-- e - Colors in background --*/
+
+$in-bg-primary-color: $white;
+$in-bg-secondary-color: $white;
+$in-bg-success-color: $gray-900;
+$in-bg-info-color: $white;
+$in-bg-warning-color: $gray-900;
+$in-bg-danger-color: $white;
+$in-bg-danger-light-color: $gray-900;
+$in-bg-light-color: $gray-900;
+$in-bg-dark-color: $white;
+$in-bg-white-color: $gray-900;
+
+/*-- f - Elements --*/
+
+$elements: () !default;
+$elements: map-merge((
+"h1": (
+    'properties': (
+        'color': $primary,
+        'font-size': $font-size-h1,
+        'font-weight': 600,
+        'font-family': $font-title,
+        'margin-bottom': 2rem,
+        'text-transform': uppercase,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"h2": (
+    'properties': (
+        'color': $primary,
+        'font-size': $font-size-h2,
+        'font-weight': 600,
+        'font-family': $font-title,
+        'margin-bottom': .5rem,
+        'text-transform': uppercase,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"h3": (
+    'properties': (
+        'color': $secondary,
+        'font-size': $font-size-h3,
+        'font-weight': 600,
+        'font-family': $font-title,
+        'margin-bottom': .5rem,
+        'text-transform': uppercase,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"h4": (
+    'properties': (
+        'color': $secondary,
+        'font-size': $font-size-h4,
+        'font-family': $font-title,
+        'margin-bottom': .5rem,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"h5": (
+    'properties': (
+        'color': $secondary,
+        'font-size': $font-size-h5,
+        'font-family': $font-title,
+        'margin-bottom': .5rem,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"h6": (
+    'properties': (
+        'color': $secondary,
+        'font-size': $font-size-h6,
+        'font-family': $font-title,
+        'margin-bottom': .5rem,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+".sub-title": (
+    'properties': (
+        'color': $primary,
+        'font-size': $font-size-sub-title,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"p": (
+    'properties': (
+        'color': $dark,
+        'font-size': $font-size-paragraph,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+".body": (
+    'properties': (
+        'font-size': $font-size-base,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"a.link, .body a, .introduction a, a.phone-link, a.email-link": (
+    'properties': (
+        'color': $primary,
+        'font-size': $font-size-base,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $primary,
+        'dark': $primary,
+        'white': $primary,
+    )
+),
+".news-category-title": (
+    'properties': (
+        'color': $gray-500,
+        'font-size': $font-size-base,
+    ),
+),
+"small": (
+    'properties': (
+        'font-size': $font-size-small,
+    ),
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+),
+"svg": (
+    'colors-in-backgrounds': (
+        'primary': $in-bg-primary-color,
+        'secondary': $in-bg-secondary-color,
+        'success': $in-bg-success-color,
+        'info': $in-bg-info-color,
+        'warning': $in-bg-warning-color,
+        'danger': $in-bg-danger-color,
+        'danger-light': $in-bg-danger-light-color,
+        'light': $in-bg-light-color,
+        'dark': $in-bg-dark-color,
+        'white': $in-bg-white-color,
+    )
+)
+), $elements);
+
+/*-- g - Main --*/
+
+$content-page-full-width: 2000px;
+$content-page-box-width: 1600px;
+$enable-caret: false;
+
+/*-- h - Border radius --*/
+
+$border-radius: .25rem;
+$input-border-radius: .25rem;
+$border-radius-lg: $border-radius;
+$border-radius-sm: $border-radius;
+
+/*-- i - Title header --*/
+
+$title-header-padding: 6rem;
+$title-header-color: $white;
+$title-header-font-size: rem(90px);
+$title-header-sub-font-size: rem(31px);
+$title-header-sub-color: $dark;
+
+/*-- j - Breadcrumb --*/
+
+$breadcrumb-padding-x: 0;
+$breadcrumb-padding-y: 1rem;
+
+$breadcrumb-background-color: transparent;
+
+$breadcrumb-muted-color: $white;
+$breadcrumb-active-color: $white;
+$breadcrumb-divider-color: $white;
+
+$breadcrumb-font-size: rem(15px);
+$breadcrumb-divider-font-size: rem(7px);
+
+/*-- k - Margins --*/
+/*-- k - Margins --*/
+$margins: (
+    'xs': (
+        'x': ('xxl': rem(15px), 'xl': rem(15px), 'lg': rem(15px), 'md': rem(8px), 'sm': rem(8px), 'xs': rem(8px)),
+        'y': ('xxl': rem(60px), 'xl': rem(60px), 'lg': rem(45px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(15px)),
+    ),
+    'sm': (
+        'x': ('xxl': rem(15px), 'xl': rem(15px), 'lg': rem(15px), 'md': rem(8px), 'sm': rem(8px), 'xs': rem(8px)),
+        'y': ('xxl': rem(60px), 'xl': rem(60px), 'lg': rem(45px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(15px)),
+    ),
+    'md': (
+        'x': ('xxl': rem(120px), 'xl': rem(90px), 'lg': rem(75px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(8px)),
+        'y': ('xxl': rem(90px), 'xl': rem(90px), 'lg': rem(60px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(15px)),
+    ),
+    'lg': (
+        'x': ('xxl': rem(120px), 'xl': rem(160px), 'lg': rem(90px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(8px)),
+        'y': ('xxl': rem(120px), 'xl': rem(160px), 'lg': rem(90px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(15px)),
+    ),
+    'xl': (
+        'x': ('xxl': rem(120px), 'xl': rem(90px), 'lg': rem(90px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(8px)),
+        'y': ('xxl': rem(240px), 'xl': rem(90px), 'lg': rem(90px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(15px)),
+    ),
+    'xxl': (
+        'x': ('xxl': rem(320px), 'xl': rem(160px), 'lg': rem(90px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(8px)),
+        'y': ('xxl': rem(320px), 'xl': rem(160px), 'lg': rem(90px), 'md': rem(45px), 'sm': rem(30px), 'xs': rem(15px)),
+    ),
+);
+
+/*-- l - Icon sizes --*/
+$icon-sizes: (
+    "xs": #{$browser-context}px,
+    "sm": #{$browser-context * 2}px,
+    "md": #{$browser-context * 3}px,
+    "lg": #{$browser-context * 4}px,
+    "xl": #{$browser-context * 5}px,
+    "xxl": #{$browser-context * 6}px,
+);
+
+/*-- m - App --*/
+
+$orders-limit: 30;
+
+/*-----------------------------------
+   5 ) Buttons
+-----------------------------------*/
+
+$btn-border-width: 1px;
+$btn-border-radius: $border-radius;
+
+$btn-white-space: normal;
+$btn-font-weight: normal;
+$btn-line-height: inherit;
+$btn-font-size: $font-size-base;
+$btn-font-size-sm: $btn-font-size;
+$btn-font-size-lg: $btn-font-size;
+
+$btn-transition: .3s;
+
+$btn-padding-y: .5rem;
+$btn-padding-x: 3rem;
+$btn-padding: $btn-padding-y $btn-padding-x;
+
+$buttons: (
+    'primary': ('bg': $primary, 'color': $white, 'bg-hover': $white, 'color-hover': $primary, 'bg-outline-hover': $primary, 'color-outline-hover': $white),
+    'secondary': ('bg': $secondary, 'color': $white, 'bg-hover': $white, 'color-hover': $secondary, 'bg-outline-hover': $secondary, 'color-outline-hover': $white),
+    'success': ('bg': $success, 'color': $white, 'bg-hover': $white, 'color-hover': $success, 'bg-outline-hover': $success, 'color-outline-hover': $white),
+    'info': ('bg': $info, 'color': $white, 'bg-hover': $white, 'color-hover': $info, 'bg-outline-hover': $info, 'color-outline-hover': $white),
+    'warning': ('bg': $warning, 'color': $white, 'bg-hover': $white, 'color-hover': $warning, 'bg-outline-hover': $warning, 'color-outline-hover': $gray-900),
+    'danger': ('bg': $danger, 'color': $white, 'bg-hover': $white, 'color-hover': $danger, 'bg-outline-hover': $danger, 'color-outline-hover': $gray-900),
+    'danger-light': ('bg': $danger-light, 'color': $white, 'bg-hover': $white, 'color-hover': $danger-light, 'bg-outline-hover': $danger-light, 'color-outline-hover': $gray-900),
+    'light': ('bg': $light, 'color': $gray-900, 'bg-hover': $gray-900, 'color-hover': $light, 'bg-outline-hover': $light, 'color-outline-hover': $gray-900),
+    'dark': ('bg': $dark, 'color': $white, 'bg-hover': $white, 'color-hover': $dark, 'bg-outline-hover': $dark, 'color-outline-hover': $white),
+    'white': ('bg': $white, 'color': $primary, 'bg-hover': $primary, 'color-hover': $white, 'bg-outline': transparent, 'color-outline': $white, 'bg-outline-hover': $white, 'color-outline-hover': $primary)
+);
+
+/*-----------------------------------
+   6 ) Cards
+-----------------------------------*/
+
+$card-border-color: transparentize($black, 1);
+$card-border-radius: 0;
+$card-border-width: 0;
+
+/*-----------------------------------
+   7 ) Forms
+-----------------------------------*/
+
+$input-line-height: 1.8;
+$custom-file-height: 38px;
+$custom-control-cursor: pointer;
+
+/*-----------------------------------
+   8 ) Alerts
+-----------------------------------*/
+
+$alert-colors: () !default;
+$alert-colors: map-merge((
+    "primary": ('bg': $primary, 'color': $white, 'border': $primary, 'font-size': $font-size-base, 'ribbon-bg': $secondary, 'ribbon-color': $white, 'icon-color': $white),
+    "secondary": ('bg': $secondary, 'color': $white, 'border': $secondary, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $white, 'icon-color': $white),
+    "success": ('bg': $success, 'color': $white, 'border': $success, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $white, 'icon-color': $white),
+    "info": ('bg': $info, 'color': $white, 'border': $info, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $white, 'icon-color': $white),
+    "warning": ('bg': $warning, 'color': $primary, 'border': $warning, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $warning, 'icon-color': $white),
+    "danger": ('bg': $danger, 'color': $white, 'border': $danger, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $white, 'icon-color': $white),
+    "danger-light": ('bg': $danger-light, 'color': $primary, 'border': $danger-light, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $primary, 'icon-color': $white),
+    "light": ('bg': $light, 'color': $dark, 'border': $light, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $light, 'icon-color': $white),
+    "dark": ('bg': $dark, 'color': $white, 'border': $dark, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $white, 'icon-color': $white),
+    "white": ('bg': $white, 'color': $dark, 'border': $white, 'font-size': $font-size-base, 'ribbon-bg': $primary, 'ribbon-color': $dark, 'icon-color': $white),
+), $alert-colors);

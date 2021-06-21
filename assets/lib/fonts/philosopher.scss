@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-09-02, 11:17 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS PHILOSOPHER :
+    ========================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Philosopher", sans-serif;
+
+$fonts: (
+    'Philosopher-Bold': ('weight': 700, 'style': normal),
+    'Philosopher-BoldItalic': ('weight': 700, 'style': italic),
+    'Philosopher-Italic': ('weight': 400, 'style': italic),
+    'Philosopher-Regular': ('weight': 400, 'style': normal),
+);
+
+@include font-face("Philosopher", $fonts);

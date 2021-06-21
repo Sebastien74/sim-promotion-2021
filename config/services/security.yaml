@@ -1,0 +1,37 @@
+#####################################
+#           Security                #
+#####################################
+
+services:
+
+    #####################################
+    #           EventListener           #
+    #####################################
+
+    App\EventListener\LoginListener:
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.interactive_login' }
+
+    App\EventListener\LogoutListener:
+        lazy: true
+        arguments:
+            $router: '@router'
+            $tokenStorage: '@security.token_storage'
+            $translator: '@translator'
+        tags:
+            - { name: 'kernel.event_listener', event: 'Symfony\Component\Security\Http\Event\LogoutEvent', dispatcher: security.event_dispatcher.main }
+
+    #####################################
+    #           Form manager            #
+    #####################################
+
+    App\Form\Manager\Security\Front\UserManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $passwordEncoder: '@security.password_encoder'
+            $pictureManager: '@App\Form\Manager\Security\PictureManager'

@@ -1,0 +1,87 @@
+{% set shareUrl = masterRequest().headers.get("referer") ~ '?comment=' ~ comment.id %}
+{% set title = comment.authorName %}
+{% set description = comment.message %}
+{% set ogImage = '' %}
+{% set sharers = {
+    'facebook': {'media': 'fab fa-facebook-f', 'url': "https://www.facebook.com/sharer/sharer.php?u=" ~ shareUrl},
+    'twitter': {'media': 'fab fa-twitter', 'url': "https://twitter.com/intent/tweet?status=" ~ shareUrl ~ "&text=" ~ title},
+    'pinterest': {'media': 'fab fa-pinterest-p', 'url': "https://pinterest.com/pin/create/button/?url=" ~ shareUrl ~ "&media=" ~ ogImage ~ "&description=" ~ description},
+    'linkedin': {'media': 'fab fa-linkedin-in', 'url': "https://www.linkedin.com/shareArticle?mini=true&url=" ~ shareUrl ~ "&title=" ~ title},
+    'email': {'media': 'fal fa-envelope'}
+} %}
+
+{% set content = '<ul class="reset">' %}
+    {% for code, config in sharers %}
+        {% set content = content ~ '<li class="d-inline-block">' %}
+            {% if code == 'email' %}
+                {% set content = content ~ '<span class="share-link ' ~ code ~ '" title="' ~ code|capitalize ~ '" data-toggle="modal" data-target="#share-forum-email-modal-' ~ comment.id ~ '">' %}
+                    {% set content = content ~ config['media']|fontawesome(null, 17) %}
+                {% set content = content ~ '</span>' %}
+            {% else %}
+                {% set content = content ~ '<a href="' ~ config['url'] ~ '" class="share-link ' ~ code ~ '" title="' ~ code|capitalize ~ '">' %}
+                    {% set content = content ~ config['media']|fontawesome(null, 17) %}
+                {% set content = content ~ '</a>' %}
+            {% endif %}
+        {% set content = content ~ '</li>' %}
+    {% endfor %}
+{% set content = content ~ '</ul>' %}
+
+<li class="d-inline-block me-3 cursor">
+    <a tabindex="0" class="share-popover"
+       role="button"
+       data-placement="top"
+       data-toggle="popover"
+       data-trigger="focus"
+       data-content="{{ content }}">
+        {{ "fad fa-share"|fontawesome(null, 17, 'me-2') }}{{ emt("Partager"|trans|raw) }}
+    </a>
+</li>
+
+{% if sharers['email'] is defined %}
+    <div class="modal fade" id="share-forum-email-modal-{{ comment.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-white">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ "Fermer"|trans|raw }}"></button>
+                <div class="modal-body d-flex">
+                    <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4 my-auto p-0">
+
+                        <div class="header mb-4">
+                            <h4 class="title mb-4">{{ emt("Envoyer à un ami"|trans|raw) }}</h4>
+                            {% if title %}
+                                <span class="share-title d-inline-block w-100">{{ title }}</span>
+                            {% endif %}
+                            <span class="url d-inline-block w-100">{{ shareUrl }}</span>
+                        </div>
+
+                        <form action="">
+                            <div class="form-group">
+                                <label for="share-to-input">{{ emt("Envoyer à"|trans|raw) }}<span> *</span></label>
+                                <input type="email" class="form-control" id="share-to-input" placeholder="{{ "Saisissez un email"|trans|striptags }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="share-subject-input">{{ emt("Sujet"|trans|raw) }}</label>
+                                <input type="text" class="form-control" id="share-subject-input" placeholder="{{ "Saisissez un sujet"|trans|striptags }}" value="{{ title }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="share-message-input">{{ emt("Message"|trans|raw) }}</label>
+                                <textarea class="form-control" id="share-message-input" rows="3" placeholder="{{ "Saisissez un message"|trans|striptags }}"></textarea>
+                            </div>
+                            <div class="form-group text-center">
+                                <button class="btn share-email-submit" data-url="{{ shareUrl }}">
+                                    {{ emt("Envoyer"|trans|raw) }}
+                                </button>
+                            </div>
+
+                            <small class="d-inline-block w-100 info">
+                                {{ emt("(*) champs obligatoires"|trans|raw) }} <br>
+                                {{ emt("Par cet envoi, j'affirme que je suis autorisé à envoyer cet e-mail."|trans|raw) }}
+                            </small>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,252 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-08-15, 4:04 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT NAVIGATION LAYOUT :
+    =========================
+
+    1 ) Top navigation
+    2 ) Navigation
+    3 ) Toggler icon
+    4 ) Locales switcher
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Top navigation
+-----------------------------------*/
+
+/*-----------------------------------
+   2 ) Navigation
+-----------------------------------*/
+
+.menu-container {
+    max-width: $content-page-box-width;
+    margin: 0 auto;
+}
+
+.content-page-box {
+
+    .menu-container {
+
+        &.animation {
+            top: -200px;
+            transition: top .5s;
+        }
+
+        &.fixed-top {
+
+            top: 0;
+            transition: top .5s;
+
+            .navbar-brand {
+                svg, img {
+                    max-height: 50px;
+                }
+            }
+        }
+
+        &.fixed-top, &.animation {
+
+            position: fixed !important;
+
+            #main-navigation {
+                max-width: $content-page-box-width;
+                margin: 0 auto;
+                box-shadow: 0 8px 8px -6px rgba(0, 0, 0, .2);
+                border-bottom: 1px solid rgba(0, 0, 0, .07);
+                z-index: 3000;
+            }
+        }
+    }
+}
+
+#main-navigation {
+
+    background-color: $white;
+    z-index: 200;
+
+    ul.navbar-nav {
+
+        li {
+
+            a {
+
+                color: $secondary;
+                transition: all .3s;
+
+                &:hover, &.active, &:focus {
+
+                    color: $primary;
+                    transition: all .3s;
+
+                    .caret {
+                        fill: $primary
+                    }
+                }
+
+                .caret {
+                    z-index: 200;
+                }
+            }
+
+            &.dropdown {
+                a {
+                    padding-right: 20px;
+                }
+            }
+        }
+
+        ul.dropdown-menu {
+
+            padding: 0;
+            border: 0;
+            min-width: 15rem;
+            margin: 0;
+
+            .dropdown-submenu {
+                position: relative;
+                display: inline-flex;
+                width: 100%;
+            }
+
+            .dropdown-submenu .dropdown-menu {
+                top: 0;
+                left: 100%;
+                margin-left: -1px;
+                margin-top: 0;
+            }
+
+            li {
+
+                a {
+
+                    padding: 10px 15px;
+
+                    &:hover, &.active, &:focus {
+
+                        color: $white;
+                        background-color: $primary;
+                        transition: all .3s;
+
+                        .caret {
+                            fill: $white
+                        }
+                    }
+                }
+
+                .caret {
+                    right: 15px;
+                    top: 8px;
+                }
+            }
+        }
+    }
+}
+
+/*-----------------------------------
+   3 ) Toggler icon
+-----------------------------------*/
+
+.toggler-wrap strong {
+    font-size: rem(15px);
+    font-weight: 300;
+    float: right;
+    margin-top: 3px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.navbar-toggler {
+    margin-top: 5px;
+    box-shadow: none !important;
+}
+
+#nav-toggler-icon {
+
+    width: 30px;
+    height: 30px;
+    position: relative;
+    transform: rotate(0deg);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+    float: right;
+    margin-right: 9px;
+
+    span {
+
+        display: block;
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background: $black;
+        border-radius: 9px;
+        opacity: 1;
+        left: 0;
+        transform: rotate(0deg);
+        transition: .25s ease-in-out;
+
+        &:nth-child(1) {
+            top: 0;
+        }
+
+        &:nth-child(2) {
+            top: 10px;
+            width: 60%;
+        }
+
+        &:nth-child(3) {
+            top: 20px;
+        }
+    }
+
+    &.open span {
+
+        &:nth-child(1) {
+            top: 10px;
+            transform: rotate(135deg);
+        }
+
+        &:nth-child(2) {
+            opacity: 0;
+            left: -60px;
+        }
+
+        &:nth-child(3) {
+            top: 10px;
+            transform: rotate(-135deg);
+        }
+    }
+}
+
+/*-----------------------------------
+   4 ) Locales switcher
+-----------------------------------*/
+
+.menu-container .locales-switcher {
+
+    font-size: 0;
+
+    a {
+
+        font-size: $font-size-base;
+        color: $dark;
+
+        &.inactive {
+            color: $gray-500;
+        }
+
+        &.active {
+            color: $dark !important;
+        }
+    }
+
+    .divider {
+        font-size: rem(14px);
+        color: $gray-500;
+    }
+}

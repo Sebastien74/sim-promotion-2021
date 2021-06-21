@@ -1,0 +1,16 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'pages'|moduleActive(allModules) or is_granted('ROLE_INTERNAL') %}
+
+    {% set uri = app.request.uri %}
+    {% set module = 'pages'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['pages'][app.user.locale] is defined ? i18nsModules['pages'][app.user.locale] : i18nsModules['pages']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['pages']['entity'].adminName %}
+
+    <li{% if '/page' in uri %} class="active"{% endif %}>
+        <a href="{{ path('admin_page_tree', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['pages']['entity'].iconClass|iconHtml({'width': 19, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

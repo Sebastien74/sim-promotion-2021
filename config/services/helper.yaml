@@ -1,0 +1,66 @@
+#####################################
+#           Helper                  #
+#####################################
+
+services:
+
+    #####################################
+    #           Admin                   #
+    #####################################
+
+    App\Helper\Admin\FormHelper:
+        public: true
+        lazy: true
+        arguments:
+            $requestStack: '@request_stack'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $formFactory: '@form.factory'
+            $globalManager: '@App\Form\Manager\Core\GlobalManager'
+            $mediaManager: '@App\Form\Manager\Media\MediaManager'
+            $i18nManager: '@App\Form\Manager\Translation\i18nManager'
+            $urlManager: '@App\Form\Manager\Seo\UrlManager'
+            $translator: '@translator'
+            $websiteRepository: '@App\Repository\Core\WebsiteRepository'
+            $appExtension: '@App\Twig\Core\AppRuntime'
+            $kernel: '@kernel'
+            $router: '@router'
+
+    App\Helper\Admin\FormDuplicateHelper:
+        public: true
+        lazy: true
+        arguments:
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $formFactory: '@form.factory'
+            $websiteRepository: '@App\Repository\Core\WebsiteRepository'
+            $translator: '@translator'
+            $serviceSubscriber: '@App\Service\Core\SubscriberService'
+
+    App\Helper\Admin\IndexHelper:
+        public: true
+        lazy: true
+        arguments:
+            $requestStack: '@request_stack'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $paginator: '@knp_paginator'
+            $searchManager: '@App\Form\Manager\Core\SearchManager'
+            $formFactory: '@form.factory'
+
+    App\Helper\Admin\TreeHelper:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    #####################################
+    #           Core                    #
+    #####################################
+
+    App\Helper\Core\InterfaceHelper:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'

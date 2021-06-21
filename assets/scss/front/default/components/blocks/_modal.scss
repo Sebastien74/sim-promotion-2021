@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2021
+    Created on : 2021-01-07, 5:15 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT VENDOR MODAL :
+    ====================
+
+------------------------------------------------------------------ */
+
+.modal {
+    .btn-close {
+        box-shadow: none;
+    }
+}
+
+.modal-block {
+    .btn-close {
+        top: 20px;
+        right: 15px;
+    }
+}

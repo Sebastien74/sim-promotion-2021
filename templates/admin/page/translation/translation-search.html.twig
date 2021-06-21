@@ -1,0 +1,13 @@
+{% trans_default_domain 'admin' %}
+
+<form role="search"
+      action="{{ path('admin_translation_search_edit', {"website": websiteId}) }}"
+      method="GET"
+      class="float-left w-100">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <button type="submit" class="input-group-text">{{ 'fal fa-search'|fontawesome(14, 14, 'dark') }}</button>
+        </div>
+        <input placeholder="{{ "Rechercher"|trans }}" name="search" class="form-control" type="text">
+    </div>
+</form>

@@ -1,0 +1,65 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block metaTitle %}{{ "Inscrivez-vous"|trans|raw }} - {{ companyName }}{% endblock %}
+{% block metaDescription %}{{ "Inscrivez-vous"|trans|raw }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with { 'title': emt("Inscrivez-vous"|trans|raw) } %}
+
+    <div class="container-fluid mt-5 mb-5 form-security-container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4 recaptcha-referer">
+
+                {% if app.user %}
+
+                    {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'info', "message": "Vous êtes déjà connecté."} only %}
+
+                {% else %}
+
+                    {{ form_start(form, {"attr": {"id": "user-registration-form", "novalidate": "novalidate", "class": "security"}}) }}
+
+                        <div class="row">
+                            {% for field in form.children %}
+                                {{ form_row(form[field.vars.name]) }}
+                                {% if field.vars.name == 'plainPassword' %}
+                                    <div class="form-group col-12">
+                                        <small class="form-text text-muted">
+                                            {{ emt("Le mot de passe doit comporter au moins 8 caractères, contenir au moins un chiffre, une majuscule et une minuscule."|trans|raw) }}
+                                        </small>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            {% include "security/includes/recaptcha-fields.html.twig" %}
+                        </div>
+
+                      {% include "front/" ~ websiteTemplate ~ "/include/flashbag.html.twig" %}
+
+                        <button id="submit"
+                                name="submit"
+                                type="submit"
+                                class="btn btn-primary btn-block text-uppercase"
+                                data-toggle="preloader">{{ emt("S'inscrire"|trans) }}
+                        </button>
+
+                    {{ form_end(form) }}
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

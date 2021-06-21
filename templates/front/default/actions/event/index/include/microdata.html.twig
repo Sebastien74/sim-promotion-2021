@@ -1,0 +1,70 @@
+{#{% trans_default_domain 'front_default' %}#}
+
+{#{% if allEntities|length > 0 %}#}
+
+{#    <!-- Microdata -->#}
+{#    <script type="application/ld+json" nonce="{{ csp_nonce() }}">#}
+{#    {#}
+{#        "@context": "https://schema.org",#}
+{#        "@type": "ItemList",#}
+{#        "itemListElement": [#}
+{#        {% for entity in allEntities %}#}
+
+{#        {% set newUrl = website|i18nUrl(entity, null, true) %}#}
+{#        {% set seo = newUrl|seo(entity) %}#}
+{#        {% set category = entity.category %}#}
+{#        {% set haveMainMedia = entity|haveMainMedia %}#}
+{#        {% set i18nMainMedia = haveMainMedia ? entity|mainMedia : category|i18nMedia %}#}
+{#        {% set mediaPath = i18nMainMedia|thumb(null, {'path': true}) %}#}
+
+{#        {% if not mediaPath %}#}
+{#            {% set mediaRelations = entity|i18nMedias %}#}
+{#            {% set mediaPath = mediaRelations[0] is defined ? mediaRelations[0]|thumb(null, {'path': true}) : null %}#}
+{#        {% endif %}#}
+
+{#            {#}
+{#                "@type": "ListItem",#}
+{#                "position": "{{ loop.index }}",#}
+{#                "item": {#}
+{#                    "@type": "Article",#}
+{#                    "mainEntityOfPage": {#}
+{#                        "@type": "WebPage",#}
+{#                        "@id": "{{ seo.canonical }}"#}
+{#                    },#}
+{#                    "url": "{{ seo.canonical }}",#}
+{#                    "headline": "{{ seo.title|striptags }}",#}
+{#                    {% if mediaPath %}#}
+{#                    "image": [#}
+{#                        "{{ mediaPath|imagine_filter('microdata_1x1') }}",#}
+{#                        "{{ mediaPath|imagine_filter('microdata_4x3') }}",#}
+{#                        "{{ mediaPath|imagine_filter('microdata_16x9') }}"#}
+{#                    ],#}
+{#                    {% endif %}#}
+{#                    "author": {#}
+{#                        "@type": "{{ seo.microdata.authorType }}",#}
+{#                        "name": "{{ seo.microdata.author }}"#}
+{#                    },#}
+{#                    {% if seo.publishedDate %}#}
+{#                    "datePublished": "{{ seo.publishedDate|date('Y-m-d H:i:s P') }}",#}
+{#                    {% endif %}#}
+{#                    {% if seo.updatedAt %}#}
+{#                    "dateModified": "{{ seo.updatedAt|date('Y-m-d H:i:s P') }}",#}
+{#                    {% endif %}#}
+{#                    "description": "{{ seo.description|striptags }}",#}
+{#                    "keywords": "cake for a party, coffee",#}
+{#                    "publisher": {#}
+{#                        "@type": "{{ seo.microdata.companyType }}",#}
+{#                        "name": "{{ seo.microdata.companyName }}",#}
+{#                        "logo": {#}
+{#                            "@type": "ImageObject",#}
+{#                            "url": "{{ seo.microdata.companyLogo }}"#}
+{#                        }#}
+{#                    }#}
+{#                }#}
+{#            }{% if not loop.last %},{% endif %}#}
+
+{#        {% endfor %}#}
+{#    ]}#}
+{#</script>#}
+
+{#{% endif %}#}

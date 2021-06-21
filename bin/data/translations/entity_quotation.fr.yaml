@@ -1,0 +1,5 @@
+add: 'Ajouter un devis'
+adminName: 'Devis (EC International)'
+delete: 'Supprimer le devis'
+plural: Devis
+singular: 'Devis (EC International)'

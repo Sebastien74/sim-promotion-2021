@@ -1,0 +1,45 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = product|i18n %}
+
+{% if i18n %}
+
+    {% set title = i18n.title %}
+    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : 'text-left' %}
+    {% set intro = i18n.introduction %}
+    {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : 'text-left' %}
+    {% set body = i18n.body %}
+    {% set bodyAlignment = i18n.bodyAlignment ? i18n.bodyAlignment : 'text-left' %}
+    {% set mediaRelation = product|mainMedia %}
+    {% set haveMedia = mediaRelation.media.filename is defined and mediaRelation.media.filename %}
+    {% set displayPlaceHolder = true %}
+    {% set mediaConfig = mediaRelation|thumbConfiguration(thumbConfiguration, true) %}
+
+    {% if url.code %}
+
+        {% set path = url.code is defined and url.code
+            ? path('front_catalogproduct_view', {'pageUrl': url.code, 'url': website|i18nUrl(product)})
+            : path('front_catalogproduct_view_only', {'url': website|i18nUrl(product)}) %}
+
+        <div class="product-card row">
+            <div class="col-md-12 p-0">
+                {{ mediaRelation|thumb(mediaConfig, {
+                    'targetLink': path,
+                    'placeholder': true,
+                    'isInBox': true
+                }) }}
+            </div>
+            <div class="col-md-12 p-0 pt-4">
+                <h3 class="text-left title mb-3 fw-300">{{ title|raw }}</h3>
+                <p class="m-0">{{ body|striptags|truncate(150) }}...</p>
+                <a href="{{ path }}" class="btn btn-outline-primary hbtn hb-fill-right mt-4" data-bs-toggle="preloader">
+                    {{ "En savoir plus"|trans|raw }}
+                    {{ 'fal fa-chevron-right'|fontawesome(null, 11, 'ms-1') }}
+                </a>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endif %}

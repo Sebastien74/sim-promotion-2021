@@ -1,0 +1,64 @@
+{% trans_default_domain 'front_default' %}
+
+{% set seoActive = configuration.seoStatus %}
+{% set apiI18ns = websiteArray|apiI18ns %}
+{% set apiGoogle = apiI18ns|apiI18n('google', app.request.locale) %}
+{% set apiFacebook = apiI18ns|apiI18n('facebook', app.request.locale) %}
+
+{% if seo and (seoActive or is_granted('ROLE_SEO') or getEnv('APP_ENV_NAME') == 'local') %}
+
+    <title>
+        {% if not seoActive %}[{{ 'SEO Désactivé'|trans }}] {% endif %}
+        {% if seo.fullTitle %}{{ seo.fullTitle|striptags }}{% endif %}
+    </title>
+
+    {% if seo.description %}
+        <meta name="description" content="{{ seo.description|striptags }}" />
+    {% endif %}
+
+    {% if seo.author %}
+        <meta name="author" content="{{ seo.author|striptags }}">
+    {% endif %}
+
+    <meta name="robots" content="{{ seo.index }}" />
+
+    {% if apiGoogle.searchConsoleKey is defined and apiGoogle.searchConsoleKey %}
+        <meta name="google-site-verification" content="{{ apiGoogle.searchConsoleKey }}" />
+    {% endif %}
+
+    {% if apiFacebook.domainVerification is defined and apiFacebook.domainVerification %}
+        <meta name="facebook-domain-verification" content="{{ apiFacebook.domainVerification }}" />
+    {% endif %}
+
+    <!-- Canonical -->
+    <link rel="canonical" href="{{ seo.canonical }}" />
+
+    {% if seo.localesAlternate|length > 1 %}
+        <!-- Alternates links -->
+        {% for localeAlternate, alternate in seo.localesAlternate %}
+            <link rel="alternate" hreflang="{{ localeAlternate }}" href="{{ alternate }}" />
+        {% endfor %}
+    {% endif %}
+
+    <!-- Open Graph -->
+    <meta property="og:locale" content="{{ app.request.locale }}" />
+    <meta property="og:title" content="{% if seo.ogFullTitle %}{{ seo.ogFullTitle|striptags }}{% endif %}">
+    <meta property="og:description" content="{{ seo.ogDescription|striptags }}" />
+    <meta property="og:url" content="{{ seo.canonical }}" />
+    <meta property="og:type" content="website" />
+
+    {% set ogImage = seo.ogImage ? seo.ogImage : null %}
+    {% set ogImage = not ogImage and logos.share is defined and logos.share ? logos.share : ogImage %}
+    {% set ogImage = ogImage and app.request.getSchemeAndHttpHost() not in ogImage ? app.request.getSchemeAndHttpHost() ~ ogImage : ogImage %}
+
+    {% if ogImage %}
+        <meta property="og:image" content="{{ ogImage }}" />
+    {% endif %}
+
+{% else %}
+
+    <!-- Metas -->
+    <title>[{{ 'SEO Désactivé'|trans|striptags ~ '] ' ~ companyName }}</title>
+    <meta name="robots" content="noIndex" />
+
+{% endif %}

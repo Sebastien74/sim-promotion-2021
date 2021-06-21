@@ -1,0 +1,13 @@
+{% set websiteArray = website(false, true) %}
+{% set apiI18ns = websiteArray|apiI18ns %}
+{% set apiGoogle = apiI18ns|apiI18n('google', app.request.locale) %}
+
+{% if apiGoogle.tagManagerKey is defined and apiGoogle.tagManagerKey %}
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript class="analytics-script" nonce="{{ csp_nonce() }}">
+        <iframe src="https://www.googletagmanager.com/ns.html?id={{ apiGoogle.tagManagerKey }}"
+                height="0" width="0" style="display:none; visibility:hidden"></iframe>
+    </noscript>
+
+{% endif %}

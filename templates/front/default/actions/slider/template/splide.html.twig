@@ -1,0 +1,37 @@
+{% trans_default_domain 'front_default' %}
+
+{% set fade = slider.effect == "fade" ? 'fade' : 'loop' %}
+{% if slider.itemsPerSlide > 1 %}
+    {% set fade = 'loop' %}
+{% endif %}
+
+<div class="splide"
+     data-items="{{ slider.itemsPerSlide }}"
+     data-items-mini-pc="{{ slider.itemsPerSlideMiniPC ? slider.itemsPerSlideMiniPC : 3 }}"
+     data-items-tablet="{{ slider.itemsPerSlideTablet ? slider.itemsPerSlideTablet : 2 }}"
+     data-items-mobile="{{ slider.itemsPerSlideMobile ? slider.itemsPerSlideMobile : 1 }}"
+     data-fade="{{ fade }}"
+     data-scroll="{{ slider.itemsPerSlide ? slider.itemsPerSlide : 1 }}"
+     data-pause="{{ slider.pause }}"
+     data-autoplay="{{ slider.autoplay }}"
+     data-arrows="{{ slider.control }}"
+     data-dots="{{ slider.indicators }}"
+     data-interval="{{ slider.intervalDuration }}">
+
+    <div class="splide__track">
+        <ul class="splide__list">
+            {% set isFirst = true %}
+            {% for media in medias %}
+                {% set i18nMedia = media.i18n %}
+                {% set mediaConfig = media|thumbConfiguration(thumbConfiguration, true) %}
+                {% if media.media.filename is defined and media.media.filename %}
+                    <li class="splide__slide">
+                        {{ media|thumb(mediaConfig, {"notInBox": true, 'popupGallery': slider.popup, 'fullPopup': slider.popup, 'colSize': colSize}) }}
+                    </li>
+                    {% set isFirst = false %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>

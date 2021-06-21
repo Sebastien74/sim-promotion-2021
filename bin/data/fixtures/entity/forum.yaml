@@ -1,0 +1,61 @@
+#####################################
+#           Forum                   #
+#####################################
+
+App\Entity\Module\Forum\Comment:
+    orderBy: publicationStart
+    orderSort: DESC
+    translations:
+        adminName:
+            fr: "Commentaire"
+            en: 'Comment'
+        singular:
+            fr: "Commentaire"
+            en: 'Comment'
+        plural:
+            fr: 'Commentaires'
+            en: 'Comments'
+        add:
+            fr: 'Ajouter un commentaire'
+            en: 'Add comment'
+        delete:
+            fr: "Supprimer le commentaire"
+            en: 'Delete comment'
+        authorName:
+            fr: Auteur
+            en: Author
+        active:
+            fr: Actif
+            en: Active
+    columns:
+        - authorName
+        - active
+
+App\Entity\Module\Forum\Forum:
+    translations:
+        adminName:
+            fr: 'Forum'
+            en: 'Forum'
+        singular:
+            fr: 'Forum'
+            en: 'Forum'
+        plural:
+            fr: 'Forums'
+            en: 'Forums'
+        add:
+            fr: 'Ajouter un forum'
+            en: 'Add forum'
+        delete:
+            fr: "Supprimer le forum"
+            en: 'Delete forum'
+    columns:
+        - adminName
+
+App\Entity\Module\Forum\Like:
+    translations:
+        singular:
+            fr: 'Like'
+            en: 'Like'
+        plural:
+            fr: 'Likes'
+            en: 'Likes'

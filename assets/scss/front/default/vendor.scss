@@ -1,0 +1,71 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 4:10 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT VENDOR :
+    ==============
+
+    1 ) First paint
+    2 ) Mixin & each
+    3 ) Layout
+    4 ) Components
+    5 ) Responsive
+    6 ) Browsers alert
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) First paint
+-----------------------------------*/
+
+@import "variables";
+@import "bootstrap";
+
+/*-----------------------------------
+   2 ) Mixin & each
+-----------------------------------*/
+
+@import "utilities/mixins";
+@import "utilities/mixin-button";
+@import "utilities/mixin-margin";
+@import "utilities/mixin-svg";
+@import "utilities/mixin-column";
+@import "utilities/each";
+
+/*-----------------------------------
+   3 ) Layout
+-----------------------------------*/
+
+@import "layout/preloader";
+@import "layout/navigation";
+@import "layout/breadcrumb";
+@import "layout/elements";
+@import "layout/text";
+@import "layout/footer";
+@import "layout/scroll-top-btn";
+@import "layout/layout";
+@import "layout/button";
+
+/*-----------------------------------
+   4 ) Components
+-----------------------------------*/
+
+@import "components/vendor";
+@import "components/hover-buttons/hover-buttons";
+@import "../../gdpr/vendor";
+
+/*-----------------------------------
+   5 ) Responsive
+-----------------------------------*/
+
+@import "responsive/vendor";
+
+/*-----------------------------------
+   6 ) Browsers alert
+-----------------------------------*/
+
+@import '../../vendor/components/browsers';

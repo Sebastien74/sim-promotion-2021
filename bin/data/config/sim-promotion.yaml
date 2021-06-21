@@ -1,0 +1,124 @@
+is_init: true
+company_name: "SIM Promotion"
+template: 'sim-promotion'
+media_path_duplication: 'sim-promotion'
+locale: 'fr'
+locales_others: []
+fonts: ['roboto']
+
+domains:
+    fr:
+        cms5.local: true
+        simpromotion.sf-development.com: false
+
+files:
+    logo: 'logo.jpeg'
+    share: 'share.jpg'
+    footer: 'footer-logo.jpeg'
+    email: 'email-logo.jpeg'
+    preloader: 'preloader.jpeg'
+
+apis:
+    fr:
+        google:
+            ua: 'UA-48389968-1'
+            tag_manager: null
+
+colors:
+    white: "#ffffff"
+    primary: "#2c435c"
+    secondary: "#4c6a84"
+    success: "#5d7808"
+    info: "#0081ac"
+    warning: "#f0ad4e"
+    danger: "#a82835"
+    danger-light: "#ee9da5"
+    light: "#dee2e6"
+    dark: "#2f2e2e"
+    link: "#2c435c"
+
+active_colors: [
+    'white',
+    'primary',
+    'secondary',
+    'alert-success',
+    'alert-danger',
+    'alert-warning',
+    'alert-info',
+    'mask-icon',
+    'msapplication-TileColor',
+    'theme-color',
+    'webmanifest-theme',
+    'webmanifest-background',
+    'browserconfig' ]
+
+favicons:
+    mask-icon: "#410c2c"
+    msapplication-TileColor: "#410c2c"
+    theme-color: "#ffffff"
+    webmanifest-theme: "#ffffff"
+    webmanifest-background: "#ffffff"
+    browserconfig: "#410c2c"
+
+social_networks:
+    fr:
+        twitter: null
+        facebook: null
+        google: null
+        youtube: null
+        instagram: null
+        linkedin: null
+        pinterest: null
+        tripadvisor: null
+
+phones:
+    fr:
+        0:
+            number: '+33(0)4 50 09 06 06'
+            tag_number: '+33450090606'
+            type: 'office'
+            zones: ['contact', 'header', 'footer', 'email']
+
+emails:
+    fr:
+        0:
+            email: "simpromotion@bbox.fr"
+            zones: ['contact', 'footer']
+        1: # [ !!!! REQUIRED !!!! ]
+            slug: "support"
+            email: "simpromotion@bbox.fr"
+            zones: []
+
+        2: # [ !!!! REQUIRED !!!! ]
+            slug: "no-reply"
+            email: "no-reply@simpromotion.fr"
+            zones: []
+
+addresses:
+    fr:
+        0:
+            name: 'SIM Promotion'
+            address: '15 Avenue du Pré Félin'
+            zip_code: '74940'
+            city: 'Annecy'
+            department: 'Haute-Savoie'
+            country: 'FR'
+            zones: ['contact', 'footer', 'email', 'maintenance']
+
+legals:
+    fr:
+        companyName: "SIM Promotion"
+        companyAddress: "15 Avenue du Pré Félin, 74940 Annecy"
+        companyRepresentativeName: "Mr BRUYERE Nicolas"
+        capital: null
+        vatNumber: null
+        siretNumber: "39957800400042"
+        managerName: null
+        managerEmail: null
+        webmasterName: "Mr FOURNIER Sébastien"
+        webmasterEmail: "fournier.sebastien@outlook.com"
+        hostName: null
+        hostAddress: null
+        protectionOfficerName: "Mr BRUYERE Nicolas"
+        protectionOfficerEmail: "simpromotion@bbox.fr"
+        protectionOfficerAddress: "15 Avenue du Pré Félin, 74940 Annecy"

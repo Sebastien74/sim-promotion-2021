@@ -1,0 +1,13 @@
+{
+  "entrypoints": {
+    "core-init": {
+      "css": [
+        "/build/init/core-init.css"
+      ],
+      "js": [
+        "/build/init/core-init.js"
+      ]
+    }
+  },
+  "integrity": {}
+}

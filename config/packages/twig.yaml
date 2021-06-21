@@ -1,0 +1,15 @@
+twig:
+    exception_controller: null
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'core/form/admin_fields.html.twig'
+        - 'core/form/security_fields.html.twig'
+        - 'core/form/bootstrap_4_layout.html.twig'
+        - 'core/form/front_calendar_slot_date.html.twig'
+        - 'core/form/product_values_field.html.twig'
+        - 'core/form/product_videos_field.html.twig'
+        - 'core/form/project_init_fields.html.twig'
+    globals:
+        admin_app_secret: '%env(APP_SECRET)%'

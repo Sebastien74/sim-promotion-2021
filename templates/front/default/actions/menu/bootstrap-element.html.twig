@@ -1,0 +1,37 @@
+{% trans_default_domain 'front_default' %}
+
+{% set infos = link|linkMenu(tree) %}
+
+{% if infos.i18n %}
+
+    {% if infos.online %}
+
+        <li class="nav-item level-{{ link.level}}{% if infos.children %} dropdown{% endif %}{% if infos.media %} item-logo{% endif %} text-center text-md-start{% if infos.active %} active{% endif %}">
+
+            {% set path = infos.path and 'http' not in infos.path ? app.request.getSchemeAndHttpHost() ~ infos.path : infos.path %}
+
+            <a class="nav-link{% if infos.children %} dropdown-toggle{% endif %}{% if dropdownItem %} dropdown-item{% endif %}{% if infos.active %} active{% endif %} {{ infos.class }}"
+               href="{{ path }}" id="navbar-link-{{ link.id }}" title="{{ infos.title|striptags }}"
+               {% if infos.children %} role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"{% elseif infos.newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+               {% if infos.externalLink %} rel="noopener noreferrer"{% endif %}>
+
+                {% if infos.media %}
+                    {{ infos.media|thumb }}
+                    <span class="d-lg-none">{{ infos.title|unescape|raw }}</span>
+                {% else %}
+                    {{ infos.title|unescape|raw }}
+                {% endif %}
+            </a>
+
+            {% if infos.children %}
+                <ul class="dropdown-menu" aria-labelledby="navbar-link-{{ link.id }}">
+                    {% for subLink in infos.children %}
+                        {% include 'front/' ~ template ~ '/actions/menu/bootstrap-element.html.twig' with {'link': subLink, 'tree': tree, 'dropdownItem': true, 'template': template} only %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+        </li>
+    {% endif %}
+
+{% endif %}

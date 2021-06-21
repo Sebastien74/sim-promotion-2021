@@ -1,0 +1,95 @@
+#####################################
+#            Making                 #
+#####################################
+
+App\Entity\Module\Making\Category:
+    translations:
+        adminName:
+            fr: "Nom de la catégorie (Module réalisations)"
+            en: 'Category name'
+        isDefault:
+            fr: "Principale"
+            en: 'Main'
+        singular:
+            fr: "Catégorie de réalisation"
+            en: 'Making category'
+        plural:
+            fr: "Catégories de réalisation"
+            en: 'Making categories'
+        add:
+            fr: 'Ajouter une catégorie'
+            en: 'Add category'
+        delete:
+            fr: "Supprimer la catégorie"
+            en: 'Delete category'
+    columns:
+        - adminName
+        - isDefault
+
+App\Entity\Module\Making\Listing:
+    translations:
+        singular:
+            fr: "Index (Module réalisations)"
+            en: 'Index (Module making)'
+        plural:
+            fr: 'Indexes'
+            en: 'Indexes'
+        add:
+            fr: 'Ajouter un index'
+            en: 'Add index'
+        delete:
+            fr: "Supprimer l'index"
+            en: 'Delete index'
+
+App\Entity\Module\Making\Making:
+    mediaMulti: true
+    asCard: true
+    orderBy: publicationStart
+    orderSort: DESC
+    translations:
+        adminName:
+            fr: "Nom de la réalisation"
+            en: 'Making name'
+        category:
+            fr: "Catégorie"
+            en: 'Category'
+        singular:
+            fr: 'Réalisation'
+            en: 'Making'
+        plural:
+            fr: 'Réalisations'
+            en: 'Makings'
+        add:
+            fr: 'Ajouter une réalisation'
+            en: 'Add making'
+        delete:
+            fr: "Supprimer la réalisation"
+            en: 'Delete making'
+        promote:
+            fr: "Mise en avant"
+            en: 'Promote'
+    columns:
+        - media
+        - adminName
+        - category
+        - promote
+        - publicationStart
+        - publicationEnd
+
+App\Entity\Module\Making\Teaser:
+    translations:
+        adminName:
+            fr: 'Nom du teaser (Module réalisations)'
+            en: 'Teaser name (Module makings)'
+        singular:
+            fr: 'Teaser'
+            en: 'Teaser'
+        plural:
+            fr: 'Teasers'
+            en: 'Teasers'
+        add:
+            fr: 'Ajouter un teaser'
+            en: 'Add teaser'
+        delete:
+            fr: "Supprimer le teaser"
+            en: 'Delete teaser'

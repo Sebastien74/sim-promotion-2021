@@ -1,0 +1,30 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set i18n = category|i18n %}
+{% set layout = category.layout is defined ? category.layout : null %}
+{% set hasLayout = category.layout is defined and category.layout and layout.zones.count > 0 %}
+
+{% block body %}
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer la catégorie"|trans([], 'front_webmaster'),
+        'role': 'ROLE_PORTFOLIO',
+        'path': path('admin_portfoliocategory_layout', {'website': website.id, 'portfoliocategory': category.id})
+    } only %}
+
+    <!-- .portfolio-category-view-container -->
+    <div class="portfolio-category-view-container position-relative">
+        {% if hasLayout %}
+            {% set template = 'front/' ~ websiteTemplate ~ '/actions/portfolio/category/layout.html.twig' %}
+            {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' with {'entity': category} %}
+        {% else %}
+            {% include 'front/' ~ websiteTemplate ~ '/actions/portfolio/category/default.html.twig' %}
+        {% endif %}
+    </div>
+    <!-- \.portfolio-category-view-container -->
+
+{% endblock %}

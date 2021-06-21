@@ -1,0 +1,83 @@
+{% trans_default_domain 'admin' %}
+
+{% set allModules = allModules is defined and allModules ? allModules : website()|modules %}
+
+<div id="medias-results">
+
+    <h4 class="card-subtitle mb-2">
+        {{ 'fal fa-folder'|fontawesome(null, 14, 'info-darken mr-2') }}
+        {% if folder.adminName is defined and folder.adminName %}
+            {{ folder.adminName }}
+        {% else %}
+            {{ "Racine"|trans }}
+        {% endif %}
+    </h4>
+
+    <div id="medias-results-simplebar" class="w-100 text-center" data-simplebar>
+
+        {% set excludesExtensions = ['ico', 'svg', 'gif'] %}
+        {% set excludesScreens = ['tablet', 'mobile'] %}
+
+        {% for media in medias %}
+
+            {% set extension = media.extension %}
+            {% set haveThumb = extension not in excludesExtensions %}
+            {% set uploadDirname = asset('uploads/' ~ media.website.uploadDirname ~ '/' ~ media.filename) %}
+
+            {% if media.filename and media.screen == ('desktop' or 'poster' or 'webm' or 'ogv' or 'mp4') and media.website.id == websiteId() and media.screen not in excludesScreens %}
+                {% set icon = 'admin'|fileIcon(extension) %}
+                <div class="file d-inline-block" data-id="{{ media.id }}">
+                    <label for="check-pack-media-{{ media.id }}" class="mb-0 check-pack-media-label h-100 w-100">
+                        <div class="file-data-wrap h-100" data-toggle="tooltip" alt="{{ media.filename }}" title="{{ media.filename }}">
+                            <div class="file-data media-selector h-100">
+                                <div class="spinner-parent h-100">
+                                    <div class="inner h-100">
+                                        <div class="wrap">
+                                            {% if icon %}
+                                                {{ icon|fontawesome(null, 40, 'dark-50') }}
+                                            {% else %}
+                                                <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                                                     data-src="{{ uploadDirname }}"
+                                                     original-src="{{ uploadDirname }}" class="img-fluid lazyload" />
+                                            {% endif %}
+                                        </div>
+                                        <div class="loader-media d-none">{{ 'fad fa-circle-notch'|fontawesome(20, 20, 'fa-spin') }}</div>
+                                        <div class="check-media d-none">{{ 'fad fa-check'|fontawesome(null, 20) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                    <div class="btn btn-success check-pack-media-btn cursor d-none">
+                        {{ 'fal fa-check'|fontawesome(null, 10, 'white') }}
+                        <input id="check-pack-media-{{ media.id }}"
+                               name="check-pack-media-{{ media.id }}"
+                               class="check-pack-media d-none"
+                               type="checkbox" />
+                    </div>
+                    {% if 'edit'|moduleActive(allModules) %}
+                        {% if not icon %}
+                            <a href="{{ path('admin_media_crop', {'website': websiteId(), 'media': media.id}) }}"
+                               class="open-media-crop btn btn-info" data-toggle="tooltip" title="{{ "Redimensionner"|trans|striptags }}">
+                                {{ 'far fa-crop-alt'|fontawesome(12, 12, 'white') }}
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('admin_media_edit', {'website': websiteId(), 'media': media.id}) }}"
+                           class="open-media-edit btn btn-info" data-toggle="tooltip" title="{{ "Éditer"|trans|striptags }}">
+                            {{ 'fas fa-pencil-alt'|fontawesome(10, 10, 'white') }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        {% else %}
+
+            <div class="mt-3 mr-3 ml-3">
+                {% include 'admin/include/alert.html.twig' with {"alert": 'info', "message": "Aucun média."|trans} only %}
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

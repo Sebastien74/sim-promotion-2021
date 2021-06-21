@@ -1,0 +1,48 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="accordion" id="search-accordion-results-{{ search.id }}">
+
+    {% for categoryName, categoryResults in pageResults %}
+
+        {% set count = counts[categoryName|lower] is defined ? counts[categoryName|lower] : null %}
+
+        {% set entitled = categoryName %}
+        {% if categoryName == 'newscast' %}
+            {% set entitled = count > 1 ? 'Actualités'|trans|raw : 'Actualité'|trans|raw %}
+        {% elseif categoryName == 'page' %}
+            {% set entitled = count > 1 ? 'Pages'|trans|raw : 'Page'|trans|raw %}
+        {% endif %}
+
+        <div class="card">
+
+            <div class="card-header" id="search-heading-{{ loop.index }}">
+                <h3 class="card-title w-100 mb-0">
+                    <span class="cursor d-inline-block w-100"
+                          data-toggle="collapse"
+                          data-target="#search-collapse-{{ loop.index }}"
+                          aria-expanded="{% if loop.first %}true{% else %}false{% endif %}"
+                          aria-controls="search-collapse-{{ loop.index }}">
+                        <strong class="count badge badge-primary float-start me-3">{{ count }}</strong>{{ emt(entitled) }}{{ 'fal fa-chevron-down'|fontawesome(30, 30, 'float-end') }}
+                    </span>
+                </h3>
+            </div>
+
+            <div id="search-collapse-{{ loop.index }}"
+                 class="collapse{% if loop.first %} show{% endif %}"
+                 aria-labelledby="search-heading-{{ loop.index }}"
+                 data-parent="#search-accordion-results-{{ search.id }}">
+                <div class="card-body">
+                    {% for keyname, result in categoryResults %}
+                        {% include 'front/' ~ websiteTemplate ~ '/actions/search/include/result.html.twig' %}
+                        {% if not loop.last %}
+                            <hr>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>

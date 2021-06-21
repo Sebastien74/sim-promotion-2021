@@ -1,0 +1,68 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="row">
+
+    <div id="carousel-{{ teaser.slug }}"
+         class="col-xl-9 offset-xl-3 carousel slide carousel-fade"
+         data-bs-interval="5000"
+         data-bs-autoplay="true"
+         data-bs-pause="true"
+         data-bs-ride="carousel"
+         data-component="carousel-bootstrap">
+
+        <div class="carousel-inner">
+
+            {% for post in posts %}
+
+                {% set entity = post.entity %}
+                {% set category = post.entity.category %}
+                {% set path = post.pageUrl and post.url
+                    ? path('front_newscast_view', {'pageUrl': post.pageUrl, 'url': post.url})
+                    : path('front_newscast_view_only', {'url': post.url}) %}
+
+                <div class="carousel-item{% if loop.first %} active{% endif %}">
+
+                    <a href="{{ path }}" class="carousel-caption bg-primary p-4 ps-5 pe-5 {{ post.titleAlignment }}">
+                        {% if post.title|striptags|length > 0 %}
+                            <h3 class="caption-title">{{ post.title|raw }}</h3>
+                        {% endif %}
+                        {% if not category.hideDate %}
+                            <span class="date mb-3 d-inline-block w-100 text-white">
+                                {{ entity.publicationStart|localizedDate('none', 'none', app.request.locale, null, entity.category.formatDate) }}
+                            </span>
+                        {% endif %}
+                        {% if post.subTitle|striptags|length > 0 %}
+                            <h4 class="main-sub-title text-italic font-weight-light mt-3" style="">{{ post.subTitle }}</h4>
+                        {% endif %}
+                    </a>
+
+                    {{ post.mediaRelation|thumb(post.mediaConfig, {
+                        "btn_link": false,
+                        "targetLink": path,
+                        "placeholder": false,
+                        'popupGallery': false,
+                        'fullPopup': false,
+                        'placeholder': true,
+                        'lazyLoad': true,
+                        'class': 'w-100' }) }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <div class="controls-wrapper position-absolute d-inline-block mt-5 mt-xl-0">
+        {% if posts|length > 1 %}
+            <a class="carousel-control-prev cursor d-inline-block me-5 me-xl-3" href="#carousel-{{ teaser.slug }}" role="button" data-bs-slide="prev" aria-label="{{ "Précédent"|trans }}">
+                {{ 'fal fa-arrow-left'|fontawesome(26, 30, 'white') }}
+            </a>
+            <a class="carousel-control-next cursor d-inline-block ms-5 ms-xl-3" href="#carousel-{{ teaser.slug }}" role="button" data-bs-slide="next" aria-label="{{ "Suivant"|trans }}">
+                {{ 'fal fa-arrow-right'|fontawesome(26, 30, 'white') }}
+            </a>
+        {% endif %}
+    </div>
+
+</div>

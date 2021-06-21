@@ -1,0 +1,79 @@
+{% trans_default_domain 'front' %}
+
+{% set title = imageTitle ? imageTitle : mediaTitle %}
+{% set forceSize = not inAdmin and maxWidthClass ? true : forceSize %}
+{% set popupGallery = popupGallery is defined and popupGallery %}
+{% set haveInfos = not inAdmin and (mediaAuthor or (displayTitle and titlePosition == 'in-box') or notContractual) %}
+{% set extension = extension is defined and extension ? extension
+    : (mediaRelation.media.extension is defined and mediaRelation.media.extension ? mediaRelation.media.extension : null) %}
+
+{% set lazyFile = thumbnails['lazyFiles']['480'] is defined ? thumbnails['lazyFiles']['480'] : (thumbnails['files']['480'] is defined ? thumbnails['files']['480'] : 'medias/lazy-point.svg') %}
+{% if not lazyLoad and isMobile() %}
+    {% set lazyFile = thumbnails['files']['480'] %}
+{% elseif not lazyLoad and isTablet() %}
+    {% set lazyFile = asset(thumbnails['files']['1024'])%}
+{% elseif not lazyLoad %}
+    {% set lazyFile = thumbnails['files']['1680'] %}
+{% endif %}
+
+{% if not inAdmin and lazyLoad %}
+    <div class="w-100 position-relative loader-image-wrapper">
+{% endif %}
+
+    {% if fullPopup and popupGallery and not isInBox %}
+    {% set popupPath = desktopMedia.path is defined and desktopMedia.path ? desktopMedia.path : filepathDesktop %}
+        <a href="{{ asset(popupPath) }}" class="image-popup glightbox">
+    {% endif %}
+
+        {% if extension == 'svg' %}
+            <img data-src="{{ asset(thumbnails['files']['1440']) }}"
+                 src="{{ asset(thumbnails['files']['1440']) }}"
+                 class="img-{{ extension }}{% if lazyLoad %} lazyload{% endif %}{% if maxWidthClass %} {{ maxWidthClass }}{% endif %}"
+                 title="{{ title|striptags|capitalize }}"
+                 alt="{{ mediaTitle|striptags }}"
+                 width="{{ mediaWidth }}"
+                 height="{{ mediaHeight }}">
+        {% elseif (thumbnails['files'] is defined) %}
+            <picture class="img-fluid d-inline-block{% if not forceSize and not inAdmin %} w-100{% endif %}">
+                <source {% if lazyLoad %}data-{% endif %}srcset="{{ asset(thumbnails['files']['1680']) }}, {{ asset(thumbnails['files']['2558']) }} 2x" media="(min-width: 1440px)">
+                <source {% if lazyLoad %}data-{% endif %}srcset="{{ asset(thumbnails['files']['1440']) }}, {{ asset(thumbnails['files']['2558']) }} 2x" media="(min-width: 1280px)">
+                <source {% if lazyLoad %}data-{% endif %}srcset="{{ asset(thumbnails['files']['1024']) }}, {{ asset(thumbnails['files']['2048']) }} 2x" media="(min-width: 768px)">
+                <source {% if lazyLoad %}data-{% endif %}srcset="{{ asset(thumbnails['files']['480']) }}, {{ asset(thumbnails['files']['960']) }} 2x" media="(min-width: 480px)">
+                <source {% if lazyLoad %}data-{% endif %}srcset="{{ asset(thumbnails['files']['320']) }}, {{ asset(thumbnails['files']['640']) }} 2x" media="(max-width: 479px)">
+                <img class="img-{{ extension }} img-fluid{% if not forceSize and not inAdmin %} w-100{% endif %}{% if lazyLoad %} lazyload{% endif %}"
+                     src="{{ asset(lazyFile) }}"
+                     title="{{ title|striptags|capitalize }}"
+                     alt="{{ mediaTitle|striptags }}"
+                     width="{{ mediaWidth }}"
+                     height="{{ mediaHeight }}"
+                     {% if forceSize %}style="max-width: {{ mediaWidth }}px; max-height: {{ mediaHeight }}px;"{% endif %}
+                     {% if lazyLoad %}data-src="{{ asset(thumbnails['files']['480']) }}, {{ asset(thumbnails['files']['960']) }}"{% endif %}
+                     {% if lazyLoad %}data-srcset="{{ asset(thumbnails['files']['480']) }}, {{ asset(thumbnails['files']['960']) }} 2x"{% endif %}>
+            </picture>
+        {% endif %}
+
+        {% if fullPopup and popupGallery and not isInBox %}
+            </a>
+        {% endif %}
+
+{% if not inAdmin and lazyLoad %}
+    </div>
+{% endif %}
+
+{% if haveInfos %}
+    <div class="infos-img w-100 mb-4">
+        {% if displayTitle and titlePosition == 'in-box' %}
+            <span class="img-title d-inline-block text-uppercase w-100">{{ imageTitle|raw }}</span>
+        {% endif %}
+        {% if mediaAuthor %}
+            <small class="img-copyright text-italic text-muted">
+                {{ 'fal fa-copyright'|fontawesome(11, 11, 'mr-1') }}
+                {{ mediaAuthor|trans|raw }}
+            </small>
+        {% endif %}
+        {% if notContractual %}
+            {% if mediaAuthor %} - {% endif %}
+            <small class="img-not-contractual text-italic text-muted">{{ 'Image non contractuelle'|trans|raw }}</small>
+        {% endif %}
+    </div>
+{% endif %}

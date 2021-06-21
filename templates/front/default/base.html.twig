@@ -1,0 +1,241 @@
+<!doctype html>
+
+{% set website = website is defined ? website : website(true) %}
+{% set websiteSession = app.request.session.get('frontWebsite') %}
+{% set websiteArray = websiteSession ? websiteSession : website(false, true) %}
+{% set cacheClearDate = website.cacheClearDate is defined and website.cacheClearDate ? website.cacheClearDate|date('Y-m-d') : null %}
+
+<html lang="{{ app.request.locale }}"
+      data-debug="{{ isDebug() }}"
+      data-cache="{{ cacheClearDate }}"
+      data-nonce="{{ csp_nonce() }}">
+
+    {% set trans_domain = 'front_default' %}
+    {% trans_default_domain 'front_default' %}
+
+    {% import 'core/src-macro.html.twig' as resources %}
+
+    {% set transitions = website|transitions %}
+    {% set allModules = website|modules %}
+    {% set gdprActive = allModules.gdpr is defined and allModules.gdpr ? 1 : 0 %}
+    {% set configuration = website.configuration %}
+    {% set isUserBack = isUserBack is defined ? isUserBack : false %}
+    {% set mainPages = configuration|mainPages %}
+    {% set mainMenus = seo.url is defined ? website|allMenus(seo.url) : website|allMenus %}
+    {% set microDataActive = website.seoConfiguration.microData %}
+    {% set websiteInformation = website.information %}
+    {% set information = websiteInformation|i18n %}
+    {% set companyName = information.title is defined and information.title ? information.title : "Agence Félix"|trans|raw %}
+    {% set websiteTemplate = configuration.template %}
+    {% set templateName = templateName is defined ? templateName : 'page' %}
+    {% set webpack = 'front_' ~ websiteTemplate|replace({'-': '_'}) %}
+    {% set logos = websiteArray|logos %}
+    {% set api = website.api is defined ? website.api : null %}
+    {% set shareCodes = api.shareLinks is defined ? api.shareLinks : [] %}
+    {% set urlId = seo.url.id is defined ? seo.url.id : null %}
+    {% set bodyBg = configuration.backgroundColor is defined ? configuration.backgroundColor : null %}
+    {% set pageBg = entity.backgroundColor is defined and entity.backgroundColor ? entity.backgroundColor : null %}
+    {% set i18nMedia = entity is defined ? entity|i18nMedia : null %}
+    {% set mediaConfig = i18nMedia and thumbConfiguration is defined ? i18nMedia|thumb(i18nMedia|thumbConfiguration(thumbConfiguration), {'config_path': true}) : null %}
+    {% set bgImg = i18nMedia and mediaConfig and mediaConfig.desktop is defined ? asset(mediaConfig.path)|imagine_filter('media100', mediaConfig.desktop.runtimeConfig) : null %}
+    {% set infos = websiteInformation|info(app.request.locale) %}
+    {% set networks = logos['social-networks'] is defined and logos['social-networks'] ? logos['social-networks'] : null %}
+    {% set phones = infos.phones is defined and infos.phones|length > 0 ? infos.phones : [] %}
+    {% set isUserFront = app.user|isUserFront %}
+    {% set websiteAlertmessage = information.placeholder is defined and information.placeholder|striptags|length > 0 ? information.placeholder : null %}
+    {% set websiteAlertAlreadyShow = app.session.get('front_website_alert_show') is defined and app.session.get('front_website_alert_show') %}
+    {% set websiteAlertIsActive = information.active is defined and information.active and websiteAlertmessage and not websiteAlertAlreadyShow %}
+    {% set haveInternalError = is_granted('ROLE_INTERNAL') and app.request.session.get('config_error') %}
+
+    <head>
+
+        <!-- Metas -->
+        <meta charset="{{ configuration.charset }}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {% if seo is defined %}
+            {% include 'front/' ~ websiteTemplate ~ '/include/seo.html.twig' with {
+                'website': website,
+                'websiteArray': websiteArray,
+                'configuration': configuration,
+                'seo': seo,
+                'logos': logos,
+                'companyName': companyName} only %}
+        {% else %}
+            <title>{% block metaTitle %}{{ companyName }}{% endblock %}</title>
+            <meta name="description" content="{% block metaDescription %}{% endblock %}" />
+            <meta name="robots" content="{% block metaRobots %}index{% endblock %}" />
+            <link rel="canonical" href="{% block metaCanonical %}{{ app.request.uri }}{% endblock %}" />
+        {% endif %}
+
+        {% if logos is defined %}
+            {% include 'front/' ~ websiteTemplate ~ '/include/favicon.html.twig' with {'website': website, 'logos': logos, 'microDataActive': microDataActive} only %}
+        {% endif %}
+
+        {% if microDataActive %}
+            {% include 'front/' ~ websiteTemplate ~ '/include/micro-data.html.twig' with {
+                'websiteArray': websiteArray,
+                'phones': phones,
+                'networks': networks,
+                'companyName': companyName,
+                'logos': logos,
+                'seo': seo is defined ? seo : null
+            } only %}
+        {% endif %}
+        {% block microData %}{% endblock %}
+
+        {% block stylesheets %}
+
+            <!-- Fonts -->
+            {% for font in configuration.frontFonts %}
+                {{ resources.encore_absolute_link_tags('font-' ~ font, 'fonts', false) }}
+            {% endfor %}
+
+            <!-- Stylesheets -->
+            {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-vendor', webpack, true) }}
+            {{ resources.encore_absolute_responsive_link_tags(websiteTemplate, webpack, true) }}
+
+            <!-- Noscript stylesheet -->
+            <noscript>
+                {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-noscript', webpack, true) }}
+            </noscript>
+
+        {% endblock %}
+
+        {% if api.custom.headScript is defined and api.custom.headScript|striptags|length > 0 %}
+            {{ api.custom.headScript|raw }}
+        {% endif %}
+
+        {% if api.custom.headScriptSeo is defined and api.custom.headScriptSeo|striptags|length > 0 %}
+            {{ api.custom.headScriptSeo|raw }}
+        {% endif %}
+
+    </head>
+
+    <body id="{{ templateName }}-body"
+          class="{% if configuration.preloader %}overflow-hidden {% endif %}{{ 'screen-' ~ screen() }}{% if api.displayShareLinks %} share-all-pages{% endif %}{% if websiteAlertIsActive %} alert-active{% endif %}{% if bodyBg %} {{ bodyBg }}{% endif %}{% if not configuration.fullWidth %} content-body-box{% endif %}{% if haveInternalError %} internal-error-show{% endif %} back-row-toggle splat-toggle"
+          data-id="{{ website.id }}" data-cache="{{ configuration.fullCache }}"{% if isUserBack %} data-userback="{{ isUserBack }}"{% endif %}
+          data-gdpr="{{ gdprActive }}">
+
+        {% if api.custom.topBodyScript is defined and api.custom.topBodyScript|striptags|length > 0 %}
+            {{ api.custom.topBodyScript|raw }}
+        {% endif %}
+
+        {% if api.custom.topBodyScriptSeo is defined and api.custom.topBodyScriptSeo|striptags|length > 0 %}
+            {{ api.custom.topBodyScriptSeo|raw }}
+        {% endif %}
+
+        {% if configuration.preloader %}
+            {% include 'front/' ~ websiteTemplate ~ '/include/preloader.html.twig' with {'logos': logos, 'companyName': companyName} only %}
+        {% endif %}
+
+        <!-- #content-page -->
+        <div id="content-page"
+             {% if not configuration.fullWidth or pageBg %}
+                class="{% if not configuration.fullWidth %}content-page-box{% endif %}{% if pageBg %} {{ pageBg }}{% endif %}"
+             {% endif %}>
+
+{#            {{ dump('        <script type="application/ld+json">#}
+{#            {#}
+{#                "@context": "https://schema.org",#}
+{#                "@type": "Corporation",#}
+{#                "name": "Egédis",#}
+{#                "url": "{{ app.request.uri }}",#}
+{#                "logo": "{{ app.request.schemeAndHttpHost ~ preload(asset('build/egedis-medias/logo.png')) }}",#}
+{#                "contactPoint": {#}
+{#                    "@type": "ContactPoint",#}
+{#                    "telephone": "0809809809",#}
+{#                    "contactType": "customer service",#}
+{#                    "contactOption": "TollFree",#}
+{#                    "areaServed": "FR",#}
+{#                    "availableLanguage": "fr"#}
+{#                },#}
+{#                "sameAs": [#}
+{#                    "https://www.youtube.com/channel/UC3-otN5SZwDjPqSJAoxrGdw",#}
+{#                    "https://www.linkedin.com/showcase/egedis"#}
+{#                ]#}
+{#            }#}
+{#        </script>') }}#}
+
+            {% if websiteAlertIsActive %}
+                {% include 'front/' ~ websiteTemplate ~ '/include/website-alert.html.twig' with {
+                    'information': information,
+                    'websiteTemplate': websiteTemplate,
+                    'websiteAlertmessage': websiteAlertmessage
+                } only %}
+            {% endif %}
+
+            {% if mainMenus.main.entity is defined and mainMenus.main.entity %}
+                {% set menuArgs = mainMenus.main.arguments|merge({'informationI18n': information, 'infos': infos, 'logos': logos, 'mainPages': mainPages}) %}
+                {% include mainMenus.main.template with menuArgs only %}
+            {% endif %}
+
+            <div id="body-page" class="position-relative"{% if bgImg %} data-background="{{ bgImg }}"{% endif %}>
+                {% block body %}{% endblock %}
+            </div>
+
+            {% set cache = website|cache(null, {'classname': 'App\\Entity\\Module\\Newsletter\\Campaign', 'filter': 'main'}) %}
+            {% if cache %}
+                {{ cache|raw }}
+            {% else %}
+                {{ render_esi(controller('App\\Controller\\Front\\Action\\NewsletterController::view', {'filter': 'main', 'website': website.id} )) }}
+            {% endif %}
+
+            {% include 'front/' ~ websiteTemplate ~ '/include/footer.html.twig' with {
+                'websiteTemplate': websiteTemplate,
+                'infos': infos,
+                'information': information,
+                'website': website,
+                'urlId': urlId,
+                'logos': logos,
+                'mainMenus': mainMenus,
+                'mainPages': mainPages,
+                'allModules': allModules,
+                'companyName': companyName,
+                'networks': networks,
+                'seo': seo is defined ? seo : null} only %}
+
+        </div>
+        <!-- /#content-page -->
+
+        {% if haveInternalError %}
+            {% include 'core/webmaster-alert.html.twig' %}
+        {% endif %}
+
+        {% include 'front/' ~ websiteTemplate ~ '/include/recaptcha.html.twig' with {'website': website} only %}
+        {% include 'front/' ~ websiteTemplate ~ '/include/translations.html.twig' with {'website': website} only %}
+
+        {% if api.displayShareLinks %}
+            {% include 'front/' ~ websiteTemplate ~ '/blocks/share/default.html.twig' with {'api': api, 'seo': seo, 'logos': logos} only %}
+        {% endif %}
+
+        {{ websiteArray.api|addThis }}
+        {{ websiteArray.api|tawkTo }}
+
+        {% if configuration.scrollTopBtn %}
+            {% include 'front/' ~ websiteTemplate ~ '/include/scroll-top-btn.html.twig' with {'website': website, 'websiteTemplate': websiteTemplate} only %}
+        {% endif %}
+
+        {% if app.user|isUserFront and not app.user.confirmEmail %}
+            {% include 'front/' ~ websiteTemplate ~ '/include/alert-banner.html.twig' with {'message': emt('Vous devez confirmer votre e-mail !! <br> Un e-mail vous a été envoyé lors de votre inscription.'|trans|raw)} only %}
+        {% endif %}
+
+        {% include 'core/webmaster-box.html.twig' %}
+
+        {% block javascripts %}
+            {{ jsRouting() }}
+            {{ resources.encore_entry_js_files('front-' ~ websiteTemplate ~ '-vendor', webpack, 'Main', true, true) }}
+{#            {% include 'front/' ~ websiteTemplate ~ '/include/service-worker.html.twig' with {'website': website} only %}#}
+        {% endblock %}
+
+        {% if api.custom.bottomBodyScript is defined and api.custom.bottomBodyScript|striptags|length > 0 %}
+            {{ api.custom.bottomBodyScript|raw }}
+        {% endif %}
+
+        {% if api.custom.bottomBodyScriptSeo is defined and api.custom.bottomBodyScriptSeo|striptags|length > 0 %}
+            {{ api.custom.bottomBodyScriptSeo|raw }}
+        {% endif %}
+
+    </body>
+
+</html>

@@ -1,0 +1,67 @@
+{% trans_default_domain 'admin' %}
+
+{% if forceLimit is defined and forceLimit %}
+    {% set limit = forceLimit %}
+{% else %}
+    {% set limit = interface.configuration.adminLimit is defined ? interface.configuration.adminLimit : 10 %}
+{% endif %}
+{% set infoUrl = infoUrl is defined and infoUrl %}
+{% set allModules = allModules is defined and allModules ? allModules : website()|modules %}
+{% set allLocales = allLocales is defined ? allLocales : website().configuration.allLocales %}
+{% set collapsedAdminTrees = configuration.collapsedAdminTrees is defined
+    ? configuration.collapsedAdminTrees : website().configuration.collapsedAdminTrees %}
+
+<div id="nestable-list"
+     class="dd nestable-list-container w-100 mb-4"
+     data-limit="{{ limit }}"
+     data-output-field="#tree_nestable_output">
+
+    {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'nestable-list-preloader', 'full': true} only %}
+
+    <ol class="dd-list">
+
+        {% set entities = tree.main is defined ? tree.main : [] %}
+
+        {% for entity in entities %}
+
+            {% set interfaceName = routenameInterface is defined and routenameInterface ? routenameInterface : interface['name'] %}
+            {% set customTitle = customTitle is defined and customTitle ? customTitle : null %}
+            {% set customIcon = customIcon is defined and customIcon ? customIcon : 'fas fa-pencil-alt' %}
+            {% set customClass = customClass is defined and customClass ? customClass : null %}
+            {% set customBtn = customBtn is defined and customBtn ? customBtn : null %}
+            {% set targetLoader = targetLoader is defined and targetLoader ? targetLoader : null %}
+            {% set targetAjax = targetAjax is defined and targetAjax ? targetAjax : null %}
+            {% set customRoute = customRoute is defined and customRoute ? customRoute : null %}
+            {% set customRole = customRole is defined and customRole ? customRole : null %}
+
+            {% include 'admin/core/include/tree-element.html.twig' with {
+                'collapsedAdminTrees': collapsedAdminTrees,
+                'tree': tree,
+                'entity': entity,
+                'allModules': allModules,
+                'allLocales': allLocales,
+                'interface': interface is defined ? interface : null,
+                "namespace": namespace is defined ? namespace : null,
+                'interfaceName': interfaceName,
+                'customTitle': customTitle,
+                'customIcon': customIcon,
+                'customClass': customClass,
+                'customBtn': customBtn,
+                'targetLoader': targetLoader,
+                'targetAjax': targetAjax,
+                'customRoute': customRoute,
+                'customRole': customRole,
+                'infoUrl': infoUrl
+            } only %}
+
+        {% endfor %}
+
+    </ol>
+
+    {% if formPositions is defined %}
+        {{ form_start(formPositions, {"attr": {"id": "nestable-outpout-form", "class": "d-none nestable-outpout-form", "action": app.request.uri}})}}
+            {{ form_widget(formPositions) }}
+        {{ form_end(formPositions) }}
+    {% endif %}
+
+</div>

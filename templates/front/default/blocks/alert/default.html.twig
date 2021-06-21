@@ -1,0 +1,21 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+{% set websiteTemplate = websiteTemplate is defined and websiteTemplate ? websiteTemplate : website.configuration.template %}
+
+{% if i18n %}
+
+    {% set alert = i18n.introduction %}
+
+    <!-- .alert-block -->
+    <div class="alert-block w-100">
+        {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {
+            "alert": color is defined ? color : block.backgroundColorType,
+            "alertClass": 'mb-0',
+            "alignment": alignment is defined ? alignment : null,
+            "message": alert
+        } only %}
+    </div>
+    <!-- \.alert-block -->
+
+{% endif %}

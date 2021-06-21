@@ -1,0 +1,44 @@
+{% trans_default_domain 'front_default' %}
+
+{% set customTemplate = 'front/' ~ websiteTemplate ~ '/actions/form/form-step/' ~ entity.slug ~ '.html.twig' %}
+{% set customTemplateExist = (customTemplate)|fileExist %}
+{% set formTemplate = customTemplateExist
+    ? 'front/' ~ websiteTemplate ~ '/actions/form/form-step/' ~ entity.slug ~ '.html.twig'
+    : 'front/' ~ websiteTemplate ~ '/actions/form/form-step/default.html.twig' %}
+
+{% set hasLayout = true %}
+{% set template = 'front/' ~ websiteTemplate ~ '/actions/form/include/elements.html.twig' %}
+{% set messages = app.session.flashbag.all %}
+{% set modalId = "form-thanks-modal-" ~ entity.id %}
+{% set contactsLength = entity.contacts|length %}
+{% set maxShipments = configuration.maxShipments %}
+{% set urlRedirectionI18n = website|i18nUrl(configuration.pageRedirection) %}
+{% set urlRedirection = urlRedirectionI18n ? path('front_index', {'url': urlRedirectionI18n}) : null %}
+{% set publicationEnd = configuration.publicationEnd ? configuration.publicationEnd : null %}
+{% set inDeltaDate = not publicationEnd or 'now'|datetime <= publicationEnd %}
+{% set dispalyForm = not maxShipments and inDeltaDate or contactsLength < maxShipments and inDeltaDate  %}
+
+{% set formClass = 'step-form-ajax' %}
+{% if configuration.recaptcha %}
+    {% set formClass = formClass ~ ' security' %}
+{% endif %}
+
+<!-- .steps-form-container -->
+<div id="steps-form-container-{{ entity.slug }}" class="steps-form-container keep-form-module form-wizard position-relative{% if configuration.recaptcha %} recaptcha-referer{% endif %}">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer le formulaire"|trans([], 'front_webmaster'),
+        'role': 'ROLE_FORM',
+        'path': path('admin_form_index', {'website': website.id, 'stepform': entity.id})
+    } only %}
+
+    {% include formTemplate %}
+
+</div>
+<!-- \.steps-form-container -->
+
+{% if configuration.thanksModal %}
+    {% set i18n = entity|i18n %}
+    {% set modalMessage = i18n ? i18n.placeholder : emt("Merci pour votre message !!"|trans|raw) %}
+    {% include 'front/' ~ websiteTemplate ~ '/include/thanks-modal.html.twig' %}
+{% endif %}

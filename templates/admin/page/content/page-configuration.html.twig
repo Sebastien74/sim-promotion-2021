@@ -1,0 +1,73 @@
+{% if configFields is defined and configFields %}
+
+    {% set haveMedia = form.mediaRelations is defined %}
+
+    <div class="col-12">
+        <div id="collapseForm" class="collapse collapse-configuration">
+            <div class="card-body pb-0 border bg-light mb-4 radius">
+                <div class="row">
+
+                    {% include 'admin/core/form/urls.html.twig' with {'urls': form.urls} %}
+
+                    {% if haveMedia %}
+                        <div class="col-md-4">
+                            <div class="row">
+                                {% include 'admin/core/form/media-relations-uniq.html.twig' with {'mediaRelations': form.mediaRelations} %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-md-4">
+
+                        <h4 class="card-subtitle mb-4">
+                            {{ "fal fa-calendar-alt"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Dates de publication"|trans }}
+                        </h4>
+                        <div class="row">
+                            {% if form.publicationStart is defined %}
+                                {{ form_row(form.publicationStart) }}
+                            {% endif %}
+                            {% if form.publicationEnd is defined %}
+                                {{ form_row(form.publicationEnd) }}
+                            {% endif %}
+                        </div>
+
+                    {% if not haveMedia %}
+                        </div>
+                        <div class="col-md-4">
+                    {% endif %}
+
+                        <h4 class="card-subtitle mb-4">
+                            {{ "fal fa-cog"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Configuration"|trans }}
+                        </h4>
+
+                        <div class="row">
+                            {% if form.template is defined %}
+                                {{ form_row(form.template) }}
+                            {% endif %}
+                            {% if form.backgroundColor is defined %}
+                                {{ form_row(form.backgroundColor) }}
+                            {% endif %}
+                            {% if form.isSecure is defined %}
+                                {{ form_row(form.isSecure) }}
+                            {% endif %}
+                            {% if form.isIndex is defined %}
+                                {{ form_row(form.isIndex) }}
+                            {% endif %}
+                            {% if form.infill is defined %}
+                                {{ form_row(form.infill) }}
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="row">
+                            {% include 'admin/page/seo/seo-basic.html.twig' with {'urls': form.urls} %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

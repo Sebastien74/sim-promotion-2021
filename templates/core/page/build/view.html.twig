@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+
+    {% trans_default_domain 'build' %}
+
+    {% import 'core/src-macro.html.twig' as resources %}
+
+    {% set website = website(true) %}
+    {% set logos = website|logos %}
+    {% set logoPath = logos['build-logo'] is defined and logos['build-logo']
+        ? logos['build-logo'] : (logos.logo is defined and logos.logo ? logos.logo : asset('build/in-build/images/logo.svg', 'core')) %}
+    {% set information = website.information|i18n %}
+    {% set infos = infos is defined ? infos : website.information|info(app.request.locale) %}
+    {% set phones = infos.phones.maintenance is defined and infos.phones.maintenance|length > 0 ? infos.phones.maintenance : [] %}
+    {% set emails = infos.emails.maintenance is defined and infos.emails.maintenance|length > 0 ? infos.emails.maintenance : [] %}
+    {% set addressesDefault = infos.addresses.locales[website.configuration.locale].maintenance is defined and infos.addresses.locales[website.configuration.locale].maintenance|length > 0
+        ? infos.addresses.locales[website.configuration.locale].maintenance : [] %}
+    {% set addressesCurrent = infos.addresses.locales[app.request.locale].maintenance is defined and infos.addresses.locales[app.request.locale].maintenance|length > 0
+        ? infos.addresses.locales[app.request.locale].maintenance : addressesDefault %}
+    {% set companyName = information.title is defined and information.title ? information.title : "Agence Félix - Agence de Publicité"|trans|raw %}
+    {% set networks = logos['social-networks'] is defined and logos['social-networks'] ? logos['social-networks'] : null %}
+    {% set configuration = website.configuration %}
+    {% set backgroundPath = logos['build-bg'] is defined and logos['build-bg'] ? logos['build-bg'] : asset('build/in-build/images/background-waves.jpg', 'in_build') %}
+    {% set colorMaintenance = 'background'|color(website, 'bg-maintenance') %}
+    {% set colorPrimary = 'background'|color(website, 'bg-primary') %}
+    {% set color = colorMaintenance.color is defined and colorMaintenance.color ? colorMaintenance.color : (colorPrimary.color is defined ? colorPrimary.color : "#410c2c") %}
+
+    <head>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>{{ "En maintenance"|trans|raw }} - {{ companyName }}</title>
+
+        {% include 'core/page/build/favicon.html.twig' %}
+
+        <!-- Fonts -->
+        {% for font in configuration.frontFonts %}
+            {{ resources.encore_absolute_link_tags('font-roboto', 'fonts', true) }}
+            {{ resources.encore_absolute_link_tags('font-' ~ font, 'fonts', true) }}
+        {% endfor %}
+
+        {% block stylesheets %}
+            {{ resources.encore_absolute_link_tags('build', 'in_build', true) }}
+        {% endblock %}
+
+    </head>
+
+    <body>
+
+        <div id="build-page" class="container-fluid">
+            <div class="row">
+                <div class="left col-lg-6 col-xl-5 column" style="background-color: {{ color }};">
+                    <div class="vertical-align">
+                        <div id="header" class="text-center">
+                            <img src="{{ asset(logoPath) }}" class="img-fluid" alt="{{ companyName }}" /> <br>
+                            <h1 class="text-uppercase mt-4 mb-4 mt-md-5 mb-md-5">{{ "Site en maintenance"|trans|unescape|raw }}</h1>
+                        </div>
+                        {% if networks %}
+                            <div class="text-center">
+                                <ul id="contact-info" class="reset mx-auto">
+                                    {% for network in networks %}
+                                        {% if network.link is defined and network.link %}
+                                            <li class="d-inline-block{% if not loop.last %} me-3{% endif %}">
+                                                <a href="{{ network.link }}"
+                                                   target="_blank"
+                                                   rel="noopener noreferrer"
+                                                   title="{{ network.title }}"
+                                                   aria-label="{{ network.title }}"
+                                                   data-bs-toggle="tooltip">
+                                                    {{ network.icon|fontawesome(null, 35, 'white') }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {% if addressesCurrent %}
+                            <div id="support-info" class="text-center mt-5">
+                                {% for address in addressesCurrent %}
+                                    <address class="address">
+                                        {% if address.name is defined and address.name %}
+                                            <strong class="name">{{ address.name|raw }}</strong>
+                                        {% endif %}
+                                        {% if address.address is defined and address.address %}
+                                            <div class="address">{{ address.address|raw }}</div>
+                                        {% endif %}
+                                        {% if address.zipCode is defined and address.zipCode %}
+                                            <span class="zip-code">{{ address.zipCode|raw }}</span>
+                                        {% endif %}
+                                        {% if address.city is defined and address.city %}
+                                            <span class="dash"> - </span>
+                                            <span class="city">{{ address.city|raw }}</span>
+                                        {% endif %}
+                                        {% if address.department is defined and address.department %}
+                                            <br>
+                                            <span class="department">{{ address.department|raw }}</span>
+                                        {% endif %}
+                                        {% if address.region is defined and address.region %}
+                                            <span class="dash"> - </span>
+                                            <span class="region">{{ address.region|raw }}</span>
+                                        {% endif %}
+                                    </address>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="right col-md-6 col-xl-7 column d-none d-lg-block"{% if backgroundPath %} style="background: url({{ backgroundPath }});"{% endif %}></div>
+            </div>
+        </div>
+
+        {% block javascripts %}
+            {{ resources.encore_entry_js_files('build', 'in_build', 'Build', false, true) }}
+        {% endblock %}
+
+    </body>
+
+</html>

@@ -1,0 +1,134 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 4:25 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    MIXIN BUTTON :
+    =============
+
+------------------------------------------------------------------ */
+
+@mixin button($suffix, $config) {
+
+    #content-page .btn.btn-#{$suffix},
+    #content-page .btn.btn-#{$suffix}.hbtn {
+
+        @if map-has-key($config, 'bg') {
+            background-color: map-get($config, "bg");
+            border-color: map-get($config, "bg");
+        }
+
+        @if map-has-key($config, 'color') {
+
+            color: map-get($config, "color");
+            fill: map-get($config, "color") !important;
+
+            * {
+                color: map-get($config, "color");
+                fill: map-get($config, "color") !important;
+            }
+        }
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+
+            @if map-has-key($config, 'bg-hover') {
+                background-color: map-get($config, "bg-hover");
+            }
+
+            @if map-has-key($config, 'color-hover') {
+
+                color: map-get($config, "color-hover");
+                fill: map-get($config, "color-hover") !important;
+
+                * {
+                    color: map-get($config, "color-hover");
+                    fill: map-get($config, "color-hover") !important;
+                }
+            }
+        }
+
+        @if map-has-key($config, 'bg-hover') {
+            &:before {
+                background-color: map-get($config, "bg-hover");
+            }
+        }
+    }
+
+    #content-page .btn.btn-#{$suffix}.hbtn {
+        &:hover::before {
+            @if map-has-key($config, 'bg-hover') {
+                background-color: map-get($config, "bg-hover");
+            }
+        }
+    }
+
+    #content-page .btn.btn-outline-#{$suffix},
+    #content-page .btn.btn-outline-#{$suffix}.hbtn {
+
+        @if map-has-key($config, 'bg-outline') {
+            background-color: map-get($config, "bg-outline");
+        } @else if map-has-key($config, 'color') {
+            background-color: map-get($config, "color");
+        }
+
+        @if map-has-key($config, 'color-outline') {
+
+            color: map-get($config, "color-outline");
+            fill: map-get($config, "color-outline") !important;
+            border-color: map-get($config, "color-outline");
+
+            * {
+                color: map-get($config, "color-outline");
+                fill: map-get($config, "color-outline") !important;
+            }
+        } @else if map-has-key($config, 'bg') {
+
+            color: map-get($config, "bg");
+            fill: map-get($config, "bg") !important;
+            border-color: map-get($config, "bg");
+
+            * {
+                color: map-get($config, "bg");
+                fill: map-get($config, "bg") !important;
+            }
+        }
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+
+            @if map-has-key($config, 'bg-outline-hover') {
+                background-color: map-get($config, "bg-outline-hover") !important;
+                &:before {
+                    background-color: map-get($config, "bg-outline-hover") !important;
+                }
+            }
+
+            @if map-has-key($config, 'color-outline-hover') {
+
+                color: map-get($config, "color-outline-hover") !important;
+                fill: map-get($config, "color-outline-hover") !important;
+
+                * {
+                    color: map-get($config, "color-outline-hover") !important;
+                    fill: map-get($config, "color-outline-hover") !important;
+                }
+            }
+        }
+    }
+
+    #content-page .btn.btn-outline-#{$suffix}.hbtn {
+        &:hover::before {
+            @if map-has-key($config, 'bg') {
+                background-color: map-get($config, "bg");
+            }
+        }
+    }
+}

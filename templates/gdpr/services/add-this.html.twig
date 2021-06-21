@@ -1,0 +1,17 @@
+{% if api.addThis %}
+
+    {% set cookies = cookies() %}
+    {% set addThisActive = cookies['addthis'] is defined and cookies['addthis'] %}
+
+    <div class="gdpr-addthis-wrap"
+         data-code="addthis"
+         data-prototype="{{ prototype|e('html_attr') }}"
+         data-prototype-placeholder="{{ prototype_placeholder|e('html_attr') }}">
+        {% if addThisActive %}
+            {{ prototype|raw }}
+        {% else %}
+            {{ prototype_placeholder|raw }}
+        {% endif %}
+    </div>
+
+{% endif %}

@@ -1,0 +1,56 @@
+#####################################
+#           Event                   #
+#####################################
+
+services:
+
+    #####################################
+    #           Listener                #
+    #####################################
+
+    App\EventListener\RequestListener:
+        lazy: true
+        arguments:
+            $subscriber: '@App\Service\Core\SubscriberService'
+            $router: '@router'
+            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    App\EventListener\ExceptionListener:
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $doctrineCommand: '@App\Command\DoctrineCommand'
+            $tokenStorage: '@security.token_storage'
+            $redirectionService: '@App\Service\Content\RedirectionService'
+            $authorizationChecker: '@security.authorization_checker'
+            $router: '@router'
+            $isDebug: '%kernel.debug%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    #####################################
+    #           Subscriber              #
+    #####################################
+
+    App\EventSubscriber\LocaleSubscriber:
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $container: '@service_container'
+            $defaultLocale: '%kernel.default_locale%'
+        tags:
+            - { name: kernel.event_subscriber, priority: 20 }
+
+    App\EventSubscriber\SecurityPolicySubscriber:
+        lazy: true
+        arguments:
+            $nonceGenerator: '@App\Twig\Core\NonceRuntime'
+            $container: '@service_container'
+            $kernel: '@kernel'
+            $authorizationChecker: '@security.authorization_checker'
+            $router: '@router'
+            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: kernel.event_subscriber, priority: 20 }

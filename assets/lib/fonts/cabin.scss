@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2021
+    Created on : 2021-04-27, 9:30 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS BLOCKLYN CONDENSED :
+    ================================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Cabin", sans-serif;
+
+$fonts: (
+    'Cabin-Regular': ('weight': normal, 'style': normal),
+    'Cabin-Italic': ('weight': normal, 'style': italic),
+    'Cabin-Medium': ('weight': 500, 'style': normal),
+    'Cabin-MediumItalic': ('weight': 500, 'style': italic),
+    'Cabin-SemiBold': ('weight': 600, 'style': normal),
+    'Cabin-SemiBoldItalic': ('weight': 600, 'style': italic),
+    'Cabin-Bold': ('weight': bold, 'style': normal),
+    'Cabin-BoldItalic': ('weight': bold, 'style': italic)
+);
+
+@include font-face("Cabin", $fonts, null);

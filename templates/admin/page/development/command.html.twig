@@ -1,0 +1,25 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block title %}{{ "Command"|trans }}{% endblock %}
+{% block pageTitle %}{{ "Command"|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-development', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="command-page">
+        {% include 'admin/include/flashbag.html.twig' %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+<!-- #internal-error-modal -->
+<div id="internal-error-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content text-center">
+            <div class="modal-body p-4">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ "Fermer"|trans|raw }}"></button>
+                <a class="d-inline-block mb-3" href="{{ app.request.getSchemeAndHttpHost() }}" data-toggle="preloader">
+                    <img data-src="{{ asset('build/vendor/images/felix-logo.svg', 'vendor') }}"
+                         src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                         class="logo img-fluid lazyload"
+                         width="50"
+                         height="50" />
+                </a>
+                <p class="m-0 text-bold">{{ app.request.session.get('config_error')|raw }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#internal-error-modal -->

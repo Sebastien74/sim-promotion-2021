@@ -1,0 +1,56 @@
+{% trans_default_domain 'front_default' %}
+
+<!-- .site-map-container -->
+<div class="site-map-container position-relative">
+
+    {% for interfaceName, group in trees %}
+
+        <h2 class="title mb-3">
+            {% if interfaceName == 'page' %}
+                {{ emt("Pages"|trans) }}
+            {% elseif interfaceName == 'newscast' %}
+                {{ emt("Actualités"|trans) }}
+            {% elseif interfaceName == 'catalogproduct' %}
+                {{ emt("Produits"|trans) }}
+            {% else %}
+                {{ interfaceName|capitalize }}
+            {% endif %}
+        </h2>
+
+        <ul class="ps-3">
+            {% for groupName, urls in group %}
+
+                {% if groupName != 'main' and urls.entity is defined and urls.url is defined %}
+
+                    {% set entity = urls.entity %}
+                    {% set layout = entity.layout is defined and entity.layout ? entity.layout : null %}
+                    {% set i18n = entity|i18n %}
+                    {% set hasCustomLayout = entity.customLayout is defined and entity.customLayout
+                        and layout.zones is defined and layout.zones|length > 0 %}
+                    {% set title = hasCustomLayout ? layout|mainLayoutTitle : (i18n.title is defined ? i18n.title : entity.adminName) %}
+
+                    {% if title %}
+                        <li><a href="{{ urls.url }}" title="{{ title|striptags }}" data-toggle="preloader">{{ title|unescape|raw }}</a></li>
+                    {% endif %}
+
+                {% elseif groupName == 'main' %}
+
+                    {% set entities = group.main is defined ? group.main : [] %}
+
+                    {% for entity in entities %}
+                        {% include 'front/' ~ websiteTemplate ~ '/actions/sitemap/element.html.twig' with {
+                            'websiteTemplate': websiteTemplate,
+                            'group': group,
+                            'entity': entity
+                        } only %}
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endfor %}
+        </ul>
+
+    {% endfor %}
+
+</div>
+<!-- \.site-map-container -->

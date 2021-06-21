@@ -1,0 +1,83 @@
+{% trans_default_domain 'admin' %}
+
+{% set day = app.request.get('day') ? app.request.get('day') : app.request.get('duration') %}
+
+<span class="mytooltip tooltip-effect-1">
+    <span class="tooltip-item2">{{ durationTitle }}{{ 'fas fa-sort-down'|fontawesome(8, 13, 'info-darken ml-2') }}</span>
+    <span class="tooltip-content4 clearfix">
+        <span class="tooltip-text2">
+            <div class="card mb-0">
+                <div class="card-header">
+                    <span class="date text-uppercase">{{ durationTitle }}</span><br>
+                    <span class="dates-range">
+                        {{ startDate|localizedDate('none', 'none', app.user.locale, null, "d MMM Y"|trans) }}
+                        {% if endDate|date('Y-m-d') != startDate|date('Y-m-d') %}
+                            - {{ endDate|localizedDate('none', 'none', app.user.locale, null, "d MMM Y"|trans) }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="card-body pt-3 pb-3 pr-0 pl-0">
+                    <ul class="date-links reset">
+                        {% set active = day == 'today' %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'day': 'today'}) }}" class="link-date">
+                                {{ "Aujourd'hui"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = day == 'yesterday' %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'day': 'yesterday'}) }}" class="link-date">
+                                {{ "Hier"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = day|number_format == 7 %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'duration': 7}) }}" class="link-date">
+                                {{ "7 derniers jours"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = day|number_format == 14 %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'duration': 14}) }}" class="link-date">
+                                {{ "14 derniers jours"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = day|number_format == 28 %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'duration': 28}) }}" class="link-date">
+                                {{ "28 derniers jours"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = day|number_format == 30 %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'duration': 30}) }}" class="link-date">
+                                {{ "30 derniers jours"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = day|number_format == 90 %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'duration': 90}) }}" class="link-date">
+                                {{ "90 derniers jours"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = day|number_format == 180 %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'duration': 180}) }}" class="link-date">
+                                {{ "180 derniers jours"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                        {% set active = app.request.get('year') %}
+                        <li{% if active %} class="active"{% endif %}>
+                            <a href="{{ path('admin_analytics_dashboard', {'website': websiteId(), 'year': currentYear - 1}) }}" class="link-date">
+                                {{ "Dernière année civile"|trans }}{% if active %}{{ 'fa fa-check'|fontawesome(10, 10, 'float-right mt-2') }}{% endif %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <span class="customized-link-date">{{ "Personnalisées..."|trans }}</span>
+                </div>
+            </div>
+        </span>
+    </span>
+</span>

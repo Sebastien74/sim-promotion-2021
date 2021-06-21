@@ -1,0 +1,40 @@
+{% trans_default_domain 'admin' %}
+
+<div id="world-map-card" class="card h-100">
+    <div class="card-body">
+        <h4 class="card-title">{{ "Où vos utilisateurs se trouvent-ils ?"|trans }}</h4>
+        <div class="row h-100">
+            <div class="col-12 my-auto">
+                <div id="world-map-markers" class="reset">
+                    {% set count = 0 %}
+                    {% for name, values in data %}
+                        {% for session in values.sessions %}
+                            {% set count = count + 1 %}
+                        {% endfor %}
+                    {% endfor %}
+                    {% for name, values in data %}
+                        {% set sessionsCount = values.sessions|length %}
+                        {% set percent = (sessionsCount * 100) / count %}
+                        {% set sessionLabel = sessionsCount > 1 ? 'sessions'|trans :'session'|trans %}
+                        <span class="data"
+                              data-label="{{ values.iso|countryName(app.user.locale) }}"
+                              data-latitude="{{ values.latitude }}"
+                              data-longitude="{{ values.longitude }}"
+                              data-percent="{{ percent|round(3, 'common') }}%"
+                              data-sessions="{{ values.sessions|length }} {{ sessionLabel }}"></span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/page/seo/analytics/includes/dates-range.html.twig' with {'route': 'toto'} %}
+            </div>
+            <div class="col-md-6 text-right">
+{#                <a href="">{{ "Vue d'ensemble"|trans }}{{ "fal fa-chevron-right"|fontawesome(null, 10, 'ml-2') }}</a>#}
+            </div>
+        </div>
+    </div>
+</div>

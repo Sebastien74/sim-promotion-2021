@@ -1,0 +1,51 @@
+#####################################
+#         Front Form managers       #
+#####################################
+
+services:
+
+    App\Form\Manager\Front\FormManager:
+        public: true
+        lazy: true
+        arguments:
+            $recaptcha: '@App\Service\Content\RecaptchaService'
+            $translator: '@translator'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+            $mailer: '@App\Service\Core\MailerService'
+            $kernel: '@kernel'
+
+    App\Form\Manager\Front\ForumManager:
+        public: true
+        lazy: true
+        arguments:
+            $recaptcha: '@App\Service\Content\RecaptchaService'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Form\Manager\Front\NewsletterManager:
+        public: true
+        lazy: true
+        arguments:
+            $recaptcha: '@App\Service\Content\RecaptchaService'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+            $translator: '@translator'
+
+    App\Form\Manager\Front\SearchManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $sitemapService: '@App\Service\Content\SitemapService'
+            $translator: '@translator'
+
+    App\Form\Manager\Security\Front\ProfileManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $pictureManager: '@App\Form\Manager\Security\PictureManager'
+            $translator: '@translator'

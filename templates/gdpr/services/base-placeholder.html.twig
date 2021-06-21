@@ -1,0 +1,63 @@
+{% trans_default_domain 'gdpr' %}
+
+{% if size is defined and size == 'small-fixed' %}
+
+    <button class="btn btn-dark active-gdpr-cookie small-fixed"
+            role="button"
+            title="{{ label_btn|unescape|raw }}"
+            data-placement="left"
+            data-toggle="tooltip"
+            {% if reload is defined %}data-reload="{{ reload }}"{% endif %}
+            data-code="{{ code }}"
+            data-service="{{ service }}">
+        {% set label_btn = label_btn is defined ? label_btn : 'Activer'|trans|raw %}
+        <img data-src="{{ image }}"
+             src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+             alt="{{ image_title|striptags }}"
+             title="{{ image_title|striptags }}"
+             height="30" width="auto"
+             class="lazyload img-fluid" />
+    </button>
+
+{% else %}
+
+    {% set service = service is defined ? service : code ~ "-service" %}
+
+    <div class="gdpr-activation-placeholder placeholder-{{ service }} text-center card mb-0">
+        <div class="card-header">
+            <img data-src="{{ asset('build/gdpr/images/cookie-main.svg', 'gdpr') }}"
+                 src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                 data-toggle="tooltip"
+                 alt="{{ image_title|striptags }}"
+                 title="{{ image_title|striptags }}"
+                 width="" height="100"
+                 class="lazyload img-fluid" />
+        </div>
+        <div class="card-body">
+            <div class="w-100 mb-4">
+                <img data-src="{{ image }}"
+                     src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                     data-toggle="tooltip"
+                     alt="{{ image_title|striptags }}"
+                     title="{{ image_title|striptags }}"
+                     height="30" width="auto"
+                     class="lazyload img-fluid" />
+            </div>
+            <div class="gdpr-activation-block">
+                <span class="info w-100 mb-3 d-inline-block">{{ message }}</span>
+                <button class="btn btn-dark active-gdpr-cookie mb-3"
+                        role="button"
+                        {% if reload is defined %}data-reload="{{ reload }}" data-toggle="preloader"{% endif %}
+                        data-code="{{ code }}"
+                        data-service="{{ service }}">
+                    {% set label_btn = label_btn is defined ? label_btn : 'Activer'|trans|raw %}
+                    {{ label_btn|unescape|raw }}
+                </button>
+                <div class="w-100">
+                    <span class="open-gdpr-modal">{{ 'En savoir plus'|trans|raw }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endif %}

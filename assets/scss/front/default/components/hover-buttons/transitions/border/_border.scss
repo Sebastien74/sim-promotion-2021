@@ -1,0 +1,39 @@
+//===================================
+// Border Transitions Variables/Arrays
+//===================================
+
+// properties array:
+// [border color],
+// [:hover border color]
+
+$borderproperties: () !default;
+
+/*-- a - Group 1 --*/
+
+@if $enable-hover-buttons-border-off {
+    $borderproperties: append($borderproperties, "-off" #ffffff transparent);
+}
+
+@if $enable-hover-buttons-border-off2 {
+    $borderproperties: append($borderproperties, "-off2" #ffffff initial);
+}
+
+@if $enable-hover-buttons-border-off3 {
+    $borderproperties: append($borderproperties, "-off3" #ffffff initial);
+}
+
+@if $enable-hover-buttons-border-top {
+    $borderproperties: append($borderproperties, "-top" #ffffff initial);
+}
+
+@if $enable-hover-buttons-border-right {
+    $borderproperties: append($borderproperties, "-right" #ffffff initial);
+}
+
+@if $enable-hover-buttons-border-bottom {
+    $borderproperties: append($borderproperties, "-right" #ffffff initial);
+}
+
+@if $enable-hover-buttons-border-left {
+    $borderproperties: append($borderproperties, "-left" #ffffff initial);
+}

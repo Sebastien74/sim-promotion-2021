@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    {% for mainLocale, localesGroups in xml %}
+        {% for key, urlsGroups in localesGroups %}
+            {% set isInfill = false %}
+            {% for locale, url in urlsGroups %}
+                {% set isInfill = url.entity.inFill is defined and url.entity.inFill %}
+            {% endfor %}
+            {% if not isInfill %}
+                <url>
+                    {% for locale, url in urlsGroups %}
+                        {% if loop.first %}
+                            <loc>{{ url.url }}</loc>
+                            {% if url.update is defined and url.update %}
+                                <lastmod>{{ url.update }}</lastmod>
+                            {% endif %}
+                        {% else %}
+                            <xhtml:link
+                                rel="alternate"
+                                hreflang="{{ locale }}"
+                                href="{{ url.url }}"/>
+                        {% endif %}
+                    {% endfor %}
+                </url>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</urlset>

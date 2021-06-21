@@ -1,0 +1,67 @@
+{% trans_default_domain 'front_default' %}
+
+{% if table %}
+
+    <!-- .table-container -->
+    <div class="table-container table-responsive position-relative">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer le tableau"|trans([], 'front_webmaster'),
+            'role': 'ROLE_FORM',
+            'path': path('admin_table_edit', {'website': website.id, 'table': table.id, "entitylocale": app.request.locale})
+        } only %}
+
+        {% set render = table|table(app.request.locale) %}
+
+        <table class="table table-bordered" data-bg="{{ table.headBackgroundColor }}" data-color="text-{{ table.headColor }}">
+
+            <thead>
+                <tr class="{{ table.headBackgroundColor }}">
+                    {% for col in render.head %}
+                        {% set title = col.i18n.title is defined ? col.i18n.title|unescape|raw : null %}
+                        <th scope="col" class="text-{{ table.headColor }}">{{ title }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for rows in render.body %}
+                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+                        {% for row in rows %}
+
+                            {% set dataTitle = render.head['col-' ~ loop.index].i18n.title is defined ? render.head['col-' ~ loop.index].i18n.title : '' %}
+                            {% set i18n = row.i18n %}
+                            {% set title = i18n.title is defined ? i18n.title : null %}
+                            {% set introduction = i18n.introduction is defined ? i18n.introduction : null %}
+                            {% set body = i18n.body is defined ? i18n.body : null %}
+
+                            <td data-title="{{ dataTitle|unescape|raw }}" class="pb-0">
+
+                                <div class="content">
+                                    {% if title %}
+                                        {% set titleForce = i18n.titleForce ? i18n.titleForce : 3 %}
+                                        <h{{ titleForce }}>{{ title|unescape|raw }}</h{{ titleForce }}>
+                                    {% endif %}
+
+                                    {% if introduction %}
+                                        <p class="introduction">{{ introduction|unescape|raw }}</p>
+                                    {% endif %}
+
+                                    {% if body %}
+                                        <div class="body">{{ body|unescape|raw }}</div>
+                                    {% endif %}
+                                </div>
+
+                            </td>
+
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+    <!-- \.table-container -->
+
+{% endif %}

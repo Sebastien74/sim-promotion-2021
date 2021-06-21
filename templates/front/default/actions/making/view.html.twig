@@ -1,0 +1,80 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set i18n = making|i18n %}
+{% set i18nUrl = website|i18nUrl(making) %}
+{% set category = making.category %}
+{% set mainMediaInHeader = category.mainMediaInHeader is defined ? category.mainMediaInHeader : false %}
+{% set i18nCategory = category ? category|i18n : category %}
+{% set layout = category.layout is defined ? category.layout : null %}
+{% set hasLayout = category.layout is defined and category.layout and not making.customLayout %}
+{% set templateRepo = hasLayout and layout.zones|length > 0 ? 'layout' : 'view' %}
+{% set template = layout and layout.slug and layout.zones|length > 0 ? 'front/' ~ websiteTemplate ~ '/actions/making/making/' ~ templateRepo ~ '/' ~ layout.slug ~ '.html.twig' : null %}
+{% set template = (template)|fileExist ? template : 'front/' ~ websiteTemplate ~ '/actions/making/making/' ~ templateRepo ~ '/default.html.twig' %}
+
+{% set mediasByCategories = making.mediaRelations|mediasByCategories %}
+{% set beforeMedias = mediasByCategories.before is defined ? mediasByCategories.before : [] %}
+{% set afterMedias = mediasByCategories.after is defined ? mediasByCategories.after : [] %}
+
+{% if i18n %}
+    {% set title = i18n.title %}
+    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : 'text-start' %}
+    {% set subTitle = i18n.subTitle is defined ? i18n.subTitle : null %}
+    {% set intro = i18n.introduction %}
+    {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : 'text-start' %}
+    {% set body = i18n.body %}
+    {% set bodyAlignment = i18n.bodyAlignment ? i18n.bodyAlignment : 'text-start' %}
+    {% set i18nVideo = i18n.video %}
+    {% set haveMainMedia = making|haveMainMedia %}
+    {% set i18nMainMedia = haveMainMedia ? making|mainMedia : category|i18nMedia %}
+    {% set medias = making|i18nMedias %}
+    {% set link = i18n|i18nLink %}
+    {% set linkAlignment = link and link.alignment ? link.alignment : 'text-start' %}
+    {% set linkStyle = link.style ? link.style : 'btn btn-primary' %}
+{% endif %}
+
+{% block microData %}
+
+    {% if website.seoConfiguration.microData and i18n %}
+        {% include 'front/' ~ websiteTemplate ~ '/actions/making/making/microdata.html.twig' with {
+            'seo': seo,
+            'website': website,
+            'making': making,
+            'haveMainMedia': haveMainMedia,
+            'i18nMainMedia': afterMedias|length > 0 ? afterMedias[afterMedias|arrayKeyFirst] : i18nMainMedia
+        } only %}
+    {% endif %}
+
+{% endblock %}
+
+{% block body %}
+
+    {% if i18n %}
+
+        <!-- .making-view-container -->
+        <div class="making-view-container position-relative">
+
+            {% include 'core/webmaster-edit.html.twig' with {
+                'title': "Éditer la réalisation"|trans([], 'front_webmaster'),
+                'role': 'ROLE_MAKING',
+                'path': path('admin_making_edit', {'website': website.id, 'making': making.id})
+            } only %}
+
+            {% if making.customLayout and making.layout and making.layout.zones|length > 0 %}
+                {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' with {'entity': making} %}
+            {% elseif layout and layout.zones|length > 0 and (template)|fileExist %}
+                {% include 'front/' ~ websiteTemplate ~ '/layout.html.twig' with {'entity': category} %}
+            {% else %}
+                {% include template %}
+            {% endif %}
+
+        </div>
+        <!-- \.making-view-container -->
+
+    {% endif %}
+
+{% endblock %}

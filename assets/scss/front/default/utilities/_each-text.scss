@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-11-16, 7:24 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT EACH TEXT :
+    =================
+
+------------------------------------------------------------------ */
+
+@each $suffix, $color in $app-colors {
+
+    .text-#{$suffix} {
+        @if not index($default-colors, $suffix) {
+            color: $color;
+        }
+        fill: $color;
+    }
+}

@@ -1,0 +1,63 @@
+{% trans_default_domain 'front_default' %}
+
+{% if posts %}
+
+    <div class="default-products-teaser">
+
+        {% set i18n = teaser|i18n %}
+
+        {% if i18n %}
+
+            {% set title = i18n.title %}
+            {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+            {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : 'text-left' %}
+
+            {% if title|striptags|length > 0 %}
+                <h{{ titleForce }} class="title mb-4 {{ titleAlignment }}">{{ title|unescape|raw }}</h{{ titleForce }}>
+            {% endif %}
+
+        {% endif %}
+
+        <div class="row">
+
+            {% set grid = { 'item': 12, 'left': 6, 'right': 6, 'truncate': 500 } %}
+            {% if posts|length > 1 and posts|length < 3 %}
+                {% set grid = { 'item': 6, 'left': 6, 'right': 6, 'truncate': 100 } %}
+            {% elseif posts|length >= 3 %}
+                {% set grid = { 'item': 4, 'left': 12, 'right': 12, 'truncate': 170 } %}
+            {% endif %}
+
+            {% for post in posts %}
+
+                {% set mediaRelation = post.mediaRelation %}
+                {% set path = post.pageUrl and post.url
+                    ? path('front_catalogproduct_view', {'pageUrl': post.pageUrl, 'url': post.url})
+                    : path('front_catalogproduct_view_only', {'url': post.url}) %}
+
+                <div class="col-md-12 col-xl-{{ grid.item }}">
+                    <div class="product-card row{% if not loop.last %} mb-5 mb-xl-0{% endif %}">
+                        <div class="col-md-6 col-xl-{{ grid.left }}">
+                            {{ mediaRelation|thumb(post.mediaConfig, {
+                                'targetLink': path,
+                                'placeholder': true,
+                                'isInBox': true
+                            }) }}
+                        </div>
+                        <div class="col-md-6 col-xl-{{ grid.right }} mt-4 my-auto ps-md-4 pt-md-0{% if grid.item == 4 %} ps-xl-3 mt-xl-4 pt-4{% else %} pt-4{% endif %} {% if grid.item != 12 %} small{% else %}ps-xl-5{% endif %}">
+                            <h3 class="text-start title mb-3 fw-300">{{ post.title|raw }}</h3>
+                            <p class="m-0">{{ post.body|striptags|truncate(grid.truncate) }}...</p>
+                            <a href="{{ path }}" class="btn btn-outline-primary hbtn hb-fill-right mt-4" data-bs-toggle="preloader">
+                                {{ "En savoir plus"|trans|raw }}
+                                {{ 'fal fa-chevron-right'|fontawesome(null, 11, 'ms-1') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endif %}

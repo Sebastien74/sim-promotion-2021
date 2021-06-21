@@ -1,0 +1,10 @@
+{% trans_default_domain 'gdpr' %}
+
+{% extends "gdpr/services/base-placeholder.html.twig" %}
+
+{% set service = 'forum' %}
+{% set code = 'forum' %}
+{% set reload = true %}
+{% set image = asset('build/gdpr/images/forum-gdpr.svg', 'gdpr') %}
+{% set image_title = emt('Forum'|trans, 'gdpr') %}
+{% set message = emt('Pour commenter, vous devez activer les cookies.'|trans|raw, 'gdpr') %}

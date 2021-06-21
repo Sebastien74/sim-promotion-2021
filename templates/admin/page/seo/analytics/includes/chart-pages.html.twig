@@ -1,0 +1,77 @@
+{% trans_default_domain 'admin' %}
+
+<div id="pages-card" class="card h-100 mb-0">
+    <div class="card-body">
+        <h4 class="card-title mb-4">{{ "Quelles pages vos utilisateurs visitent-ils ? "|trans }}</h4>
+        {% if data %}
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ "Pages"|trans }}</th>
+                        <th class="text-right">{{ "Nombre de visites"|trans }}</th>
+                        <th class="text-right actions">{{ "Infos"|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for uri, infos in data %}
+                        {% if uri != 'referer' %}
+                            <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+                                <td class="align-middle">{{ uri }}</td>
+                                <td class="text-right align-middle">{{ infos|length }}</td>
+                                <td class="text-right align-middle">
+                                    {% if data['referer'][uri]  is defined %}
+                                        <span class="btn btn-transparent cursor" data-toggle="collapse" data-target="#accordion-{{ loop.index }}">
+                                            {{ "far fa-angle-down"|fontawesome(null, 14, 'dark') }}
+                                        </span>
+                                    {% else %}
+                                        <span class="btn btn-transparent">
+                                            {{ "far fa-angle-down"|fontawesome(null, 14, 'transparent') }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if data['referer'][uri] is defined %}
+                                <tr>
+                                    <td id="accordion-{{ loop.index }}" class="collapse p-0" colspan="12">
+                                        <table class="table table-striped mb-0 w-100">
+                                            <thead>
+                                            <tr>
+                                                <th>{{ "Pages d'origines"|trans }}</th>
+                                                <th class="text-right">{{ "Nombre de fois"|trans }}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for referer, count in data['referer'][uri] %}
+                                                    <tr>
+                                                        <td>{{ referer }}</td>
+                                                        <td class="text-right">{{ count }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="row">
+                <div class="col-12 my-auto">
+                    <p class="mb-0 mt-5 mb-5 text-center">{{ "Aucune donnée"|trans }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/page/seo/analytics/includes/dates-range.html.twig' with {'route': 'toto'} %}
+            </div>
+            <div class="col-md-6 text-right">
+{#                <a href="">{{ "Vue d'ensemble"|trans }}{{ "fal fa-chevron-right"|fontawesome(null, 10, 'ml-2') }}</a>#}
+            </div>
+        </div>
+    </div>
+</div>

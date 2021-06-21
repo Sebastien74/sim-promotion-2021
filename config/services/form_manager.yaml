@@ -1,0 +1,12 @@
+#####################################
+#       Core Form managers         #
+#####################################
+
+services:
+
+    App\Form\Manager\Security\PictureManager:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'

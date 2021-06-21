@@ -1,0 +1,137 @@
+{% extends 'admin/base.html.twig' %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = "Google Analytics:"|trans ~ " " ~ page|trans|capitalize %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% set tabs = {
+    "general": {
+        "title": "Général"|trans,
+        "icon": "fal fa-rss"
+    },
+    "localization": {
+        "title": "Localisation"|trans,
+        "icon": "fal fa-map-marked-alt"
+    },
+    "pages": {
+        "title": "Pages"|trans,
+        "icon": "fal fa-copy"
+    },
+    "search": {
+        "title": "Recherche"|trans,
+        "icon": "fal fa-search"
+    },
+    "parameters": {
+        "title": "Paramétrages"|trans,
+        "icon": "fal fa-cog"
+    }
+} %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-google-analytics', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('admin-google-analytics', 'admin', 'Analytics') }}
+{% endblock %}
+
+{% block body %}
+
+    {% set websiteArray = website(false, true) %}
+    {% set apiI18ns = websiteArray|apiI18ns %}
+    {% set apiGoogle = apiI18ns|apiI18n('google', app.request.locale) %}
+
+    {% set configuration = website.configuration %}
+    {% set allLocales = configuration.allLocales %}
+    {% set hasMultiLocales = allLocales|length > 0 %}
+
+    <div class="card">
+
+        <ul class="nav nav-tabs custom-tab large" role="tablist">
+            {% for tabId, config in tabs %}
+                <li class="nav-item">
+                    {% if not loop.last %}
+                        {% set active = tabId == app.request.get('page') %}
+                        {% set color = active ? 'white' : 'dark' %}
+                        <a href="{{ path('admin_google_analytics', {"website": websiteId, "page": tabId, 'locale': locale}) }}"
+                           class="nav-link{% if tabId == app.request.get('page') %} active{% endif %}" data-toggle="preloader">
+                            {{ config.icon|fontawesome(null, 17 ,color  ~ ' mr-sm-2') }}
+                            <span class="d-none d-sm-inline-block">{{ config.title }}</span>
+                        </a>
+                    {% else %}
+                        <a href="#" id="google-params" class="nav-link d-none" data-toggle="modal" data-target="#google-modal-dev">
+                            {{ config.icon|fontawesome(null, 17 ,color  ~ ' mr-sm-2') }}
+                            <span class="d-none d-sm-inline-block">{{ config.title }}</span>
+                        </a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            <li id="google-auth" class="nav-item{% if hasMultiLocales %} multi-locales{% endif %}">
+                <a class="nav-link">
+                    <div id="embed-api-auth-container"></div>
+                </a>
+            </li>
+            {% if hasMultiLocales %}
+                <li id="google-locales-switcher" class="nav-item">
+                    <div class="btn-group" role="group">
+                        <button id="locales-dropdown" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                                 data-src="{{ asset('/medias/icons/flags/' ~ locale ~ '.svg') }}"
+                                 class="img-fluid lazyload mr-2" height="14" width="19">{{ locale|languageName }}
+                        </button>
+                        <div id="locales-dropdown-select" class="dropdown-menu" aria-labelledby="locales-dropdown">
+                            {% for websiteLocale in allLocales %}
+                                {% if websiteLocale != locale %}
+                                    <a class="dropdown-item" href="{{ path('admin_google_analytics', {'website': websiteId(), 'page': 'general', 'locale': websiteLocale}) }}" data-toggle="preloader">
+                                        <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                                             data-src="{{ asset('/medias/icons/flags/' ~ websiteLocale ~ '.svg') }}"
+                                             class="img-fluid lazyload mr-2" height="14" width="19">{{ websiteLocale|languageName }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+
+        <div class="card-body pb-0">
+
+            <div id="google-data-js"
+                 data-client-id="{{ apiGoogle.clientId }}"
+                 data-duration="{{ apiGoogle.analyticsStatsDuration }}"
+                 data-account-id="{{ apiGoogle.analyticsAccountId }}"></div>
+
+            {% if apiGoogle.clientId %}
+                {% block page %}{% endblock %}
+            {% else %}
+                {% include 'admin/include/alert.html.twig' with {"alert": "danger", "message": "Vous devez configurer l'API Google"|trans} only %}
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="google-modal-dev">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">{{"Comptes Google Analytics"|trans}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">{{ 'fal fa-times'|fontawesome(20, 20, 'dark') }}</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div id="view-selector-container"></div>
+                    <span id="gaIdResultContainer"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+{% set website = website is defined and website ? website : website() %}
+{% set websiteArray = website(false, true) %}
+{% set cacheClearDate = website.cacheClearDate is defined and website.cacheClearDate ? website.cacheClearDate|date('Y-m-d') : null %}
+
+<html lang="{{ app.request.locale }}"
+      lang-code="{{ app.request.locale ~ "-" ~ app.request.locale|upper }}"
+      data-debug="{{ isDebug() }}"
+      data-cache="{{ cacheClearDate }}"
+      data-nonce="{{ csp_nonce() }}">
+
+    <head>
+
+        {% trans_default_domain 'admin' %}
+
+        {% import 'core/src-macro.html.twig' as resources %}
+
+        {% set websiteId = website.id is defined and website.id ? website.id : websiteId() %}
+        {% set configuration = website.configuration %}
+        {% set defaultLocale = configuration.locale %}
+        {% set allLocales = configuration.allLocales %}
+        {% set logos = websiteArray|logos(defaultLocale) %}
+        {% set isCustomPath = logos['security-logo'] is defined and logos['security-logo'] %}
+        {% set allModules = website|modules %}
+        {% set i18nsModules = website|i18nsModules %}
+        {% set userClass = is_granted("ROLE_INTERNAL") ? 'internal' : 'admin' %}
+        {% set userEditClass = 'edit'|moduleActive(allModules) ? 'editor' : 'visitor' %}
+        {% set adminFonts = configuration.adminFonts %}
+        {% set bodyClass = block('bodyClass') is defined ? ' ' ~ block('bodyClass') : null %}
+        {% set faviconPath = isCustomPath and logos['favicon'] is defined and logos['favicon'] ? asset(logos['favicon']) : asset('build/admin/images/theme/favicon.ico', 'admin') %}
+        {% set websiteAdminInformation = website.information %}
+        {% set adminInformation = websiteAdminInformation|i18n %}
+        {% set defaultTitle = isCustomPath and adminInformation.title is defined and adminInformation.title ? adminInformation.title : "Agence Félix CMS"|trans|striptags %}
+        {% set adminTheme = app.user.theme is defined and app.user.theme ? app.user.theme : (configuration.adminTheme ? configuration.adminTheme : 'default') %}
+        {% set customAdmin = configuration.adminTheme is not empty %}
+        {% set cmsAuthorTitle = not customAdmin ? 'Sébastien FOURNIER'|trans : 'Agence Félix'|trans %}
+
+        <!-- Metas -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="{{ defaultTitle|striptags }}" />
+        <meta name="author" content="{{ cmsAuthorTitle|striptags }}" />
+        <meta name="robots" content="index" />
+
+        <!-- Favicon icon -->
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ faviconPath }}" />
+
+        <!-- Title -->
+        {% set metaTitle = block('title') is defined ? block('title') : "Bienvenue !!"|trans %}
+        <title>
+            {% block title %}
+                {% if metaTitle is defined %}
+                    {{ metaTitle|striptags|unescape|raw }}
+                {% else %}
+                    {{ "Bienvenue !!"|trans }}
+                {% endif %}
+            {% endblock %}
+            - {{ defaultTitle }}
+        </title>
+
+        {% block stylesheets %}
+
+            {{ resources.encore_absolute_link_tags('admin-preloader', 'admin', true) }}
+            {{ resources.encore_absolute_link_tags('admin-vendor-' ~ adminTheme, 'admin', true) }}
+            {{ resources.encore_absolute_link_tags('font-firasans', 'fonts', true) }}
+
+            {% if adminFonts %}
+                <!-- Front fonts -->
+                {% for font in adminFonts %}
+                    {% if font != 'firasans' %}
+                        {{ resources.encore_absolute_link_tags('font-' ~ font, 'fonts', true) }}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if stylesSrc is defined %}
+                {% for webpackEntry, webpackName in stylesSrc %}
+                    {{ resources.encore_absolute_link_tags(webpackEntry, webpackName, true) }}
+                {% endfor %}
+            {% endif %}
+
+        {% endblock %}
+
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" nonce="{{ csp_nonce() }}" type="application/javascript" defer="defer"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" nonce="{{ csp_nonce() }}" type="application/javascript" defer="defer"></script>
+        <![endif]-->
+
+    </head>
+
+    <body id="skin-admin-body" class="skin-default fixed-header skin-admin {{ userClass ~ " " ~ userEditClass }}{{ bodyClass }}" data-id="{{ websiteId }}">
+
+        {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'main-preloader', 'preloaderClass': 'main-preloader', 'visible': true, 'full': true} only %}
+
+        <div id="main-wrapper">
+
+            {% include 'admin/include/sidebar/layout.html.twig' %}
+
+            <div class="page-wrapper">
+                <div class="container-fluid">
+                    {% include 'admin/include/page-title.html.twig' with {"pageTitle": block('pageTitle') is defined ? block('pageTitle') : null} %}
+                    <div id="admin-body">
+                        {% if adminTheme == 'clouds' %}
+                            <div id="clouds">
+                                <div class="cloud x1"></div>
+                                <div class="cloud x2"></div>
+                                <div class="cloud x3"></div>
+                                <div class="cloud x4"></div>
+                                <div class="cloud x5"></div>
+                            </div>
+                        {% endif %}
+                        {% if disabledFlashBag is not defined %}
+                            {% include 'admin/include/flashbag.html.twig' %}
+                        {% endif %}
+                        {% block body %}{% endblock %}
+                    </div>
+                    {% if is_granted('ROLE_INTERNAL') %}
+                        {% include 'admin/include/sidebar-opposite/layout.html.twig' %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <footer id="admin-footer" class="footer position-relative text-xs-center mt-4">
+                {{ 'far fa-copyright'|fontawesome(15, 15, 'dark float-left mt-1 mr-1') }}{{ 'now'|date('Y') }} {{ "Développé par"|trans|striptags }}
+                {% if not customAdmin %}
+                    <a href="mailto:fournier.sebastien@outlook.com">Sébastien FOURNIER</a>
+                {% else %}
+                    <a href="https://www.felix-creation.fr" class="text-info" title="{{ "Agence Félix"|trans|striptags }}" target="_blank" rel="noopener noreferrer">
+                        {{ imgRender({'src': asset('build/admin/images/theme/felix-logo-black.svg', 'admin'), 'width': 30, 'height': 30, 'title': "Agence Félix"|trans}) }}
+                        {{ "Agence Félix"|trans }}
+                    </a>
+                {% endif %}
+            </footer>
+
+            {% include 'admin/include/translations.html.twig' %}
+
+            <span id="cms-plugins-data" class="d-none"
+                  data-colors-editor="{{ website|appColors('color') }}"
+                  data-fonts-editor="{{ website|appAdminFonts('color') }}">
+            </span>
+
+        </div>
+
+        {% block javascripts %}
+
+            {{ jsRouting() }}
+            {{ resources.encore_entry_js_files('admin-vendor-' ~ adminTheme, 'admin', 'Main', true, true) }}
+
+            {% if scriptsSrc is defined %}
+                {% for webpackEntry, webpackName in scriptsSrc %}
+                    {{ resources.encore_entry_js_files(webpackEntry, webpackName, webpackName|capitalize, true) }}
+                {% endfor %}
+            {% endif %}
+
+        {% endblock %}
+
+    </body>
+
+</html>

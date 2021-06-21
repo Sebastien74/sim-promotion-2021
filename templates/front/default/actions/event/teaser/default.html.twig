@@ -1,0 +1,23 @@
+{#{% trans_default_domain 'front_default' %}#}
+
+{#{% set i18n = teaser|i18n %}#}
+
+{#{% if i18n %}#}
+
+{#    {% set title = i18n.title %}#}
+{#    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}#}
+{#    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : 'text-start' %}#}
+
+{#    {% if title|striptags|length > 0 %}#}
+{#        <h{{ titleForce }} class="title mb-4 {{ titleAlignment }}">{{ title|unescape|raw }}</h{{ titleForce }}>#}
+{#    {% endif %}#}
+
+{#{% endif %}#}
+
+{#<div id="newscasts-teaser-{{ teaser.slug }}" class="newscasts-teaser-default">#}
+{#    {% if isMobile() %}#}
+{#        {% include 'front/' ~ websiteTemplate ~ '/actions/newscast/teaser/include/default-xs.html.twig' %}#}
+{#    {% else %}#}
+{#        {% include 'front/' ~ websiteTemplate ~ '/actions/newscast/teaser/include/default.html.twig' %}#}
+{#    {% endif %}#}
+{#</div>#}

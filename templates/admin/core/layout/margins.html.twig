@@ -1,0 +1,82 @@
+<h4 class="text-dark w-100 text-center mb-3">{{ "Marges"|trans }}</h4>
+
+<div id="margins-management-block" class="text-center w-100 mb-4">
+    <div class="margin-dashed d-inline-block mx-auto position-relative">
+        <small class="margin-info position-absolute">{{ "Marge extérieure"|trans }}</small>
+        <div class="row">
+            <div class="col-12">
+                <div class="item mx-auto m-2">
+                    {% if form.marginTop is defined %}
+                        {{ form_widget(form.marginTop) }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row m-0">
+                    <div class="col-2 my-auto">
+                        <div class="item m-auto m-2">
+                            {% if form.marginLeft is defined %}
+                                {{ form_widget(form.marginLeft) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-8 element-margin">
+                        <small class="margin-info position-absolute">{{ "Marge intérieure"|trans }}</small>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="item mx-auto m-2">
+                                    {% if form.paddingTop is defined %}
+                                        {{ form_widget(form.paddingTop) }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-3 my-auto">
+                                        <div class="item m-auto m-2">
+                                            {% if form.paddingLeft is defined %}
+                                                {{ form_widget(form.paddingLeft) }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-6 padding-dashed p-3">{{ 'fad fa-align-center'|fontawesome(14, 14, 'dark') }}</div>
+                                    <div class="col-3 my-auto">
+                                        <div class="item m-auto m-2">
+                                            {% if form.paddingRight is defined %}
+                                                {{ form_widget(form.paddingRight) }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="item mx-auto m-2">
+                                    {% if form.paddingBottom is defined %}
+                                        {{ form_widget(form.paddingBottom) }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2 my-auto">
+                        <div class="item m-auto m-2">
+                            {% if form.marginRight is defined %}
+                                {{ form_widget(form.marginRight) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="item mx-auto m-2">
+                    {% if form.marginBottom is defined %}
+                        {{ form_widget(form.marginBottom) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <small class="margins-infos">
+        {{ "<b>NULL :</b> Valeur par défaut - <b>0 :</b> Aucune - <b>XS :</b> Très petite - <b>S :</b> Petite - <b>M :</b> Moyenne - <b>L :</b> Large - <b>XL :</b> Très large - <b>XXL :</b> Extra large - <b>N* :</b> Négatif"|trans|raw }}
+    </small>
+</div>

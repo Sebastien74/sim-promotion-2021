@@ -1,0 +1,38 @@
+{% trans_default_domain 'admin' %}
+
+{% set format = duration == 1 ? 'LT' : 'L' %}
+
+<div id="chart-line-{{ id }}"
+     class="chart-lines"
+     data-x-key="{{ xKey }}"
+     data-y-keys="value"
+     data-value="{{ "Taux de rebond"|trans }}"
+     data-format="{{ format }}">
+
+    {% set loopDate = startDate|date('Y-m-d') %}
+    {% set duration = duration == 1 ? 1440 : duration %}
+    {% set haveData = false %}
+
+    {% for i in 1..duration %}
+        {% if xKey == 'hour' %}
+            {% set hour = loopDate|date('H:i') %}
+            {% if data[hour]['rebound'] is defined %}
+                {% set haveData = true %}
+                <span class="data" data-x-key="{{ loopDate|date('Y-m-d H:i') }}" data-y-key="{{ data[hour]['rebound'] }}"></span>
+            {% endif %}
+            {% set loopDate = loopDate|addMinute %}
+        {% elseif xKey == 'month' %}
+            {% if data[loopDate] is defined %}
+                {% set haveData = true %}
+                {% set count = data[loopDate]['rebound'] is defined ? data[loopDate]['rebound'] : 0 %}
+                <span class="data" data-x-key="{{ loopDate }}" data-y-key="{{ count|round(3, 'common') }}"></span>
+            {% endif %}
+            {% set loopDate = loopDate|addDay|date('Y-m-d') %}
+        {% endif %}
+    {% endfor %}
+
+    {% if not haveData %}
+        <p class="mb-0 vertical-align text-center">{{ "Aucune donnée"|trans }}</p>
+    {% endif %}
+
+</div>

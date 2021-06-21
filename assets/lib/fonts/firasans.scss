@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-10-09, 5:57 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS FIRA :
+    ==================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Firasans", sans-serif;
+
+$fonts: (
+    'FiraSans-Thin': ('weight': 100, 'style': normal),
+    'FiraSans-ThinItalic': ('weight': 100, 'style': italic),
+    'FiraSans-ExtraLight': ('weight': 200, 'style': normal),
+    'FiraSans-ExtraLightItalic': ('weight': 200, 'style': italic),
+    'FiraSans-Light': ('weight': 300, 'style': italic),
+    'FiraSans-LightItalic': ('weight': 300, 'style': italic),
+    'FiraSans-Regular': ('weight': 400, 'style': normal),
+    'FiraSans-Italic': ('weight': 400, 'style': italic),
+    'FiraSans-Medium': ('weight': 500, 'style': normal),
+    'FiraSans-MediumItalic': ('weight': 500, 'style': italic),
+    'FiraSans-SemiBold': ('weight': 600, 'style': normal),
+    'FiraSans-SemiBoldItalic': ('weight': 600, 'style': italic),
+    'FiraSans-Bold': ('weight': 700, 'style': normal),
+    'FiraSans-BoldItalic': ('weight': 700, 'style': italic),
+    'FiraSans-ExtraBold': ('weight': 800, 'style': normal),
+    'FiraSans-ExtraBoldItalic': ('weight': 800, 'style': italic),
+    'FiraSans-Black': ('weight': 900, 'style': normal),
+    'FiraSans-BlackItalic': ('weight': 900, 'style': italic),
+);
+
+@include font-face("Firasans", $fonts, null);

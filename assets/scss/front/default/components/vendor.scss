@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-08-15, 9:04 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT VENDOR COMPONENTS :
+    =========================
+
+------------------------------------------------------------------ */
+
+@import "alert";
+@import "carousel";
+@import "dropdown";
+
+@import "blocks/media";
+@import "blocks/modal";
+@import "blocks/video";
+
+@import "form/newsletter";
+@import "form/form";
+@import "form/thanks-modal";

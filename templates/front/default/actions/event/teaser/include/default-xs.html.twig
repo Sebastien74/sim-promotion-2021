@@ -1,0 +1,88 @@
+{#{% trans_default_domain 'front_default' %}#}
+
+{#{% set i18n = teaser|i18n %}#}
+
+{#{% if i18n %}#}
+
+{#    {% set title = i18n.title %}#}
+{#    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}#}
+{#    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : 'text-start' %}#}
+
+{#    {% if title|striptags|length > 0 %}#}
+{#        <h{{ titleForce }} class="title mb-4 {{ titleAlignment }}">{{ title|unescape|raw }}</h{{ titleForce }}>#}
+{#    {% endif %}#}
+
+{#{% endif %}#}
+
+{#<div id="teaser-news-{{ teaser.slug }}" class="container-fluid">#}
+{#    <div class="text-center mb-5">#}
+{#        <h2 class="title mb-0">{{ emt("Actualités"|trans|raw) }}</h2>#}
+{#        {% if posts[0].pageUrl is defined and posts[0].pageUrl %}#}
+{#            <a href="{{ path('front_index', {"url": posts[0].pageUrl}) }}" class="link">{{ emt("Voir toutes nos actualités"|trans|raw) }}</a>#}
+{#        {% endif %}#}
+{#    </div>#}
+{#</div>#}
+
+{#<div id="teaser-carousel-{{ teaser.slug }}" class="carousel slide carousel-fade" data-interval="5000" data-autoplay="1" data-ride="carousel">#}
+
+{#    <div class="carousel-inner">#}
+
+{#        {% for post in posts %}#}
+
+{#            {% set entity = post.entity %}#}
+{#            {% set category = post.entity.category %}#}
+{#            {% set path = post.pageUrl and post.url#}
+{#                ? path('front_newscast_view', {'pageUrl': post.pageUrl, 'url': post.url})#}
+{#                : path('front_newscast_view_only', {'url': post.url}) %}#}
+
+{#            {% include 'core/webmaster-edit.html.twig' with {#}
+{#                'title': "Éditer l'actualité"|trans([], 'front_webmaster'),#}
+{#                'role': 'ROLE_NEWSCAST',#}
+{#                'path': path('admin_newscast_edit', {'website': entity.website.id, 'newscast': entity.id})#}
+{#            } only %}#}
+
+{#            <div class="carousel-item{% if loop.first %} active{% endif %}">#}
+
+{#                {{ post.mediaRelation|thumb(post.mediaConfig, {#}
+{#                    'targetLink': post.pageUrl and post.url ? path('front_newscast_view', {'pageUrl': post.pageUrl, 'url': post.url}) : null,#}
+{#                    'isInBox': true#}
+{#                }) }}#}
+
+{#                <div class="content bg-secondary">#}
+{#                    <div class="row">#}
+{#                        <div class="col-6 text-start text-bold">#}
+{#                            <strong class="sub-title text-uppercase mb-0">{{ emt("Actu"|trans|raw) }}</strong>#}
+{#                            {% if not category.hideDate %}#}
+{#                                <span class="date mb-5 d-inline-block w-100 text-primary">#}
+{#                                    {{ entity.publicationStart|localizedDate('none', 'none', app.request.locale, null, entity.category.formatDate) }}#}
+{#                                </span>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                        <div class="col-6 text-end">#}
+{#                            {% if post|length > 1 %}#}
+{#                                <a class="carousel-control-prev cursor me-2" href="#teaser-carousel-{{ teaser.slug }}" role="button" data-slide="prev" aria-label="{{ "Précédent"|trans }}">#}
+{#                                    {{ imgRender({'src': asset('build/front/' ~ websiteTemplate ~ '/images/arrow-left.svg', 'front_default'), 'width': 20, 'height': 20, 'title': "Précédent"|trans}) }}#}
+{#                                </a>#}
+{#                                <a class="carousel-control-next cursor ms-2" href="#teaser-carousel-{{ teaser.slug }}" role="button" data-slide="next" aria-label="{{ "Suivant"|trans }}">#}
+{#                                    {{ imgRender({'src': asset('build/front/' ~ websiteTemplate ~ '/images/arrow-right.svg', 'front_default'), 'width': 20, 'height': 20, 'title': "Suivant"|trans}) }}#}
+{#                                </a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                        <div class="col-12">#}
+{#                            <a href="{{ path }}" data-toggle="preloader">#}
+{#                                <h3 class="title text-white mb-0 {{ post.titleAlignment }}">{{ post.title|raw }}</h3>#}
+{#                                {% if post.subTitle|striptags|length > 0 %}#}
+{#                                    <h4 class="main-sub-title mt-3" style="">{{ post.subTitle }}</h4>#}
+{#                                {% endif %}#}
+{#                            </a>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+
+{#            </div>#}
+
+{#        {% endfor %}#}
+
+{#    </div>#}
+
+{#</div>#}

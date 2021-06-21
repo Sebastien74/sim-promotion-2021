@@ -1,0 +1,62 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="text-center mb-5">
+    <h2 class="title mb-0">{{ emt("Actualités"|trans|raw) }}</h2>
+    {% if posts[0].pageUrl is defined and posts[0].pageUrl %}
+        <a href="{{ path('front_index', {"url": posts[0].pageUrl}) }}" class="link">{{ emt("Voir toutes nos actualités"|trans|raw) }}</a>
+    {% endif %}
+</div>
+
+<div class="cards row m-0">
+
+    {% set delay = 0 %}
+
+    {% for post in posts %}
+
+        {% set entity = post.entity %}
+        {% set category = post.entity.category %}
+        {% set delay = delay + 250 %}
+        {% set path = post.pageUrl and post.url
+            ? path('front_newscast_view', {'pageUrl': post.pageUrl, 'url': post.url})
+            : path('front_newscast_view_only', {'url': post.url}) %}
+
+        <div class="col-lg-6 position-relative box-hover-block{% if not loop.last %} mb-4 mb-lg-0{% endif %}">
+
+            {% include 'core/webmaster-edit.html.twig' with {
+                'title': "Éditer l'actualité"|trans([], 'front_webmaster'),
+                'role': 'ROLE_NEWSCAST',
+                'path': path('admin_newscast_edit', {'website': entity.website.id, 'newscast': entity.id})
+            } only %}
+
+            <div class="row cols-group {% if loop.index is odd %}me-lg-0{% else %}ms-lg-0{% endif %}">
+                <div class="col-lg-5 p-4 bg-secondary left">
+                    <div class="box-hover-inner">
+                        <strong class="sub-title text-uppercase mb-0">{{ emt("Actu"|trans|raw) }}</strong>
+                        {% if not category.hideDate %}
+                            <span class="date mb-5 d-inline-block w-100 text-white">
+                                {{ entity.publicationStart|localizedDate('none', 'none', app.request.locale, null, entity.category.formatDate) }}
+                            </span>
+                        {% endif %}
+                        <a href="{{ path }}">
+                            <h3 class="title hover-content text-white bg-secondary mb-0 {{ post.titleAlignment }}">{{ post.title|raw }}</h3>
+                            <span class="arrow-right"></span>
+                        </a>
+                        {% if post.subTitle|striptags|length > 0 %}
+                            <h4 class="main-sub-title mt-3" style="">{{ post.subTitle }}</h4>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-7 p-0 right">
+                    {{ post.mediaRelation|thumb(post.mediaConfig, {
+                        'targetLink': path,
+                        'placeholder': true,
+                        'isInBox': true
+                    }) }}
+                </div>
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>

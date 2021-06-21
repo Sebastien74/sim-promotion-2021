@@ -1,0 +1,62 @@
+{% extends "admin/page/catalog/product.html.twig" %}
+
+{% set isProduct = true %}
+
+{% block productForm %}
+
+    {% set configsSet = [] %}
+
+    {{ form_start(form, {"attr": {"novalidate": "novalidate", "action": app.request.uri, 'id': 'form-catalog-product'}}) }}
+        <div class="tab-content">
+            {% for tabId, config in tabs %}
+                <div class="tab-pane pt-4 pr-4 pl-4{% if activeTab == tabId or not activeTab and loop.first and isProduct %} active{% endif %}" id="{{ tabId }}" role="tabpanel" aria-labelledby="nav-{{ tabId }}-tab">
+                    <div class="row">
+                        {% for field in form.children %}
+                            {% if tabId not in configsSet %}
+                                {% if tabId == 'i18ns' %}
+                                    {{ form_row(form.adminName) }}
+                                    {% include 'admin/core/form/i18ns.html.twig' with {'i18ns': form.i18ns} %}
+                                    {% set configsSet = configsSet|merge(['i18ns']) %}
+                                {% elseif tabId == 'features' and field.vars.name == 'values' %}
+                                    {% include 'admin/core/form/prototype.html.twig' with {'fullBtn': true} %}
+                                {% elseif tabId == 'configuration' %}
+                                    <div class="col-12">
+                                        <h4 class="card-subtitle mb-4">{{ "fal fa-cog"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Configuration"|trans }}</h4>
+                                    </div>
+                                    {% if form.catalog is defined %}
+                                        {{ form_row(form.catalog) }}
+                                    {% endif %}
+                                    {% if form.categories is defined %}
+                                        {{ form_row(form.categories) }}
+                                    {% endif %}
+                                    {{ form_row(form.publicationStart) }}
+                                    {{ form_row(form.publicationEnd) }}
+                                    {{ form_row(form.promote) }}
+                                    {% if form.customLayout is defined %}
+                                        {{ form_row(form.customLayout) }}
+                                    {% endif %}
+                                    {% include 'admin/core/form/i18ns-config.html.twig' with {'i18ns': form.i18ns, 'configFieldsI18ns': configFields} %}
+                                    {% set configsSet = configsSet|merge(['configuration']) %}
+                                {% elseif tabId == 'information' and field.vars.name == 'informations'
+                                    or tabId == 'lots' and field.vars.name == 'lots' %}
+                                    {% include 'admin/core/form/prototype.html.twig' with {'field': form[field.vars.name]} %}
+                                {% elseif tabId == 'seo' %}
+                                    {% include 'admin/core/form/urls.html.twig' with {
+                                        'form': form,
+                                        'displaySeo': true,
+                                        'urls': form.urls,
+                                        'classname': interface.classname
+                                    } %}
+                                    {% set configsSet = configsSet|merge(['seo']) %}
+                                {% elseif tabId == 'products' and field.vars.name == 'products' or tabId == 'videos' and field.vars.name == 'videos' %}
+                                    {{ form_row(form[field.vars.name]) }}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {{ form_end(form) }}
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% trans_default_domain 'front_default' %}
+
+{% set forumCookieActive = 'forum'|cookie %}
+{% set customTemplate = 'front/' ~ websiteTemplate ~ '/actions/forum/include/comment-' ~ forum.slug ~ '.html.twig' %}
+{% set customTemplateExist = (customTemplate)|fileExist %}
+{% set template = customTemplateExist ? customTemplate : 'front/' ~ websiteTemplate ~ '/actions/forum/include/comment-default.html.twig' %}
+
+<!-- .forum-comment-container -->
+<div id="forum-comment-container-{{ comment.id }}" class="forum-comment-container position-relative">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer le commentaire"|trans([], 'front_webmaster'),
+        'role': 'ROLE_FORUM',
+        'path': path('admin_forumcomment_edit', {'website': website.id, 'forum': forum.id, "forumcomment": comment.id})
+    } only %}
+
+    {% include template %}
+
+</div>
+<!-- \.forum-container -->

@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-03-13, 3:34 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS BLOCKLYN CONDENSED :
+    ================================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Blocklyncondensed";
+
+$fonts: (
+    'Blocklyn-Condensed': ('weight': bold, 'style': normal),
+    'Blocklyn-Condensed-Italic': ('weight': bold, 'style': italic)
+);
+
+@include font-face("Blocklyncondensed", $fonts, null);

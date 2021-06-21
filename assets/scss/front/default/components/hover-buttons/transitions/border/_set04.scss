@@ -1,0 +1,126 @@
+@if $enable-hover-buttons-border {
+
+    //===================================
+    // Border Transitions - Set 04
+    //===================================
+
+
+    // Loop adding properties to classes
+
+    .hpill {
+        @each $type in $borderproperties {
+            &.hb-border#{nth($type, 1)} {
+                &-br2 {
+                    &:after {
+                        border-radius: 50px;
+                    }
+                }
+            }
+        }
+    }
+
+
+    .hbtn {
+
+        @each $type in $borderproperties {
+            &.hb-border#{nth($type, 1)} {
+                &-br2 {
+                    position: relative;
+                    transition-duration: .2s;
+                    overflow: visible;
+                    box-sizing: border-box;
+                    border: none;
+                    padding: (8px + 2px) (20px + 2px);
+
+                    &:after {
+                        box-sizing: border-box;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        content: '';
+                        border: solid 1px nth($type, 2);
+                        z-index: 2;
+                    }
+                }
+            }
+        }
+
+        @if $enable-hover-buttons-border-top-br2 {
+
+            &.hb-border-top-br2 {
+                &:after {
+                    transition: all 0.2s linear;
+                }
+
+                &:hover {
+                    &:after {
+                        border-right-color: transparent;
+                        border-bottom-color: transparent;
+                        border-left-color: transparent;
+                        border-top-width: 1px + 2px;
+                        transition: all 0.2s linear;
+                    }
+                }
+            }
+        }
+
+        @if $enable-hover-buttons-border-right-br2 {
+
+            &.hb-border-right-br2 {
+                &:after {
+                    transition: all 0.2s linear;
+                }
+
+                &:hover {
+                    &:after {
+                        border-bottom-color: transparent;
+                        border-left-color: transparent;
+                        border-top-color: transparent;
+                        border-right-width: 1px + 2px;
+                        transition: all 0.2s linear;
+                    }
+                }
+            }
+        }
+
+        @if $enable-hover-buttons-border-bottom-br2 {
+
+            &.hb-border-bottom-br2 {
+                &:after {
+                    transition: all 0.2s linear;
+                }
+
+                &:hover {
+                    &:after {
+                        border-left-color: transparent;
+                        border-top-color: transparent;
+                        border-right-color: transparent;
+                        border-bottom-width: 1px + 2px;
+                        transition: all 0.2s linear;
+                    }
+                }
+            }
+        }
+
+        @if $enable-hover-buttons-border-left-br2 {
+
+            &.hb-border-left-br2 {
+                &:after {
+                    transition: all 0.2s linear;
+                }
+
+                &:hover {
+                    &:after {
+                        border-top-color: transparent;
+                        border-right-color: transparent;
+                        border-bottom-color: transparent;
+                        border-left-width: 1px + 2px;
+                        transition: all 0.2s linear;
+                    }
+                }
+            }
+        }
+    }
+}

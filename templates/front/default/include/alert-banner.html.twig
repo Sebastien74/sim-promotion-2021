@@ -1,0 +1,5 @@
+{% if message is defined %}
+    <div id="core-alert-banner" class="position-fixed pt-4 pb-4 text-center bg-dark">
+        <div class="container text-white">{{ message|raw }}</div>
+    </div>
+{% endif %}

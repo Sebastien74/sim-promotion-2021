@@ -1,0 +1,15 @@
+{% trans_default_domain 'front_default' %}
+
+<!-- .card-block -->
+<div class="card-block w-100">
+    {% include 'front/' ~ websiteTemplate ~ '/include/card.html.twig' with {
+        'entity': block,
+        'website': website,
+        'thumbConfiguration': thumbConfiguration,
+        'colSize': block.col.size,
+        'fullSize': block.col.zone.fullSize,
+        'mediaWidth': mediaWidth,
+        'mediaHeight': mediaHeight
+    } %}
+</div>
+<!-- \.card-block -->

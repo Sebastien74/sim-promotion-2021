@@ -1,0 +1,6 @@
+parameters:
+    protocol: http
+    env(SECURE_SCHEME): http
+    security_token: '%env(SECURITY_TOKEN)%'
+    locale: '%env(APP_LOCALE)%'
+    uploadsPath: '%kernel.project_dir%/public/uploads'

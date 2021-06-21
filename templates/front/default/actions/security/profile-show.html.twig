@@ -1,0 +1,93 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block metaTitle %}{{ "Mon profil"|trans|raw }} - {{ companyName }}{% endblock %}
+{% block metaRobots %}noindex{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('front-' ~ websiteTemplate ~ '-security', webpack, true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('front-' ~ websiteTemplate ~ '-security', webpack, 'Security') }}
+{% endblock %}
+
+{% block body %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with { 'title': emt("Mon profil"|trans|raw) } %}
+
+    <div class="container pt-5">
+        <div class="row">
+            <div class="col-md-8">
+
+                {% include "front/" ~ websiteTemplate ~ "/include/flashbag.html.twig" %}
+
+                <section id="user-profile-container" class="mb-4">
+                    <h2>
+                        {{ user.lastName ~ " " ~ user.firstName }}
+                        <span class="d-inline-block ms-3" data-bs-toggle="tooltip" title="{{ "Éditer mes informations"|trans }}">
+                            <a href="{{ path('security_front_profile_edit') }}" data-toggle="preloader">
+                                {{ 'fal fa-pencil'|fontawesome(null, 20) }}
+                            </a>
+                        </span>
+                    </h2>
+                    <ul class="reset">
+                        <li><strong>{{ "Nom d'utilisateur :"|trans }}</strong> {{ user.login }}</li>
+                        <li><strong>{{ "E-mail :"|trans }}</strong>
+                            {{ user.email }}
+                            {% set emailValidMessage = user.confirmEmail ? 'E-mail confirmé'|trans : 'E-mail non confirmé'|trans %}
+                            {% set iconEmailValid = user.confirmEmail ? 'check' : 'times' %}
+                            {% set iconEmailColor = user.confirmEmail ? 'success' : 'danger' %}
+                            <div class="d-inline-block" data-bs-toggle="tooltip" title="{{ emailValidMessage|striptags }}">
+                                {{ 'fal fa-' ~ iconEmailValid|fontawesome(null, 17, iconEmailColor) }}
+                            </div>
+                        </li>
+                        <li><strong>{{ emt("Langue :"|trans) }}</strong> {{ user.locale|languageName }}</li>
+                    </ul>
+                </section>
+
+                <hr>
+
+                {% set addresses = user|profile_addresses %}
+
+                <section class="user-address-container mb-4 mt-4">
+                    <h3>
+                        {{ emt("Adresse de facturation"|trans) }}
+                        <span class="d-inline-block ms-3" data-bs-toggle="tooltip" title="{{ "Éditer mes informations"|trans }}">
+                            <a href="{{ path('security_front_profile_edit') }}" data-toggle="preloader">
+                                {{ 'fal fa-pencil'|fontawesome(null, 20) }}
+                            </a>
+                        </span>
+                    </h3>
+                    {% if addresses.basic is defined %}
+                        {{ addresses.basic|address(website) }}
+                    {% endif %}
+                </section>
+
+                <section class="user-address-container">
+                    <h3>
+                        {{ emt("Adresse de livraison"|trans) }}
+                        <span class="d-inline-block ms-3" data-bs-toggle="tooltip" title="{{ "Éditer mes informations"|trans }}">
+                            <a href="{{ path('security_front_profile_edit') }}" data-toggle="preloader">
+                                {{ 'fal fa-pencil'|fontawesome(null, 20) }}
+                            </a>
+                        </span>
+                    </h3>
+                    {% if addresses.billing is defined %}
+                        {{ addresses.billing|address(website) }}
+                    {% endif %}
+                </section>
+
+            </div>
+            <div class="col-md-4">
+                {{ imgRender({'src': asset(user|profile_img), 'width': "100%"}) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

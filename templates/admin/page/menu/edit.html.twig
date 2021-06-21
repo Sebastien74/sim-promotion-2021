@@ -1,0 +1,113 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = "Menu"|trans ~ " : " ~ entity.adminName %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-menu', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('admin-menu', 'admin', 'Menu') }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="menu-edit-page">
+
+        <div class="row mb-3">
+            <div class="col-6 pl-3 my-auto">
+                <h4 class="mb-0 title">{{ 'fal fa-pencil-alt'|fontawesome(null, 18, 'info mr-2') }}{{ "Édition"|trans }}</h4>
+            </div>
+            <div class="col-6 my-auto text-right">
+                {% if 'delete'|moduleActive(allModules) %}
+                    <button id="delete-pack-btn" class="btn btn-danger d-none"
+                            data-toggle="tooltip" title="{{ "Supprimer"|trans }}">
+                        {{ 'fas fa-trash'|fontawesome(10, 13, 'white') }}
+                    </button>
+                {% endif %}
+                {% set collapsedAdminTrees = configuration.collapsedAdminTrees is defined
+                    ? configuration.collapsedAdminTrees : website().configuration.collapsedAdminTrees %}
+                <span id="nestable-expand-all" class="btn btn-outline-dark cursor mr-2{% if not collapsedAdminTrees %} d-none{% endif %}" data-toggle="tooltip" title="{{ "Dépiler"|trans|raw }}">
+                    {{ 'fal fa-arrow-alt-to-bottom'|fontawesome(null, 16, 'dark') }}
+                </span>
+                <span id="nestable-collapse-all" class="btn btn-dark cursor mr-2{% if collapsedAdminTrees %} d-none{% endif %}" data-toggle="tooltip" title="{{ "Empiler"|trans|raw }}">
+                    {{ 'fal fa-arrow-alt-to-top'|fontawesome(null, 16, 'dark') }}
+                </span>
+                <span data-toggle="preloader">
+                    <a href="{{ lastRoute() }}" class="btn btn-white text-info"
+                       data-toggle="tooltip" title="{{ "Retourner à la page précédente"|trans }}"
+                       aria-label="{{ "Retourner à la page précédente"|trans|striptags }}">
+                        {{ 'fas fa-reply'|fontawesome(14, 14, 'info') }}
+                    </a>
+                </span>
+                {% include 'admin/include/i18n-selector.html.twig' with {"route": 'admin_menu_edit', "args": { "menu": entity.id }} %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <h4 class="card-title card-header">{{ 'fal fa-copy'|fontawesome(null, 18, 'info-darken mr-2') }}{{ "Pages du site"|trans }}</h4>
+                    <div class="card-body">
+                        <form method="post" id="page-selector-menu"
+                              action="{{ path('admin_link_add', {'website': websiteId(), 'menu': entity.id, 'locale': entitylocale, 'multiple': 0}) }}" class="mb-4">
+                            <div class="input-group mb-3">
+                                <select name="page" class="custom-select select-2">
+                                    <option value="">{{ "Sélectionnez une page"|trans }}</option>
+                                    {% for page in pages %}
+                                        {% if page.template != "components.html.twig" %}
+                                            <option value="{{ page.id }}">{{ page.adminName }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <div class="input-group-append">
+                                    <button type="submit" class="input-group-text bg-info cursor">{{ 'far fa-chevron-right'|fontawesome(null, 14, 'white') }}</button>
+                                </div>
+                            </div>
+                        </form>
+                        <form id="pages-to-menu-form" action="{{ path('admin_link_add', {'website': websiteId(), 'menu': entity.id, 'locale': entitylocale, 'multiple': 1}) }}" method="POST" >
+                            <ul id="pages-list" class="w-100 pl-3">
+                                {% set pages = treePages.main is defined ? treePages.main : [] %}
+                                {% for page in pages %}
+                                    {% if page.template != "components.html.twig" and page.template != "error.html.twig" %}
+                                        {% include 'admin/page/menu/link-element.html.twig' with {"page": page, 'tree': treePages} only %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button type="submit" class="btn btn-info w-100">{{ "Ajouter au menu"|trans }}</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="add-link-card" class="card">
+                    <h4 class="card-title card-header">{{ 'fal fa-link'|fontawesome(null, 18, 'info-darken mr-2') }}{{ "Ajouter un lien externe ou d'arborescence"|trans }}</h4>
+                    <div class="card-body pb-0">
+                        {{ render_esi(controller('App\\Controller\\Admin\\Module\\Menu\\LinkController::new', { 'website': websiteId(), 'menu': entity.id, 'entitylocale': entitylocale } )) }}
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 class="card-title card-header">{{ 'fal fa-cog'|fontawesome(null, 18, 'info-darken mr-2') }}{{ "Configuration"|trans }}</h4>
+                    <div class="card-body pb-0">
+                        <div class="row">
+                            {{ form_start(form, {"attr": {"novalidate": "novalidate", "action": app.request.uri}}) }}
+                                {% include 'admin/core/form/edit-fields-base.html.twig' with {'form': form} only %}
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                {% set limit = entity.maxLevel > 0 ? entity.maxLevel : 1000 %}
+                {% include 'admin/core/include/nestable.html.twig' with {"routenameInterface": "link", "forceLimit": limit, 'infoUrl': true} %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

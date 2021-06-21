@@ -1,0 +1,21 @@
+{
+  "build/init/core-init.css": "/build/init/core-init.css",
+  "build/init/core-init.js": "/build/init/core-init.js",
+  "build/init/images/back.svg": "/build/init/images/back.17ce4446.svg",
+  "build/init/images/configuration.svg": "/build/init/images/configuration.92065b4b.svg",
+  "build/init/images/contact.svg": "/build/init/images/contact.bb9516a4.svg",
+  "build/init/images/data-base.svg": "/build/init/images/data-base.7439c176.svg",
+  "build/init/images/favicon.ico": "/build/init/images/favicon.4a931211.ico",
+  "build/init/images/front.svg": "/build/init/images/front.37d7c916.svg",
+  "build/init/images/generate-assets.svg": "/build/init/images/generate-assets.b07e8988.svg",
+  "build/init/images/generate-db-data.svg": "/build/init/images/generate-db-data.bbc894a7.svg",
+  "build/init/images/generate-db-internationalization.svg": "/build/init/images/generate-db-internationalization.08a429f4.svg",
+  "build/init/images/generate-db.svg": "/build/init/images/generate-db.7439c176.svg",
+  "build/init/images/generate-yarn.svg": "/build/init/images/generate-yarn.b07e8988.svg",
+  "build/init/images/information.svg": "/build/init/images/information.d6b414c2.svg",
+  "build/init/images/internationalization.svg": "/build/init/images/internationalization.08a429f4.svg",
+  "build/init/images/legals.svg": "/build/init/images/legals.34963ba0.svg",
+  "build/init/images/networks.svg": "/build/init/images/networks.d23a9208.svg",
+  "build/init/images/styles.svg": "/build/init/images/styles.13960d4b.svg",
+  "build/init/images/success.svg": "/build/init/images/success.b0c27cb9.svg"
+}

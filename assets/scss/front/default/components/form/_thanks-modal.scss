@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-11-12, 7:01 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT THANKS MODAL COMPONENT :
+    =============================
+
+    1 ) Import
+    2 ) Core
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Import
+-----------------------------------*/
+
+@import "../../utilities/mixins";
+@import "../../variables";
+
+/*-----------------------------------
+   2 ) Core
+-----------------------------------*/
+
+body .thanks-modal {
+
+    .modal-content {
+
+        background-color: $gray-400;
+        border: none;
+
+        .modal-body {
+
+            padding: 3rem;
+
+            .btn-close {
+
+                position: absolute;
+                top: 20px;
+                right: 20px;
+
+                svg {
+                    width: 25px;
+                    height: 25px;
+                }
+            }
+
+            .modal-logo {
+                max-height: 100px;
+                max-width: 250px;
+            }
+
+            p {
+                color: $dark !important;
+            }
+        }
+    }
+}

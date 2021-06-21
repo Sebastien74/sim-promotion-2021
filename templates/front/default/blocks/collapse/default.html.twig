@@ -1,0 +1,48 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+
+{% if i18n %}
+
+    {% set title = i18n.title %}
+    {% set titleForce = i18n.titleForce ? i18n.titleForce : 2 %}
+    {% set titleAlignment = i18n.titleAlignment ? i18n.titleAlignment : null %}
+    {% set intro = i18n.introduction %}
+    {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : null %}
+    {% set body = i18n.body %}
+    {% set bodyAlignment = i18n.bodyAlignment ? i18n.bodyAlignment : null %}
+    {% set placeholder = i18n.placeholder ? i18n.placeholder : null %}
+
+    <!-- .collapse-block -->
+    <div class="collapse-block w-100">
+
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-block-{{ block.id }}" aria-expanded="false" aria-controls="collapse-block-{{ block.id }}">
+            {% if placeholder|striptags|length > 0 %}
+                {{ placeholder|unescape|raw }}
+            {% else %}
+                {{ emt("Afficher plus"|trans|raw) }}
+            {% endif %}
+        </button>
+
+        <div class="collapse" id="collapse-block-{{ block.id }}">
+            <div class="card card-body">
+
+                {% if title|striptags|length > 0 %}
+                    <h{{ titleForce }} class="card-title title">{{ title|unescape|raw }}</h{{ titleForce }}>
+                {% endif %}
+
+                {% if intro|striptags|length > 0 %}
+                    <p class="card-text introduction text-bold {{ introAlignment }}">{{ intro|unescape|raw }}</p>
+                {% endif %}
+
+                {% if body|striptags|length > 0 %}
+                    <p class="card-text body {{ bodyAlignment }}">{{ body|unescape|raw }}</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+    <!-- \.collapse-block -->
+
+{% endif %}

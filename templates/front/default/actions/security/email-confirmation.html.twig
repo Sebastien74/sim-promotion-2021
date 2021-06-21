@@ -1,0 +1,20 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block metaTitle %}{{ "Confirmation d'email"|trans|raw }} - {{ companyName }}{% endblock %}
+{% block metaRobots %}noindex{% endblock %}
+
+{% block body %}
+
+    <div class="container pt-5">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": "success", "message": emt("E-mail confirmé !"|trans)} only %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

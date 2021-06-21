@@ -1,0 +1,139 @@
+{% trans_default_domain 'admin' %}
+
+<div class="cols-sortable row">
+
+    {% if zone.cols|length > 0 %}
+        {% for col in zone.cols %}
+            <div id="col-{{ col.id }}" class="col-sortable col-md-{{ col.size }} mb-3"
+                 data-size-class="col-md-{{ col.size }}"
+                 data-position="{{ col.position }}"
+                 data-id="{{ col.id }}">
+                <div class="resizable ui-widget-content h-100">
+                    <div class="column h-100 ui-state-default"
+                         id="col_{{ col.id }}"
+                         data-id="{{ col.id }}"
+                         data-position="{{ col.position }}">
+                        <div class="portlet h-100">
+                            <div class="header w-100 text-right">
+                                <div class="col-actions text-right">
+
+                                    {% if 'edit'|moduleActive(allModules) %}
+                                        <span data-toggle="tooltip"
+                                              title="{{ "Configuration"|trans|striptags }}"
+                                              data-path="{{ path('admin_col_configuration', {'website': websiteId(), 'col': col.id}) }}"
+                                              class="item edit-layout-element-btn d-inline-block">
+                                            <button class="btn">{{ 'far fa-cog'|fontawesome(17, 17, 'dark') }}</button>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if 'col-edit'|moduleActive(allModules) %}
+                                        {% set mediaRelation = col.mediaRelations is defined ? col.mediaRelations|i18n(website().configuration.locale) : null %}
+                                        <span data-toggle="preloader" class="position-relative col-img-bulle-wrap d-inline-block">
+                                            {% if mediaRelation and mediaRelation.media and mediaRelation.media.filename %}
+                                                <span style="background: url({{ mediaRelation|thumb(null, {"path": true}) }})" class="image-info-bulle"></span>
+                                            {% endif %}
+                                            <a href="{{ path('admin_col_edit', {'website': websiteId(), 'zone': zone.id, 'col': col.id, 'interfaceName': interface.name, 'interfaceEntity': entity.id}) }}"
+                                               class="btn position-relative" data-toggle="tooltip" title="{{ "Image de fond"|trans|striptags }}">
+                                                {{ 'far fa-image'|fontawesome(17, 17, 'dark') }}
+                                            </a>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if 'edit'|moduleActive(allModules) %}
+                                        <span class="item background-col-item background-item d-inline-block">
+                                            {% set color = 'background'|color(website(), col.backgroundColor) %}
+                                            {% set hexa = color ? color.color : null %}
+                                            <span class="color-info-bulle"{% if hexa %} style="background-color: {{ hexa }}" {% endif %}></span>
+                                            <span class="btn edit-layout-element-btn btn-palette cursor"
+                                               data-path="{{ path('admin_col_background', {'website': websiteId(), 'col': col.id}) }}"
+                                               data-toggle="tooltip"
+                                               title="{{ "Couleur de fond"|trans|striptags }}">
+                                                {{ 'far fa-palette'|fontawesome(17, 17, 'dark') }}
+                                            </span>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if 'edit'|moduleActive(allModules) and interface.resize is defined and interface.resize %}
+                                        {% set isStandardize = col.standardizeElements %}
+                                        {% set standardizeAction = isStandardize ? "Largeur par défaut des blocs"|trans : "Uniformiser la largeur des blocs"|trans %}
+                                        {% set standardize = isStandardize ? 'true' : 'false' %}
+                                        <span data-toggle="tooltip" title="{{ standardizeAction|striptags }}" data-placement="right" class="item">
+                                            <a class="btn col-blocks-standardize cursor"
+                                               data-col="{{ col.id }}"
+                                               data-standardize="{{ standardize }}"
+                                               data-cols-default="{{ "Largeur par défaut des blocs"|trans }}"
+                                               data-cols-standardize="{{ "Uniformiser la largeur des blocs"|trans }}">
+                                                <span class="icon-wrap{% if isStandardize %} d-none{% endif %}">
+                                                    {{ 'far fa-indent'|fontawesome(17, 17, 'dark') }}
+                                                </span>
+                                                <span class="icon-wrap{% if not isStandardize %} d-none{% endif %}">
+                                                    {{ 'far fa-outdent'|fontawesome(17, 17, 'info') }}
+                                                </span>
+                                            </a>
+                                        </span>
+                                    {% endif %}
+
+                                    {% if 'delete'|moduleActive(allModules) %}
+                                        <span href="{{ path('admin_col_delete', {'website': websiteId(), 'zone': zone.id, 'col': col.id}) }}"
+                                           data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}"
+                                           data-target="#col-{{ col.id }}"
+                                           class="btn swal-delete-link cursor">
+                                            {{ 'fas fa-trash'|fontawesome(17, 17, 'dark') }}
+                                        </span>
+                                    {% endif %}
+
+                                    {% if col.hide %}
+                                        <span class="item btn"
+                                              data-toggle="tooltip"
+                                              data-placement="right" title="{{ "Colonne désactivée"|trans|striptags }}">
+                                            {{ 'fas fa-ban'|fontawesome(17, 17, 'danger') }}
+                                        </span>
+                                    {% endif %}
+
+                                    {% if 'edit'|moduleActive(allModules) %}
+                                        <span class="item handle-col grabbable btn d-inline-block"
+                                              data-toggle="tooltip" title="{{ "Déplacer"|trans|striptags }}">
+                                            {{ 'far fa-arrows-alt'|fontawesome(17, 17, 'dark') }}
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                            <div class="portlet-content portlet-block pr-3 pl-3 w-100">
+                                {% include 'admin/core/layout/blocks.html.twig' %}
+                            </div>
+                            {% if 'edit'|moduleActive(allModules) and layoutConfiguration is defined and layoutConfiguration %}
+                                <div class="add-block-wrap w-100 pr-3 pl-3 pt-2 text-center">
+                                    <span class="edit-layout-element-btn btn btn-info add-block-btn cursor"
+                                          data-path="{{ path('admin_block_modal', {
+                                              'website': websiteId(),
+                                              'col': col.id,
+                                              'configuration': layoutConfiguration.id,
+                                              'entityId': entity.id,
+                                          }) }}">
+                                        {{ 'far fa-plus-circle'|fontawesome(25, 25, 'white') }}
+                                    </span>
+                                    <span class="btn-resize btn-resize-col btn-white btn-xs btn-circle">{{ 'fad fa-arrow-from-right'|fontawesome(9, 10, 'dark') }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if 'edit'|moduleActive(allModules) %}
+        <div class="col-12">
+            <button data-path="{{ path('admin_col_new', {'website': websiteId(), 'zone': zone.id}) }}"
+                    class="btn new-col-btn edit-layout-element-btn w-100 mb-3">
+                <img data-src="{{ asset('build/admin/images/theme/plus-rounded.svg', 'admin') }}"
+                     src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                     class="img-fluid rounded-add-img lazyload"
+                     width="20" height="20" alt="{{ 'Ajouter'|trans|striptags }}" /><br>
+                {{ 'Ajouter une colonne'|trans }}
+            </button>
+        </div>
+    {% endif %}
+
+</div>

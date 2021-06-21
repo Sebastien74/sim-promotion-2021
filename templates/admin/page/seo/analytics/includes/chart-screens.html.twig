@@ -1,0 +1,69 @@
+{% trans_default_domain 'admin' %}
+
+{% set labels = {
+    'desktop': 'Ordinateur'|trans,
+    'tablet': 'Tablette'|trans,
+    'mobile': 'Mobile'|trans
+} %}
+
+<div id="screens-card" class="card h-100 mb-0">
+    <div class="card-body">
+        <h4 class="card-title">{{ "Types d'appareil utilisés par votre audience ?"|trans }}</h4>
+        <div class="row h-100">
+            <div class="col-12 my-auto">
+                {% if data %}
+                    <div id="screens-donuts" class="donuts" data-formatter="%">
+                        {% set count = 0 %}
+                        {% for screen, sessions in data %}
+                            {% for session in sessions %}
+                                {% set count = count + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for code, label in labels %}
+                            {% for screen, sessions in data %}
+                                {% if screen == code %}
+                                {% set percent = (sessions|length * 100) / count %}
+                                    <span class="data" data-label="{{ labels[screen] }}" data-value="{{ percent|round(3, 'common') }}"></span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <ul class="screens-percent reset row text-center mt-3">
+                        {% for code, label in labels %}
+                            <li class="col-4">
+                                {{ ("fad fa-" ~ code)|fontawesome(null, 20, 'info-darken ' ~ code) }}<br>
+                                <small class="text-muted">{{ label }}</small><br>
+                                {% set havePercent = false %}
+                                {% for screen, sessions in data %}
+                                    {% if screen == code %}
+                                        {% set havePercent = true %}
+                                        {% set percent = (sessions|length * 100) / count %}
+                                        <span class="percent">{{ percent|round(3, 'common') }} %</span>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if not havePercent %}
+                                    <span class="percent">0 %</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="mb-0 mt-5 mb-5 text-center">{{ "Aucune donnée"|trans }}</p>
+                {% endif %}
+            </div>
+            {% if data %}
+                <div class="w-100 text-right"><small class="text-italic">{{ "Sessions par appareil"|trans }}</small></div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/page/seo/analytics/includes/dates-range.html.twig' with {'route': 'toto'} %}
+            </div>
+            <div class="col-md-6 text-right">
+{#                <a href="">{{ "Vue d'ensemble"|trans }}{{ "fal fa-chevron-right"|fontawesome(null, 10, 'ml-2') }}</a>#}
+            </div>
+        </div>
+    </div>
+</div>

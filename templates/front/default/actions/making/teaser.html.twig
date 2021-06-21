@@ -1,0 +1,66 @@
+{% trans_default_domain 'front_default' %}
+
+{% if entities %}
+
+    {% set zone = block.col.zone %}
+
+    {% set customTemplate = 'front/' ~ websiteTemplate ~ '/actions/making/teaser/' ~ teaser.slug ~ '.html.twig' %}
+    {% set customTemplateExist = (customTemplate)|fileExist %}
+    {% set template = customTemplateExist
+        ? 'front/' ~ websiteTemplate ~ '/actions/making/teaser/' ~ teaser.slug ~ '.html.twig'
+        : 'front/' ~ websiteTemplate ~ '/actions/making/teaser/default.html.twig' %}
+
+    {% set posts = [] %}
+
+    {% for entity in entities %}
+
+        {% set layout = entity.layout %}
+        {% set hasCustomLayout = entity.customLayout is defined and entity.customLayout
+            and layout.zones is defined and layout.zones|length > 0 %}
+        {% set i18n = hasCustomLayout ? layout|layoutBlockType('text')|i18n : entity|i18n %}
+
+        {% if i18n %}
+
+            {% set mediaRelation = hasCustomLayout ? layout|layoutBlockType('media')|mainMedia : entity|mainMedia %}
+            {% set mediaConfig = mediaRelation|thumbConfiguration(thumbConfiguration, true) %}
+            {% set title = hasCustomLayout ? layout|mainLayoutTitle(app.request.locale, true) : i18n.title %}
+            {% set mediasByCategories = entity.mediaRelations|mediasByCategories %}
+
+            {% set posts = posts|merge({(loop.index): {
+                "entity": entity,
+                "title": title.title is defined ? title.title : title,
+                "subTitle": title.subTitle is defined ? title.subTitle : i18n.subTitle,
+                "titleForce": 2,
+                "titleAlignment": i18n.titleAlignment ? i18n.titleAlignment : 'text-start',
+                "intro": i18n.introduction,
+                "introAlignment": i18n.introductionAlignment ? i18n.introductionAlignment : 'text-start',
+                "body": i18n.body,
+                "bodyAlignment": i18n.bodyAlignment ? i18n.bodyAlignment : 'text-start',
+                "beforeMedias": mediasByCategories.before is defined ? mediasByCategories.before : [],
+                "afterMedias": mediasByCategories.after is defined ? mediasByCategories.after : [],
+                "mediaConfig": mediaConfig,
+                "url": website|i18nUrl(entity),
+                "pageUrl": urlsIndex[entity.id] is defined and urlsIndex[entity.id] ? urlsIndex[entity.id] : null
+            }}) %}
+
+        {% endif %}
+
+    {% endfor %}
+
+    <!-- .teaser-making-container -->
+    <div id="teaser-making-container-{{ teaser.slug }}" class="teaser-making-container">
+
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer le teaser"|trans([], 'front_webmaster'),
+            'role': 'ROLE_MAKING',
+            'path': path('admin_makingteaser_edit', {'website': website.id, 'makingteaser': teaser.id})
+        } only %}
+
+        {% if template|fileExist %}
+            {% include template %}
+        {% endif %}
+
+    </div>
+    <!-- \.teaser-making-container -->
+
+{% endif %}

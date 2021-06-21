@@ -1,0 +1,29 @@
+{% if form is defined %}
+
+    {% set inLibrary = "medias/library" in masterRequest().uri %}
+
+    <div id="dropzone-errors" class="w100"></div>
+
+    {% if inLibrary %}
+        <div class="collapse mt-4" id="collapseFormMedias">
+    {% endif %}
+        <div class="row{% if not inLibrary %} mb-4{% endif %}">
+            <div class="{% if inLibrary %}col-12{% else %}col-md-10{% endif %}">
+                {{ form_start(form, {"attr": {
+                    "novalidate": "novalidate",
+                    "action": path('admin_medias_uploader', {"website": websiteId(), "entityNamespace": entityNamespace, 'entityId': entityId}),
+                    "class": 'dropzone js-reference-dropzone'
+                }}) }}
+                {{ form_end(form) }}
+            </div>
+            {% if not inLibrary %}
+                <div class="col-md-2">
+                    {% include 'admin/page/media/modal-btn.html.twig' with {'uploadType': 'multiple', "entityId": entityId, 'classname': entityNamespace|url_decode} %}
+                </div>
+            {% endif %}
+        </div>
+    {% if inLibrary %}
+        </div>
+    {% endif %}
+
+{% endif %}

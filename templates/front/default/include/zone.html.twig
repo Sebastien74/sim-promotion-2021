@@ -1,0 +1,187 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18nMediaZone = zone|i18nMedia %}
+{% set i18nZone = zone|i18n %}
+{% set bgImgZone = i18nMediaZone|thumb(null, {path: true}) %}
+{% set bgImgDesktopZone = i18nMediaZone|thumb(null, {path: 'desktop'}) %}
+{% set bgImgTabletZone = i18nMediaZone|thumb(null, {path: 'tablet'}) %}
+{% set bgImgMobileZone = i18nMediaZone|thumb(null, {path: 'mobile'}) %}
+{% set colsGrids = zone.grid %}
+{% set haveTitleHeader = false %}
+{% set fullSize = zone.fullSize %}
+{% set zoneClasses = zoneClasses(zone) %}
+{% set mediasSizes = zone.standardizeMedia ? mediasHeight(website, zone, app.request.locale) : null %}
+{% set mediaWidth = mediasSizes ? mediasSizes.width : null %}
+{% set mediaHeight = mediasSizes ? mediasSizes.height : null %}
+{% set bgParallax = zone.backgroundParallax %}
+{% set zoneId = zone.customId ? zone.customId : zone.id %}
+{% set zoneTransition = zone.transition %}
+{% set zoneEffects = zone|effectsAttrs %}
+{% set website = website is defined ? website : website() %}
+{% set mainBlockCategories = ['content', 'core', 'global'] %}
+{% set interfaceName = interfaceName is defined ? interfaceName : (entity is defined ? interfaceName(entity) : null) %}
+{% set zoneBgFullSize = zone.backgroundFullSize %}
+{% set zoneContainerBg = not zoneBgFullSize and zone.backgroundColor != ('' and 'transparent') ? zone.backgroundColor : null %}
+{% set zoneMarginsAndPaddings = margins(zone) ~ paddings(zone) %}
+
+{% if not zone.hide %}
+
+    <!-- .layout-zone -->
+    <section id="zone-{{ zoneId }}"
+             class="layout-zone {{ zoneClasses }}{% if zoneBgFullSize %} {{ zoneMarginsAndPaddings }}{% endif %}{% if bgImgZone %} have-bg-img{% endif %}"
+         {% if bgImgZone and bgParallax %} data-image-src="{{ asset(bgImgZone) }}"{% elseif bgImgZone %} data-background="{{ asset(bgImgZone) }}"{% endif %}
+         {% if bgImgDesktopZone %} data-desktop-background="{{ asset(bgImgDesktopZone) }}"{% endif %}
+         {% if bgImgTabletZone %} data-tablet-background="{{ asset(bgImgTabletZone) }}"{% endif %}
+         {% if bgImgMobileZone %} data-mobile-background="{{ asset(bgImgMobileZone) }}"{% endif %}
+         {% if zoneEffects %} {{ zoneEffects|raw }}{% endif %}>
+
+        {% set zoneClass = entity is defined and not fullSize and entity.interface.resize
+            or forceContainer is defined and forceContainer ? 'container' : 'container-fluid' %}
+
+        <div class="zone-container position-relative {{ zoneClass }}{% if not zoneBgFullSize %} {{ zoneContainerBg ~ zoneMarginsAndPaddings }}{% endif %}">
+
+            {% if i18nZone.title is defined and i18nZone.title|striptags|length > 0 %}
+                {% set titlePosition = 'right' in zone.titlePosition ? 'right' : 'left' %}
+                {% if 'top' in zone.titlePosition %}
+                    {% set titlePosition = titlePosition ~ ' top' %}
+                {% elseif 'center' in zone.titlePosition %}
+                    {% set titlePosition = titlePosition ~ ' center' %}
+                {% elseif 'bottom' in zone.titlePosition %}
+                    {% set titlePosition = titlePosition ~ ' bottom' %}
+                {% endif %}
+                <div class="text-vertical{% if zone.titlePosition %} {{ titlePosition }}{% endif %}">
+                    <h3 class="title-zone text-initial m-0 rotate">{{ i18nZone.title }}</h3>
+                </div>
+            {% endif %}
+
+            <div class="row{% if not zoneBgFullSize %} m-0{% endif %}">
+
+                {% for col in zone.cols %}
+
+                    {% if zone.centerCol %}
+                        <div class="w-100">
+                    {% endif %}
+
+                    {% if col.blocks and not col.hide %}
+
+                        {% set align = col.verticalAlign %}
+                        {% set i18nMediaCol = col|i18nMedia %}
+                        {% set bgImgCol = i18nMediaCol|thumb(null, {path: true}) %}
+                        {% set colClasses = colsGrids[col.id] is defined ? col|colClasses(zone, colsGrids[col.id]) : 'col-lg-' ~ col.size %}
+                        {% set colTransition = col.transition %}
+                        {% set colEffects = col|effectsAttrs %}
+
+                        <div id="layout-col-{{ col.id }}" class="layout-col {% if col.blocks|length == 0 %} no-block{% endif %} {{ colClasses }} {{ margins(col) ~ paddings(col) }}"
+                             data-position="{{ col.position }}"
+                            {% if bgImgCol %} data-background="{{ asset(bgImgCol) }}"{% endif %}
+                            {% if colEffects %} {{ colEffects|raw }}{% endif %}>
+
+                            {% if align %}
+                                <div class="col-12 p-0 my-auto">
+                            {% endif %}
+
+                                {% set innerColBackground = not col.backgroundFullSize and col.backgroundColor != (null and 'transparent') ? col.backgroundColor : null %}
+
+                                    <div class="{% if not innerColBackground %}row{% else %}h-100{% endif %}{% if interfaceName != 'form' %} m-0{% endif %}{% if col.elementsAlignment %} {{ col.elementsAlignment }}{% endif %}">
+
+                                    {% if innerColBackground %}
+                                        <div class="row p-0 h-100 {{ innerColBackground }}">
+                                    {% endif %}
+
+                                    {% for block in col.blocks %}
+                                        {% if not block.hide %}
+
+                                            {% set blockClasses = block|blockClasses(col, colClasses) %}
+                                            {% set isIndex = interface is defined and interface.name == 'page' and entity.isIndex %}
+                                            {% set blockTransition = block.transition %}
+                                            {% set blockEffects = block|effectsAttrs %}
+                                            {% set innerBlockBackground = not block.backgroundFullSize and block.backgroundColor != (null and 'transparent') ? block.backgroundColor : null %}
+                                            {% set blockCategory = block.blockType.category is defined and block.blockType.category ? block.blockType.category : null %}
+
+                                            <div class="layout-block position-relative p-0 {{ blockClasses }}"
+                                                {% if blockEffects %} {{ blockEffects|raw }}{% endif %}>
+
+                                                <div class="layout-block-content {{ margins(block) ~ paddings(block) }}">
+
+                                                    {% if innerBlockBackground %}
+                                                        <div class="{{ innerBlockBackground }}">
+                                                    {% endif %}
+
+                                                        {% set cache = cache(website, block) %}
+
+                                                        {% if cache and not app.user %}
+
+                                                            {{ cache|raw }}
+
+                                                        {% elseif block.blockType.slug == 'core-action' %}
+
+                                                            {% set render = layoutRenders['actions'][block.id] is defined ? layoutRenders['actions'][block.id] : null %}
+
+                                                            {% if render %}
+                                                                {{ render|raw }}
+                                                            {% endif %}
+
+                                                        {% elseif hasLayout is defined and hasLayout and blockCategory not in mainBlockCategories %}
+
+                                                            {% include template %}
+
+                                                        {% else %}
+
+                                                            {% if disabledEditTools is not defined and interface is defined %}
+                                                                {% include 'core/webmaster-edit.html.twig' with {
+                                                                    'title': "Éditer le bloc"|trans([], 'front_webmaster'),
+                                                                    'role': 'ROLE_EDIT',
+                                                                    'path': path('admin_block_edit', {'website': website.id, 'col': col.id, 'interfaceName': interface.name, 'interfaceEntity': entity.id, 'block': block.id})
+                                                                } only %}
+                                                            {% endif %}
+
+                                                            {% if block.blockType.slug == "titleheader" %}
+                                                                {% set haveTitleHeader = true %}
+                                                            {% endif %}
+
+                                                            {% set render = layoutRenders['blocks'][block.id] is defined ? layoutRenders['blocks'][block.id] : null %}
+
+                                                            {% if render %}
+                                                                {{ render|raw }}
+                                                            {% endif %}
+
+                                                        {% endif %}
+
+                                                    {% if innerBlockBackground %}
+                                                        </div>
+                                                    {% endif %}
+
+                                                </div>
+
+                                            </div>
+
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if innerColBackground %}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+                            {% if align %}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+                    {% if zone.centerCol %}
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </section>
+    <!-- \.layout-zone -->
+
+{% endif %}

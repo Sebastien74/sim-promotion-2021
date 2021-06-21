@@ -1,0 +1,271 @@
+#####################################
+#           Services                #
+#####################################
+
+services:
+
+    #####################################
+    #           Admin                   #
+    #####################################
+
+    App\Service\Admin\AnalyticService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+            $browserRuntime: '@App\Twig\Content\BrowserRuntime'
+
+    App\Service\Admin\DeleteService:
+        public: true
+        lazy: true
+        arguments:
+            $requestStack: '@request_stack'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $indexHelper: '@App\Helper\Admin\IndexHelper'
+
+    App\Service\Admin\PositionService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $indexHelper: '@App\Helper\Admin\IndexHelper'
+
+    App\Service\Admin\SearchFilterService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $builderUpdater: '@lexik_form_filter.query_builder_updater'
+
+    App\Service\Admin\TitleService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    #####################################
+    #           Content                 #
+    #####################################
+
+    App\Service\Content\AgendaService:
+        public: true
+        lazy: true
+
+    App\Service\Content\AnalyticService:
+        public: true
+        lazy: true
+        arguments:
+            $container: '@service_container'
+            $authorizationChecker: '@security.authorization_checker'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+            $kernel: '@kernel'
+            $browserDetection: '@App\Service\Content\BrowserDetection'
+
+    App\Service\Content\LocaleService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $router: '@router'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $requestStack: '@request_stack'
+
+    App\Service\Content\MenuService:
+        public: true
+        lazy: true
+        arguments:
+            $menuRepository: '@App\Repository\Module\Menu\MenuRepository'
+            $linkRepository: '@App\Repository\Module\Menu\LinkRepository'
+            $treeService: '@App\Service\Core\TreeService'
+            $requestStack: '@request_stack'
+
+    App\Service\Content\SeoService:
+        public: true
+        lazy: true
+        arguments:
+            $requestStack: '@request_stack'
+            $mediaRuntime: '@App\Twig\Content\MediaRuntime'
+            $layoutRuntime: '@App\Twig\Content\LayoutRuntime'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $listingService: '@App\Service\Content\ListingService'
+            $localeService: '@App\Service\Content\LocaleService'
+            $router: '@router'
+
+    App\Service\Content\RedirectionService:
+        public: true
+        lazy: true
+        arguments:
+            $websiteRepository: '@App\Repository\Core\WebsiteRepository'
+            $domainRepository: '@App\Repository\Core\DomainRepository'
+            $apiRepository: '@App\Repository\Api\ApiRepository'
+            $redirectionRepository: '@App\Repository\Seo\RedirectionRepository'
+            $kernel: '@kernel'
+            $router: '@router'
+
+    App\Service\Content\RecaptchaService:
+        public: true
+        lazy: true
+        arguments:
+            $cryptService: '@App\Service\Content\CryptService'
+            $translator: '@translator'
+            $requestStack: '@request_stack'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+
+    #####################################
+    #           Core                    #
+    #####################################
+
+    App\Service\Core\SubscriberService:
+        lazy: true
+        arguments:
+            $container: '@service_container'
+
+    App\Service\Core\CacheService:
+        public: true
+        lazy: true
+        arguments:
+            $cache: '@cache.system'
+            $browserRuntime: '@App\Twig\Content\BrowserRuntime'
+            $cacheHelperLogger: '@logger'
+            $requestStack: '@request_stack'
+            $kernel: '@kernel'
+            $twig: '@twig'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $isDebug: '%kernel.debug%'
+
+    App\Service\Core\CronSchedulerService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+
+    App\Service\Core\GdprService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+            $cronSchedulerService: '@App\Service\Core\CronSchedulerService'
+
+    App\Service\Core\TreeService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\Core\MailerService:
+        public: true
+        lazy: true
+        arguments:
+            $mailer: '@mailer'
+            $twig: '@twig'
+            $requestStack: '@request_stack'
+            $kernel: '@kernel'
+            $informationService: '@App\Service\Content\InformationService'
+            $translator: '@translator'
+            $isDebug: '%kernel.debug%'
+
+    App\Service\Core\LastRouteService:
+        public: true
+        lazy: true
+
+    App\Service\Core\XlsxFileReader:
+        public: true
+        lazy: true
+
+    #####################################
+    #             Delete                #
+    #####################################
+
+    App\Service\Delete\ContactDeleteService:
+        public: true
+        lazy: true
+        arguments:
+            $kernel: '@kernel'
+            $requestStack: '@request_stack'
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    #####################################
+    #          Development              #
+    #####################################
+
+    App\Service\Development\FileUrlizerService:
+        lazy: true
+        arguments:
+            $kernel: '@kernel'
+
+    #####################################
+    #             Export                #
+    #####################################
+
+    App\Service\Export\ExportCsvService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+            $requestStack: '@request_stack'
+
+    App\Service\Export\ExportContactService:
+        public: true
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+            $requestStack: '@request_stack'
+
+    #####################################
+    #          Security              #
+    #####################################
+
+    App\Service\Security\UserCheckerService:
+        public: true
+        lazy: true
+        arguments:
+            $tokenStorage: '@security.token_storage'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $authorizationChecker: '@security.authorization_checker'
+            $router: '@router'
+
+    #####################################
+    #          Translation              #
+    #####################################
+
+    App\Service\Translation\ExportService:
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $kernel: '@kernel'
+
+    App\Service\Translation\Extractor:
+        lazy: true
+        public: true
+        arguments:
+            $kernel: '@kernel'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $entityService: '@App\Service\Development\EntityService'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $translator: '@translator'
+
+    App\Service\Translation\ImportService:
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $fileReader: '@App\Service\Core\XlsxFileReader'
+            $kernel: '@kernel'
+            $cacheCommand: '@App\Command\CacheCommand'
+
+    App\Service\Translation\Loader:
+        arguments:
+            $translationRepository: '@App\Repository\Translation\TranslationRepository'
+        tags:
+            - { name: translation.loader, alias: db }

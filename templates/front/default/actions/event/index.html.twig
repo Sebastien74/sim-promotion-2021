@@ -1,0 +1,26 @@
+{#{% trans_default_domain 'front_default' %}#}
+
+{#{% set hasListing = listing is defined %}#}
+{#{% set microDataActive = website.seoConfiguration.microData %}#}
+{#{% set pageNum = app.request.get('page') ? app.request.get('page') : 1 %}#}
+{#{% set ajaxPath = path('front_newscast_index', {'website': website.id, 'url': url.id, 'filter': filter}) %}#}
+
+{#{% if microDataActive %}#}
+{#    {% include 'front/' ~ websiteTemplate ~ '/actions/newscast/index/include/microdata.html.twig' with {'allEntities': allEntities, 'url': url, 'website': website} only %}#}
+{#{% endif %}#}
+
+{#<!-- .listing-news-container -->#}
+{#<div id="listing-news-container-{{ listing.slug }}" class="listing-news-container">#}
+
+{#    {% if hasListing %}#}
+{#        {% include 'core/webmaster-edit.html.twig' with {#}
+{#            'title': "Éditer l'index"|trans([], 'front_webmaster'),#}
+{#            'role': 'ROLE_NEWSCAST',#}
+{#            'path': path('admin_newscastlisting_edit', {'website': listing.website.id, 'newscastlisting': listing.id})#}
+{#        } only %}#}
+{#    {% endif %}#}
+
+{#    {% include 'front/' ~ websiteTemplate ~ '/actions/newscast/index/default.html.twig' %}#}
+
+{#</div>#}
+{#<!-- \.listing-news-container -->#}

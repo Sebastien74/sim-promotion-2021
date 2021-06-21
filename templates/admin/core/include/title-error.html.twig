@@ -1,0 +1,18 @@
+{% trans_default_domain 'admin' %}
+
+{% if haveH1.error is defined and haveH1.error %}
+    {% set message = '' %}
+    {% for type, existing in haveH1 %}
+        {% if type != 'error' and not existing %}
+            {% if allLocales|length > 1 %} {% set message = message ~ '<img src="' ~ asset('build/vendor/images/lazy-point.svg', 'vendor') ~ '"
+                         data-src="' ~ asset('/medias/icons/flags/' ~ type ~ '.svg') ~ '" class="img-fluid lazyload float-left mt-1 mr-2" height="14" width="19">' %} {% endif %}
+            {% set message = message ~ "La page ne contient pas de titre <strong>H1</strong>."|trans|raw ~ '<br>' %}
+        {% endif %}
+        {% if type != 'error' and existing > 1 %}
+            {% if allLocales|length > 1 %} {% set message = message ~ '<img src="' ~ asset('build/vendor/images/lazy-point.svg', 'vendor') ~ '"
+                         data-src="' ~ asset('/medias/icons/flags/' ~ type ~ '.svg') ~ '" class="img-fluid lazyload float-left mt-1 mr-2" height="14" width="19">' %} {% endif %}
+            {% set message = message ~ "La page dépasse le nombre recommandé de titres <strong>H1</strong>."|trans|raw ~ '<br>' %}
+        {% endif %}
+    {% endfor %}
+    {% include 'admin/include/alert.html.twig' with {"alert": 'error', "message": message|trim('<br>', 'right') } only %}
+{% endif %}

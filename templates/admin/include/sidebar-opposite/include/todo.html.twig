@@ -1,0 +1,38 @@
+{% trans_default_domain 'admin' %}
+
+{% set website = website is defined ? website : website() %}
+{% set undo = 0 %}
+{% for todo in website.todos %}
+    {% for task in todo.tasks %}
+        {% if not task.done %}
+            {% set undo = undo + 1 %}
+        {% endif %}
+    {% endfor%}
+{% endfor%}
+
+<li>
+    <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+        {{ 'fal fa-clipboard-list-check'|fontawesome(13, 15, 'white mr-2') }}
+        <span class="hide-menu">{{ "Todo"|trans }}</span>{% if undo %}<span class="mr-3 badge badge-white">{{ undo }}</span>{% endif %}
+    </a>
+    <ul aria-expanded="false" class="collapse bg-info-light">
+        <li>
+            <a href="{{ path('admin_todo_index', {'website': websiteId()}) }}" data-toggle="preloader">
+                <span class="hide-menu">{{ "Tout afficher"|trans }}</span>
+            </a>
+        </li>
+        {% for todo in website.todos %}
+            {% set undo = 0 %}
+            {% for task in todo.tasks %}
+                {% if not task.done %}
+                    {% set undo = undo + 1 %}
+                {% endif %}
+            {% endfor%}
+            <li>
+                <a href="{{ path('admin_todo_edit', {'website': websiteId(), 'todo': todo.id}) }}" data-toggle="preloader">
+                    <span class="hide-menu">{{ todo.adminName }}</span>{% if undo %}<span class="ml-3 badge badge-info">{{ undo }}</span>{% endif %}
+                </a>
+            </li>
+        {% endfor%}
+    </ul>
+</li>

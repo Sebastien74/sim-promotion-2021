@@ -1,0 +1,116 @@
+{% trans_default_domain 'admin' %}
+
+{% set allLocales = website().configuration.allLocales %}
+{% set defaultLocale = website().configuration.locale %}
+{% set mediaCaregories = {
+    'favicon': "Favicon"|trans,
+    'logo': "Logo principal"|trans,
+    'admin': "Logo administration"|trans,
+    'footer': "Logo de pied de page"|trans,
+    'email': "Logo corps emails"|trans,
+    'titleheader': "Entête par défault"|trans,
+    'security-logo': "Logo de connexion"|trans,
+    'security-bg': "Background de connexion"|trans,
+    'build-logo': "Logo page maintenance"|trans,
+    'build-bg': "Background page maintenance"|trans,
+    'google-plus': "Google +"|trans,
+    'share': "Partage (OG)"|trans,
+    'user-condition': "Conditions générales utilisateur"|trans
+} %}
+
+{% set categories = {
+    ('Logos'|trans): ['logo', 'preloader', 'footer', 'admin', 'email'],
+    ('Images par défaults'|trans): ['placeholder', 'titleheader', 'share'],
+    ('Favicons'|trans): ['favicon', 'favicon-16x16', 'favicon-32x32', 'favicon-apple-touch-icon', 'manifest', 'mask-icon', 'mstile-150x150', 'android-chrome-144x144', 'android-chrome-192x192', 'android-chrome-512x512'],
+    ('Réseaux sociaux'|trans): ['instagram', 'facebook', 'pinterest', 'youtube', 'linkedin', 'twitter', 'tripadvisor', 'google-plus'],
+    ('Sécurité'|trans): ['security-logo', 'security-bg'],
+    ('Maintenance'|trans): ['build-logo', 'build-bg'],
+    ('Fichers'|trans): ['user-condition'],
+} %}
+
+{% set customCategory = [] %}
+{% for mediaRelationForm in form.mediaRelations %}
+    {% set mediaRelation = mediaRelationForm.vars.data is defined and mediaRelationForm.vars.data ? mediaRelationForm.vars.data : null %}
+    {% if mediaRelation.category is defined and mediaRelation.category %}
+        {% set existingCategory = false %}
+        {% set mediaCategory = mediaRelation.category %}
+        {% for categoryTitle, categorySlugs in categories %}
+            {% for categorySlug in categorySlugs %}
+                {% if categorySlug == mediaCategory %}
+                    {% set existingCategory = true %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        {% if not existingCategory and mediaCategory not in customCategory %}
+            {% set customCategory = customCategory|merge([mediaCategory]) %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% if customCategory %}
+    {% set categories = categories|merge({('Personnalisé'|trans): customCategory}) %}
+{% endif %}
+
+{% if allLocales|length > 1 %}
+    <ul class="nav nav-tabs w-100" role="tablist">
+        {% for localeConfig in allLocales %}
+            <li class="nav-item" data-toggle="tooltip" title="{{ languageName(localeConfig, app.user.locale) }}">
+                <a class="nav-link{% if localeConfig == defaultLocale %} active{% endif %}" data-toggle="tab"
+                   id="media-relation-{{ localeConfig }}-tab"
+                   aria-selected="{% if localeConfig == defaultLocale %}true{% else %}false{% endif %}"
+                   href="#mediaRelation-tab-{{ localeConfig }}" role="tab">
+                    <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                         data-src="{{ asset('/medias/icons/flags/' ~ localeConfig ~ '.svg') }}" class="img-fluid lazyload" height="14" width="19">
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if allLocales|length > 1 %}
+    <div class="tab-content tab-content-border w-100 media-relations-tab mb-4">
+{% endif %}
+
+    {% for localeConfig in allLocales %}
+        <div id="mediaRelation-tab-{{ localeConfig }}"
+             class="tab-pane fade{% if localeConfig == defaultLocale %} show active{% endif %}"
+             role="tabpanel" aria-labelledby="media-relation-{{ localeConfig }}-tab">
+            {% if allLocales|length > 1 %}
+                <div class="p-20 pb-0">
+            {% endif %}
+                <div class="row">
+                    {% for categoryTitle, categorySlugs in categories %}
+                        {% for categorySlug in categorySlugs %}
+                            {% for mediaRelation in form.mediaRelations %}
+                                {% set locale = mediaRelation.vars.value.locale %}
+                                {% set category = mediaRelation.vars.value.category %}
+                                {% set mediaCaregory = mediaCaregories[category] is defined ? mediaCaregories[category] : category|capitalize %}
+                                {% if locale == localeConfig and category == categorySlug %}
+                                    <div class="col-md-6 col-lg-3{% if category == 'webmanifest' %} d-none{% endif %}">
+                                        <div class="card default-media-card">
+                                            <div class="card-body text-center pb-0">
+                                                {{ form_row(mediaRelation.media.uploadedFile) }}
+                                                <h4 class="text-center">{{ mediaCaregory }}</h4>
+                                                {% include 'admin/page/media/modal-btn.html.twig' with {"mediaRelationId": mediaRelation.vars.data.id, 'classname': class} %}
+                                                <div class="row">
+                                                    {{ form_row(mediaRelation.isActive) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% if allLocales|length > 1 %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+{% if allLocales|length > 1 %}
+    </div>
+{% endif %}
+
+<div class="d-none">{{ form_rest(form.mediaRelations) }}</div>

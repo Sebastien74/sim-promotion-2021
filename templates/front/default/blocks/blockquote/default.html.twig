@@ -1,0 +1,26 @@
+{% trans_default_domain 'front_default' %}
+
+{% set i18n = block|i18n %}
+
+{% if i18n %}
+
+    {% set intro = i18n.introduction %}
+    {% set introAlignment = i18n.introductionAlignment ? i18n.introductionAlignment : null %}
+    {% set placeholder = i18n.placeholder %}
+    {% set websiteTemplate = websiteTemplate is defined and websiteTemplate ? websiteTemplate : website().configuration.template %}
+
+    {% if intro|striptags|length > 0 %}
+        <!-- .blockquote-block -->
+        <div class="blockquote-block w-100">
+            <blockquote class="blockquote position-relative">
+                {{ 'fal fa-quote-right'|fontawesome(40, 40) }}
+                <p class="mb-0">{{ intro|unescape|raw }}</p>
+            </blockquote>
+            {% if placeholder|striptags|length > 0 %}
+                <figcaption class="blockquote-footer"><cite title="{{ placeholder|striptags }}">{{ placeholder|unescape|raw }}</cite></figcaption>
+            {% endif %}
+        </div>
+        <!-- \.blockquote-block -->
+    {% endif %}
+
+{% endif %}

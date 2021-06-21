@@ -1,0 +1,31 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'newscast'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/newscasts/' in uri %}
+    {% set module = 'newscast'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['newscast'][app.user.locale] is defined ? i18nsModules['newscast'][app.user.locale] : i18nsModules['newscast']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['newscast']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['newscast']['entity'].iconClass|iconHtml({'width': 17, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'newscasts' %} in{% endif %}">
+            <li>
+                <a href="{{ path('admin_newscast_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Liste des actualités"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_newscastcategory_index', {"website": websiteId}) }}"{% if '/newscasts/categories/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Liste des catégories"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_newscastteaser_index', {"website": websiteId}) }}"{% if '/newscasts/teasers/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Configuration des teasers"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_newscastlisting_index', {"website": websiteId}) }}"{% if '/newscasts/listings/' in uri %}class="active"{% endif %} data-toggle="preloader">{{ "Configuration des index"|trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endif %}

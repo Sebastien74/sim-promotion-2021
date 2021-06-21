@@ -1,0 +1,24 @@
+{% trans_default_domain 'front_default' %}
+
+{% set forumCookieActive = 'forum'|cookie %}
+{% set customTemplate = '/front/' ~ websiteTemplate ~ '/actions/forum/template/' ~ forum.slug ~ '.html.twig' %}
+{% set customTemplateExist = (customTemplate)|fileExist %}
+{% set template = customTemplateExist
+    ? 'front/' ~ websiteTemplate ~ '/actions/forum/template/' ~ forum.slug ~ '.html.twig'
+    : 'front/' ~ websiteTemplate ~ '/actions/forum/template/default.html.twig' %}
+
+<!-- .forum-container -->
+<div id="forum-container-{{ forum.slug }}"
+     class="forum-container position-relative"
+     data-comment="{{ comment }}">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer le forum"|trans([], 'front_webmaster'),
+        'role': 'ROLE_FORUM',
+        'path': path('admin_forum_edit', {'website': website.id, 'forum': forum.id})
+    } only %}
+
+    {% include template %}
+
+</div>
+<!-- \.forum-container -->

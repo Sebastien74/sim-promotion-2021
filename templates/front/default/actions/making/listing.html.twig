@@ -1,0 +1,83 @@
+{% trans_default_domain 'front_default' %}
+
+{% set hasListing = listing is defined %}
+
+<!-- .listing-making-container -->
+<div id="listing-making-container-{{ listing.slug }}" class="listing-making-container">
+
+    {% if hasListing %}
+        {% include 'core/webmaster-edit.html.twig' with {
+            'title': "Éditer l'index"|trans([], 'front_webmaster'),
+            'role': 'ROLE_MAKING',
+            'path': path('admin_makinglisting_edit', {'website': website.id, 'makinglisting': listing.id})
+        } only %}
+    {% endif %}
+
+    {% for making in entities %}
+
+        {% set i18n = making|i18n %}
+        {% set title = i18n.title is defined ? i18n.title : null %}
+        {% set subTitle = i18n.subTitle is defined ? i18n.subTitle : null %}
+        {% set introduction = i18n.introduction is defined ? i18n.introduction : null %}
+        {% set body = i18n.body is defined and i18n.body|striptags|length > 0 ? i18n.body : null %}
+        {% set mediasByCategories = making.mediaRelations|mediasByCategories %}
+        {% set beforeMedias = mediasByCategories.before is defined ? mediasByCategories.before : [] %}
+        {% set afterMedias = mediasByCategories.after is defined ? mediasByCategories.after : [] %}
+        {% set i18nUrl = website|i18nUrl(making) %}
+
+        <div class="item position-relative">
+
+            {% include 'core/webmaster-edit.html.twig' with {
+                'title': "Éditer la réalisation"|trans([], 'front_webmaster'),
+                'role': 'ROLE_MAKING',
+                'toolBoxClass': 'ms-5',
+                'path': path('admin_making_edit', {'website': website.id, 'making': making.id})
+            } only %}
+
+            {% if title %}
+                <a href="{{ path('front_making_view', {'pageUrl': url.code, 'url': i18nUrl}) }}">
+                    <h2 class="text-primary mb-4">{{ title|raw }}</h2>
+                </a>
+            {% endif %}
+            {% if beforeMedias and afterMedias %}
+                <div class="row">
+                    <div class="col-6">
+                        <h3>{{ emt("Avant"|trans) }}</h3>
+                        {% for mediaRelation in beforeMedias %}
+                            {% set i18nMedia = mediaRelation|i18n %}
+                            {{ mediaRelation|thumb(null, {'isInBox': false, 'popupGallery': false}) }}
+                        {% endfor %}
+                    </div>
+                    <div class="col-6">
+                        <h3>{{ emt("Après"|trans) }}</h3>
+                        {% for mediaRelation in afterMedias %}
+                            {% set i18nMedia = mediaRelation|i18n %}
+                            {{ mediaRelation|thumb(null, {'isInBox': false, 'popupGallery': false}) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+{#            {% if subTitle %}#}
+{#                <h3>{{ subTitle|raw }}</h3>#}
+{#            {% endif %}#}
+{#            {% if introduction %}#}
+{#                <p class="introduction">{{ introduction|raw }}</p>#}
+{#            {% endif %}#}
+{#            {% if body %}#}
+{#                <div class="body">{{ body|raw }}</div>#}
+{#            {% endif %}#}
+
+        </div>
+
+    {% else %}
+
+        <div class="col-12 pt-4 pb-3 pt-md-5 pb-md-4">
+            {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'info', "message": emt("Aucune publication pour le moment."|trans)} only %}
+        </div>
+
+    {% endfor %}
+</div>
+
+</div>
+<!-- \.listing-making-container -->

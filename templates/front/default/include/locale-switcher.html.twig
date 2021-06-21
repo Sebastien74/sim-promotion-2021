@@ -1,0 +1,37 @@
+{% if configuration is defined %}
+
+    {% set microDataActive = website.seoConfiguration.microData %}
+    {% set count = 0 %}
+    {% for locale in configuration.onlineLocales %}
+        {% if routes[locale] is defined %}
+            {% set count = count + 1 %}
+        {% endif %}
+    {% endfor %}
+
+    {% if count > 1 %}
+
+        {% set displayCount = 0 %}
+
+        <ul class="navbar-nav locales-switcher d-inline-block{% if class is defined and class %} {{ class }}{% endif %}">
+            {% for locale in configuration.onlineLocales %}
+                {% set active = locale == app.request.locale %}
+                {% if routes[locale] is defined %}
+                    <li class="d-inline-block {% if active %}active{% else %}inactive{% endif %}" data-toggle="preloader"
+                        {% if microDataActive %} itemprop="availableLanguage" itemscope itemtype="http://schema.org/Language"{% endif %}>
+                        {% set languageName = locale|languageName %}
+                        {% if microDataActive %}
+                            <span itemprop="name" class="d-none">{{ languageName }}</span>
+                        {% endif %}
+                        <a href="{{ routes[locale] }}" class="{% if active %}active{% else %}inactive{% endif %}" data-bs-toggle="tooltip" title="{{ languageName }}">{{ locale|upper }}</a>
+                        {% set displayCount = displayCount + 1 %}
+                        {% if displayCount != count %}
+                            <span class="divider me-2 ms-2 float-end">|</span>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+
+{% endif %}

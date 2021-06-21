@@ -1,0 +1,54 @@
+{% extends 'front/' ~ websiteTemplate ~ '/base.html.twig' %}
+
+{% trans_default_domain 'front_default' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% block metaTitle %}{{ "Connectez-vous"|trans|raw }} - {{ companyName }}{% endblock %}
+{% block metaRobots %}noindex{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with { 'fullSize': true, "title": emt("Connectez-vous"|trans) } %}
+
+    <div class="container-fluid mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+
+                {% if is_granted('ROLE_ALLOWED_TO_SWITCH') %}
+
+                    {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'info', "message": "Vous êtes déjà connecté en tant qu'administrateur. Veuillez utiliser le commutateur ci-dessous pour changer d'utilisateur :"} only %}
+                    {% set lastSecureUrl = app.request.session.get('previous_secure_url') %}
+
+                    <div id="users-switcher-front-box" class="card text-center">
+                        <div class="card-body">
+                            <label for="users-switcher-box" class="d-inline-block w-100">{{ emt("Changer d'utilisateur"|trans|raw) }}</label>
+                            <select id="users-front-switcher-select" class="w-100">
+                                <option value="">{{ "Séléctionnez un utilisateur"|trans }}</option>
+                                {% for user in users %}
+                                    {% set login = 'SECURITY_FRONT_LOGIN_TYPE'|getEnv == 'login' ? user.login : user.email %}
+                                    {% set path = lastSecureUrl ? lastSecureUrl ~ "?_switch_user=" ~ login : path('front_index', {'_switch_user': login}) %}
+                                    {% set text = user.username ? user.username : user.email  %}
+                                    <option value="{{ path }}">{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                {% else %}
+                    {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'info', "message": emt("Vous êtes déjà connecté en tant qu'administrateur.")} only %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

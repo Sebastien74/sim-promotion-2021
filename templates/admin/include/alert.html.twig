@@ -1,0 +1,26 @@
+{% trans_default_domain 'admin' %}
+
+{% set icons = {
+    'success': 'far fa-check',
+    'info': 'fas fa-info',
+    'warning': 'fas fa-exclamation',
+    'danger': 'far fa-exclamation-triangle',
+    'error': 'far fa-exclamation-triangle',
+    'undefined': 'fas fa-info'
+} %}
+
+{% set alert = alert is defined ? alert : "info" %}
+{% set alert = alert == "error" ? "danger" : alert %}
+
+{% set icon = icons[alert] is defined ? icons[alert] : icons['undefined'] %}
+
+<div class="ribbon-vwrapper alert alert-{{ alert }}">
+    <div class="ribbon ribbon-bookmark ribbon-vertical-l ribbon-{{ alert }}">
+        {{ icon|fontawesome(null, 14, 'white') }}
+    </div>
+    {% if message is defined %}
+        {{ message|raw }}
+    {% else %}
+        {{ "Que se passe-t-il ?"|trans }}
+    {% endif %}
+</div>

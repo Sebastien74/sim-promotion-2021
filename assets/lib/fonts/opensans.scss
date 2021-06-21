@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-11-06, 9:30 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS OPENSANS :
+    ======================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "OpenSans", sans-serif;
+
+$fonts: (
+    'OpenSans-ExtraBold': ('weight': 800, 'style': normal),
+    'OpenSans-ExtraBoldItalic': ('weight': 800, 'style': italic),
+    'OpenSans-Bold': ('weight': 700, 'style': normal),
+    'OpenSans-BoldItalic': ('weight': 700, 'style': italic),
+    'OpenSans-SemiBold': ('weight': 600, 'style': normal),
+    'OpenSans-SemiBoldItalic': ('weight': 600, 'style': italic),
+    'OpenSans-Regular': ('weight': 400, 'style': normal),
+    'OpenSans-Italic': ('weight': 400, 'style': italic),
+    'OpenSans-Light': ('weight': 300, 'style': normal),
+    'OpenSans-LightItalic': ('weight': 300, 'style': italic),
+);
+
+@include font-face("Opensans", $fonts);

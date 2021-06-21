@@ -1,0 +1,30 @@
+{% trans_default_domain 'admin' %}
+
+{% set format = duration == 1 ? 'LT' : 'L' %}
+
+<div id="chart-line-{{ id }}"
+     class="chart-lines"
+     data-x-key="{{ xKey }}"
+     data-y-keys="value"
+     data-value="{{ "Visites"|trans }}"
+     data-format="{{ format }}">
+
+    {% set loopDate = startDate|date('Y-m-d') %}
+    {% set duration = duration == 1 ? 1440 : duration %}
+
+    {% for i in 1..duration %}
+        {% if xKey == 'hour' %}
+            {% set hour = loopDate|date('H:i') %}
+            {% set count = data[hour] is defined ? data[hour]|length : 0 %}
+            {% if count > 0 or loopDate|date('i') == '00' or loopDate|date('H:i') == '23:59' %}
+                <span class="data" data-x-key="{{ loopDate|date('Y-m-d H:i') }}" data-y-key="{{ count }}"></span>
+            {% endif %}
+            {% set loopDate = loopDate|addMinute %}
+        {% elseif xKey == 'month' %}
+            {% set count = data[loopDate] is defined ? data[loopDate]|length : 0 %}
+            <span class="data" data-x-key="{{ loopDate }}" data-y-key="{{ count }}"></span>
+            {% set loopDate = loopDate|addDay|date('Y-m-d') %}
+        {% endif %}
+    {% endfor %}
+
+</div>

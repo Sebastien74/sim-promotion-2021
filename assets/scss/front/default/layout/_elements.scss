@@ -1,0 +1,181 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2020-05-29, 1:00 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT ELEMENTS LAYOUT :
+    =======================
+
+------------------------------------------------------------------ */
+
+.cursor {
+    cursor: pointer !important;
+}
+
+.no-radius {
+    border-radius: 0 !important;
+}
+
+.opacity-50 {
+    opacity: .5;
+}
+
+.ff-primary {
+    font-family: $font-primary !important;
+}
+
+.ff-secondary {
+    font-family: $font-secondary !important;
+}
+
+.vertical-align {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+}
+
+.vertical-align-start {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: left;
+}
+
+.date {
+    font-weight: 500;
+    line-height: $font-size-base;
+    font-size: $font-size-base;
+    font-family: $font-light;
+}
+
+.loader-image-wrapper .spinner-border {
+    border: 0.15em solid $gray-200;
+}
+
+blockquote {
+    font-size: rem(17px);
+}
+
+ul.reset {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.body {
+
+    ul {
+
+        padding-left: 15px;
+
+        li {
+
+            margin-bottom: 5px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.fa-spin {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+a {
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    &.link {
+        i, svg {
+            height: 8px;
+            position: relative;
+            fill: $primary;
+        }
+    }
+}
+
+.phone-link,
+.email-link {
+
+    &.loading {
+        font-size: rem(12px) !important;
+    }
+
+    .spinner-border {
+        float: left;
+        margin-top: 4px;
+        width: 12px;
+        height: 12px;
+        border: 1px solid currentColor;
+        border-right-color: transparent;
+    }
+}
+
+.item-page-link,
+.locales-switcher a,
+.link,
+a.link:not([href]) {
+
+    position: relative;
+
+    &:before {
+        content: ' ';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        height: 1px;
+        width: 0;
+        transition: all .3s;
+    }
+
+    &:hover {
+
+        color: $primary;
+        transition: all .3s;
+
+        svg {
+            fill: $primary;
+            transition: all .3s;
+        }
+
+        &:before {
+            width: 100%;
+            transition: all .3s;
+            background-color: $primary;
+        }
+    }
+}
+
+.icon-block {
+    svg {
+        width: initial;
+    }
+}

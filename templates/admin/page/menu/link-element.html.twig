@@ -1,0 +1,24 @@
+{% trans_default_domain 'admin' %}
+
+<li class="item-page">
+    <div class="inner">
+        {% set i18nUrl = page.website|i18nUrl(page, masterRequest().get('entitylocale'), true) %}
+        {% set isOnline = i18nUrl.isOnline is defined and i18nUrl.isOnline %}
+        <label for="item-page-{{ page.id }}" class="cursor{% if not isOnline %} text-muted opacity-50{% endif %}"
+            {% if not isOnline %} data-toggle="tooltip" title="{{ "Page non publiée"|trans|striptags }}" {% endif %}>{{ page.adminName }}</label>
+        <span class="push float-right">
+            <div class="custom-control custom-checkbox">
+                <input id="item-page-{{ page.id }}" name="page-{{ page.id }}" value="{{ page.id }}" class="custom-control-input ajax-get-loop-item" type="checkbox">
+                <label class="checkbox-custom custom-control-label" for="item-page-{{ page.id }}"></label>
+            </div>
+        </span>
+    </div>
+    {% set children = tree[page.id] is defined ? tree[page.id] : [] %}
+    {% if children %}
+        <ul class="w-100 pl-3">
+            {% for child in children %}
+                {% include 'admin/page/menu/link-element.html.twig' with {"page": child, 'tree': tree} only %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

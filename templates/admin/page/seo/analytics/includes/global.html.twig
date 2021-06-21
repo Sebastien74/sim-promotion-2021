@@ -1,0 +1,120 @@
+{% trans_default_domain 'admin' %}
+
+<div id="main-sessions-report-card" class="card h-100 pb-0">
+    <div class="card-body p-0">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#users" role="tab" aria-selected="true">
+                    {% set count = users['all'] is defined ? users['all']|length : 0 %}
+                    <span class="entitled d-inline-block mb-2">{{ "Utilisateurs"|trans }}</span><br>
+                    <span class="counter d-inline-block position-relative">{{ count }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#sessions" role="tab" aria-selected="false">
+                    {% set count = data['all'] is defined ? data['all']|length : 0 %}
+                    <span class="entitled d-inline-block mb-2 w-100">{{ "Sessions"|trans }}</span><br>
+                    <span class="counter d-inline-block position-relative">{{ extraData.newSessions }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#rebound-rate" role="tab" aria-selected="false">
+                    <span class="entitled d-inline-block mb-2">{{ "Taux de rebond"|trans }}</span><br>
+                    <span class="counter d-inline-block position-relative">{{ extraData.reboundCount|round(2, 'common') }}%</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#session-duration" role="tab" aria-selected="false">
+                    <span class="entitled d-inline-block mb-2">{{ "Durée de la session"|trans }}</span><br>
+                    <span class="counter d-inline-block position-relative">{{ "0 min 00 s" }}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane p-20 active" id="users" role="tabpanel">
+                {% set days = users['days'] is defined ? users['days'] : [] %}
+                {% set hours = users['hours'][startDate|date('Y-m-d')] is defined ? users['hours'][startDate|date('Y-m-d')] : [] %}
+                {% set iterations = app.request.get('day') ? hours : days %}
+                {% include 'admin/page/seo/analytics/includes/chart-lines.html.twig' with {'data': iterations, 'id': 'users'} %}
+            </div>
+            <div class="tab-pane p-20" id="sessions" role="tabpanel">
+                {% set days = data['days'] is defined ? data['days'] : [] %}
+                {% set hours = data['hours'][startDate|date('Y-m-d')] is defined ? data['hours'][startDate|date('Y-m-d')] : [] %}
+                {% set iterations = app.request.get('day') ? hours : days %}
+                {% include 'admin/page/seo/analytics/includes/chart-lines.html.twig' with {'data': iterations, 'id': 'sessions'} %}
+            </div>
+            <div class="tab-pane p-20" id="rebound-rate" role="tabpanel">
+                {% set days = extraData['reboundDays'] is defined ? extraData['reboundDays'] : [] %}
+                {% set hours = extraData['reboundDayHours'] is defined ? extraData['reboundDayHours'] : [] %}
+                {% set iterations = app.request.get('day') ? hours : days %}
+                {% include 'admin/page/seo/analytics/includes/chart-rebount-lines.html.twig' with {'data': iterations, 'id': 'rebound-rate'} %}
+            </div>
+            <div class="tab-pane p-20" id="session-duration" role="tabpanel">
+                {% set days = data['days'] is defined ? data['days'] : [] %}
+                {% include 'admin/page/seo/analytics/includes/chart-lines.html.twig' with {'data': days, 'id': 'session-duration'} %}
+            </div>
+        </div>
+    </div>
+    <div id="global-small-charts" class="row m-0">
+        <div class="small-group col-md-2">
+            <h6 class="title"
+                data-toggle="tooltip"
+                title="{{ "Il s'agit du nombre total de sessions sur la période. Une session est la période pendant laquelle un utilisateur est actif sur son site Web, ses applications, etc. Toutes les données d'utilisation (visionnage de l'écran, événements, e-commerce, etc.) sont associées à une session."|trans }}">
+                {{ "Sessions"|trans }}
+            </h6>
+            {% set count = data['all'] is defined ? data['all']|length : 0 %}
+            <span class="count">{{ count }}</span>
+        </div>
+        <div class="small-group col-md-2">
+            <h6 class="title"
+                data-toggle="tooltip"
+                title="{{ "Il s'agit du nombre d'utilisateurs venant pour la première fois au cours de la période sélectionnée."|trans }}">
+                {{ "Nouveaux utilisateurs"|trans }}
+            </h6>
+            <span class="count">{{ extraData.newSessions }}</span>
+        </div>
+        <div class="small-group col-md-2">
+            <h6 class="title"
+                data-toggle="tooltip"
+                title="{{ "Il s'agit du nombre total de pages consultées.  Les visites répétées d'un internaute sur une même page sont prises en compte."|trans }}">
+                {{ "Pages vues"|trans }}
+            </h6>
+            {% set count = data['pages'] is defined ? data['pages']|length : 0 %}
+            <span class="count">{{ count }}</span>
+        </div>
+        <div class="small-group col-md-2">
+            <h6 class="title"
+                data-toggle="tooltip"
+                title="{{ "Pourcentage de sessions avec consultation d'une seule page de votre site au cours desquelles aucune interaction n'a été enregistrée."|trans }}">
+                {{ "Taux de rebond"|trans }}
+            </h6>
+            <span class="count">{{ extraData.reboundCount|round(2, 'common') }}</span>
+        </div>
+        <div class="small-group col-md-2">
+            <h6 class="title"
+                data-toggle="tooltip"
+                title="{{ "Il s'agit de la durée moyenne d'une session."|trans }}">
+                {{ "Durée moyenne des sessions"|trans }}
+            </h6>
+            <span class="count">{{ "0:00" }}</span>
+        </div>
+        <div class="small-group col-md-2">
+            <h6 class="title"
+                data-toggle="tooltip"
+                title="{{ "Pages/session (nombre moyen de pages) est le nombre moyen de pages vues au cours d'une session. Les visites répétées d'un internaute sur une même page sont prises en compte."|trans }}">
+                {{ "Pages/session"|trans }}
+            </h6>
+            <span class="count">{{ extraData.pagesSessions|round(2, 'common') }}</span>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/page/seo/analytics/includes/dates-range.html.twig' with {'route': 'toto'} %}
+            </div>
+            <div class="col-md-6 text-right">
+{#                <a href="">{{ "Vue d'ensemble"|trans }}{{ "fal fa-chevron-right"|fontawesome(null, 10, 'ml-2') }}</a>#}
+            </div>
+        </div>
+    </div>
+</div>

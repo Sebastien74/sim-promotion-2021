@@ -1,0 +1,41 @@
+#####################################
+#           Doctrine                #
+#####################################
+
+services:
+
+    #####################################
+    #           Listener                #
+    #####################################
+
+    App\EventListener\DoctrineEventsListener:
+        lazy: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $isDebug: '%kernel.debug%'
+            $kernel: '@kernel'
+            $interfaceHelper: '@App\Helper\Core\InterfaceHelper'
+            $cacheService: '@App\Service\Core\CacheService'
+        tags:
+            - { name: doctrine.event_subscriber, connection: default, lazy: true }
+
+    #####################################
+    #           Subscriber              #
+    #####################################
+
+    App\EventSubscriber\TablePrefix:
+        lazy: true
+        arguments:
+            $prefix: '%env(string:DATABASE_PREFIX)%'
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    #####################################
+    #           Services                #
+    #####################################
+
+    App\Service\Core\DoctrineService:
+        lazy: true
+        public: true
+        arguments:
+            $container: '@service_container'

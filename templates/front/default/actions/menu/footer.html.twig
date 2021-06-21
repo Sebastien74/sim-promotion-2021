@@ -1,0 +1,50 @@
+{% trans_default_domain 'front_default' %}
+
+<nav class="d-inline-flex w-100">
+
+    <!-- #footer-menu -->
+    <ul id="footer-menu-{{ menu.slug }}" class="reset d-inline-block {{ alignment }}">
+
+        {% set allModules = allModules is defined ? allModules : website|modules %}
+        {% set links = tree.main is defined ? tree.main : [] %}
+
+        {% for link in links %}
+
+            {% set infos = link|linkMenu(tree) %}
+
+            {% if infos.title and infos.online %}
+                <li class="text-center float-start mb-2 mb-md-0">
+                    {% if infos.path %}
+                    {% set path = infos.path and 'http' not in infos.path ? app.request.getSchemeAndHttpHost() ~ infos.path : infos.path %}
+                        <a href="{{ path }}"
+                           {% if infos.newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+                           class="text-primary link{% if infos.class %} {{ infos.class }}{% endif %}{% if infos.active %} active{% endif %}"
+                           title="{{ infos.title|striptags }}"
+                           {% if infos.externalLink %} rel="noopener noreferrer"{% endif %}>
+                    {% endif %}
+                        {{ infos.title|unescape|raw }}
+                    {% if infos.path %}
+                        </a>
+                    {% endif %}
+                    <span class="dashed text-primary ms-2 me-2 d-none d-md-block float-end">-</span>
+                </li>
+            {% endif %}
+
+        {% endfor %}
+
+        {% if menu.isFooter %}
+            {% if 'gdpr'|moduleActive(allModules) %}
+                <li class="text-center float-start mb-2 mb-md-0">
+                    <span class="open-gdpr-modal cursor text-primary link" title="{{ "Gestion des Cookies"|trans|striptags }}">{{ emt("Gestion des Cookies"|trans|raw) }}</span>
+                    <span class="dashed text-primary ms-2 me-2 d-none d-md-block float-end">-</span>
+                </li>
+            {% endif %}
+            <li class="text-center float-start mb-2 mb-md-0">
+                <a href="{{ "https://www.felix-creation.fr"|trans }}" class="text-primary link" title="{{ "Agence Félix"|trans|striptags }}" target="_blank" rel="noopener noreferrer">{{ emt("Agence Félix"|trans|raw) }}</a>
+            </li>
+        {% endif %}
+
+    </ul>
+    <!-- \#footer-menu -->
+
+</nav>

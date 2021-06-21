@@ -1,0 +1,85 @@
+{#{% trans_default_domain 'front_default' %}#}
+
+{#{% set blockType = block.blockType is defined and block.blockType ? block.blockType.slug : null %}#}
+{#{% set i18n = i18n is defined ? i18n : null %}#}
+{#{% set category = news.category %}#}
+{#{% set i18nCategory = category ? news.category|i18n : category %}#}
+{#{% set isInBox = true %}#}
+
+{#{% if blockType and i18n %}#}
+
+{#    {% if blockType == 'layout-titleheader' and title|striptags|length > 0 %}#}
+
+{#        {% if title|striptags|length > 0 %}#}
+{#            {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with {#}
+{#                'block': news,#}
+{#                'i18nMedia': mainMediaInHeader ? i18nMainMedia : null,#}
+{#                'fullSize': true,#}
+{#                'page': page,#}
+{#                'pageTitle': title,#}
+{#                'template': websiteTemplate,#}
+{#                'thumbConfiguration': thumbConfigurationHeader} %}#}
+{#        {% endif %}#}
+
+{#    {% elseif blockType == 'layout-title' and title|striptags|length > 0 %}#}
+
+{#        <h{{ titleForce }} class="title mt-4 mb-4 {{ titleAlignment }}">{{ i18n.title|unescape|raw }}</h{{ titleForce }}>#}
+
+{#        {% if news.category and news.category.displayCategory and i18nCategory.title is defined and i18nCategory.title %}#}
+{#            <h{{ titleForce + 1 }} class="news-category-title {{ titleAlignment }}">{{ i18nCategory.title|unescape|raw }}</h{{ titleForce + 1 }}>#}
+{#        {% endif %}#}
+
+{#    {% elseif blockType == 'layout-date' and not news.category.hideDate %}#}
+
+{#        <small class="date mb-4 d-inline-block">#}
+{#            {{ news.publicationStart|localizedDate('none', 'none', app.request.locale, null, news.category.formatDate) }}#}
+{#        </small>#}
+
+{#    {% elseif blockType == 'layout-intro' and intro|striptags|length > 0 %}#}
+
+{#        <p class="introduction text-bold {{ introAlignment }}">{{ intro|unescape|raw|nl2br }}</p>#}
+
+{#    {% elseif blockType == 'layout-body' and body|striptags|length > 0 %}#}
+
+{#        <div class="body {{ bodyAlignment }}{% if i18n.headerTable %} header-table{% endif %}">{{ body|unescape|raw }}</div>#}
+
+{#    {% elseif blockType == 'layout-video' and i18nVideo|striptags|length > 0 %}#}
+
+{#        <div class="video mb-4">{{ i18nVideo|video }}</div>#}
+
+{#    {% elseif blockType == 'layout-gallery' and medias|length > 0 %}#}
+
+{#        {% include 'front/' ~ websiteTemplate ~ '/include/gallery.html.twig' with {'gallery': news, 'slug': 'news'} %}#}
+
+{#    {% elseif blockType == 'layout-slider' %}#}
+
+{#        {% include 'front/' ~ websiteTemplate ~ '/actions/newscast/view/include/carousel.html.twig' with {popup: true} %}#}
+
+{#    {% elseif blockType == 'layout-link' %}#}
+
+{#        {% include 'front/' ~ websiteTemplate ~ '/blocks/link/default.html.twig' with {'i18n': i18n} %}#}
+
+{#    {% elseif blockType == 'layout-image' %}#}
+
+{#        {% set image = news|mainMedia|thumb %}#}
+
+{#        {% if image %}#}
+{#            <div class="image">{{ image }}</div>#}
+{#        {% endif %}#}
+
+{#    {% elseif blockType == 'layout-back-button' %}#}
+
+{#        {% set indexPage = news|indexPage %}#}
+{#        {% set pageUrl = indexPage ? website|i18nUrl(indexPage) : website|i18nUrl(page) %}#}
+{#        {% set btnLabel = i18nCategory.targetLabel is defined and i18nCategory.targetLabel ? i18nCategory.targetLabel : emt("Retourner à la liste des publications"|trans) %}#}
+{#        <a href="{{ path('front_index', {'url': pageUrl}) }}" class="link" data-toggle="preloader">#}
+{#            {{ btnLabel }}{{ "fal fa-chevron-right"|fontawesome(null, 8, 'ms-2') }}#}
+{#        </a>#}
+
+{#    {% elseif blockType == 'layout-share' %}#}
+
+{#        {% include 'front/' ~ websiteTemplate ~ '/blocks/share/default.html.twig' %}#}
+
+{#    {% endif %}#}
+
+{#{% endif %}#}

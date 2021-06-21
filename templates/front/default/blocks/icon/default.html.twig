@@ -1,0 +1,15 @@
+{% trans_default_domain 'front_default' %}
+
+{% if block.icon %}
+
+    {% set alignment = block.alignment ? block.alignment : null %}
+    {% set size = block.iconSize ? block.iconSize : 'md' %}
+    {% set color = block.color ? block.color : 'dark' %}
+
+    <!-- .icon-block -->
+    <div class="icon-block w-100 {{ alignment }}">
+        {{ block.icon|iconHtml({'class': "icon-" ~ size ~ " " ~ color}) }}
+    </div>
+    <!-- \.icon-block -->
+
+{% endif %}

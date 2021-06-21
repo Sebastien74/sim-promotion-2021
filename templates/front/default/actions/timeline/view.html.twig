@@ -1,0 +1,45 @@
+{% trans_default_domain 'front_default' %}
+
+{% set steps = timeline.steps %}
+
+{% if steps|length > 0 %}
+
+    <!-- .timeline-container -->
+    <div id="timeline-container-{{ timeline.slug }}" class="timeline-container">
+
+        <ol class="step-list">
+
+            {% for step in steps %}
+
+                {% set i18n = step|i18n %}
+                {% set title = i18n.title is defined and i18n.title|striptags|length > 0 ? i18n.title : null %}
+                {% set introduction = i18n.introduction is defined and i18n.introduction|striptags|length > 0 ? i18n.introduction : null %}
+                {% set i18nMedia = step|i18nMedia %}
+
+                <li class="step-list-item {% if loop.index is odd %}odd{% else %}even{% endif %}">
+                    <div class="step-list-item-inner">
+                        <div class="content">
+                            <div class="body">
+                                {% if title %}
+                                    <h2>{{ title }}</h2>
+                                {% endif %}
+                                {% if introduction %}
+                                    <p>{{ introduction }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="icon">
+                                {% set mediaConfig = i18nMedia|thumbConfiguration(thumbConfiguration) %}
+                                {{ i18nMedia|thumb(mediaConfig, {'maxWidth': 80, 'maxHeight': 80}) }}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+            {% endfor%}
+
+        </ol>
+
+    </div>
+    <!-- \.timeline-container -->
+
+{% endif %}

@@ -1,0 +1,41 @@
+#####################################
+#           Form extensions         #
+#####################################
+
+services:
+
+    App\Form\Extension\CheckboxExtension:
+        lazy: true
+        tags:
+            - { name: form.type_extension,
+                extended_type: Symfony\Component\Form\Extension\Core\Type\CheckboxType }
+
+    App\Form\Extension\ChoiceExtension:
+        lazy: true
+        tags:
+            - { name: form.type_extension,
+                extended_type: Symfony\Component\Form\Extension\Core\Type\ChoiceType }
+
+    App\Form\Extension\RadioExtension:
+        lazy: true
+        tags:
+            - { name: form.type_extension,
+                extended_type: Symfony\Component\Form\Extension\Core\Type\RadioType }
+
+    App\Form\Extension\TextareaEditorExtension:
+        lazy: true
+        tags:
+            - { name: form.type_extension,
+                extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType }
+
+    App\Form\Extension\TextareaSizeExtension:
+        lazy: true
+        tags:
+            - { name: form.type_extension,
+                extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType }
+
+    App\Form\Extension\TextExtension:
+        lazy: true
+        tags:
+            - { name: form.type_extension,
+                extended_type: Symfony\Component\Form\Extension\Core\Type\TextType }

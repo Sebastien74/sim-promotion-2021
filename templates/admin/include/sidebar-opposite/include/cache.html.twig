@@ -1,0 +1,47 @@
+{% trans_default_domain 'admin' %}
+
+<li>
+    <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+        {{ 'fal fa-crosshairs'|fontawesome(15, 15, 'white mr-2') }}
+        <span class="hide-menu">{{ "Cache"|trans }}</span>
+    </a>
+    <ul aria-expanded="false" class="collapse bg-info-light">
+        <li>
+            <a href="{{ path('cache_clear') }}" data-toggle="preloader">
+                <span class="hide-menu">{{ "Vider le cache principal"|trans }}</span>
+            </a>
+        </li>
+        {% if website.configuration.fullCache %}
+            <li>
+                <a href="{{ path('cache_clear_html') }}" data-toggle="preloader">
+                    <span class="hide-menu">{{ "Vider le cache HTML"|trans }}</span>
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a href="{{ path('doctrine_clear_cache_result') }}" data-toggle="preloader">
+                <span class="hide-menu">{{ "Vider le cache Doctrine"|trans }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('cache_liip_clear') }}" data-toggle="preloader">
+                <span class="hide-menu">{{ "Vider les médias"|trans }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('admin_translation_cache_clear', {'website': websiteId()}) }}" data-toggle="preloader">
+                <span class="hide-menu">{{ "Vider les traductions"|trans }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('admin_clear_sessions') }}" data-toggle="preloader">
+                <span class="hide-menu">{{ "Vider les sessions"|trans }}</span>
+            </a>
+        </li>
+{#        <li>#}
+{#            <a href="{{ path('composer_autoload') }}" data-toggle="preloader">#}
+{#                <span class="hide-menu">{{ "Optimiser l'autoload"|trans }}</span>#}
+{#            </a>#}
+{#        </li>#}
+    </ul>
+</li>

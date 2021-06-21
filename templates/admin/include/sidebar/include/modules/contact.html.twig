@@ -1,0 +1,17 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'contact-information'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/contacts/' in uri and not 'forms/contacts' in uri %}
+    {% set module = 'contact-information'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['agenda'][app.user.locale] is defined ? i18nsModules['contact-information'][app.user.locale] : i18nsModules['contact-information']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['contact-information']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a href="{{ path('admin_contact_index', {"website": websiteId}) }}" data-toggle="preloader">
+            {{ i18nsModules['contact-information']['entity'].iconClass|iconHtml({'width': 17, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+    </li>
+
+{% endif %}

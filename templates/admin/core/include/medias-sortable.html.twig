@@ -1,0 +1,136 @@
+{% trans_default_domain 'admin' %}
+
+{% if entity.mediaRelations|length > 0 %}
+
+    {% set mediasByPosition = entity.mediaRelations|mediasIdsByPosition %}
+
+    <h4 class="card-subtitle mb-4">{{ "fal fa-photo-video"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Médias"|trans }}</h4>
+
+    {% set mediasInfos = {} %}
+    {% set errors = {} %}
+    {% set message = '' %}
+    {% set fileExtensions = ['pdf', 'docx', 'xlsx', 'txt', 'mp4'] %}
+
+    {% for mediaRelation in entity.mediaRelations %}
+        {% if mediaRelation.isMain and mediasInfos['main'][mediaRelation.locale] is defined and errors['alreadyExistingMain'][mediaRelation.locale] is not defined %}
+            {% if allLocales|length > 1 %} {% set message = message ~ '<img src="' ~ asset('build/vendor/images/lazy-point.svg', 'vendor') ~ '"
+                         data-src="' ~ asset('/medias/icons/flags/' ~ mediaRelation.locale ~ '.svg') ~ '" class="img-fluid lazyload float-left mt-1 mr-2" height="14" width="19">' %} {% endif %}
+            {% set message = message ~ "L'image principale a été définie plusieurs fois !"|trans|raw ~ '<br>' %}
+            {% set errors = errors|merge({ 'alreadyExistingMain': { (mediaRelation.locale): true } }) %}
+        {% endif %}
+        {% if mediaRelation.isMain %}
+            {% set mediasInfos = mediasInfos|merge({ 'main': { (mediaRelation.locale): mediaRelation } }) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if mediasInfos['main'] is defined %}
+        {% for locale in allLocales %}
+            {% if mediasInfos['main'][locale] is not defined %}
+                {% if allLocales|length > 1 %} {% set message = message ~ '<img src="' ~ asset('build/vendor/images/lazy-point.svg', 'vendor') ~ '"
+                         data-src="' ~ asset('/medias/icons/flags/' ~ locale ~ '.svg') ~ '" class="img-fluid lazyload float-left mt-1 mr-2" height="14" width="19">' %} {% endif %}
+                {% set message = message ~ "L'image principale n'a pas été définie !"|trans|raw ~ '<br>' %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if message %}
+        {% include 'admin/include/alert.html.twig' with {"alert": 'error', "message": message|trim('<br>', 'right') } only %}
+    {% endif %}
+
+    <div id="medias-accordion" class="position-relative">
+
+        {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'medias-sortable-preloader', 'full': true} only %}
+
+        <ul id="medias-sortable-container" class="reset mb-4">
+            {% for mediaRelation in entity.mediaRelations %}
+                {% if mediaRelation.locale == website.configuration.locale %}
+                    <li id="ui-media-relation-{{ mediaRelation.id }}"
+                        class="ui-state-default sortable-item"
+                        data-id="{{ mediaRelation.id }}"
+                        data-position="{{ mediaRelation.position }}">
+                        <div class="row">
+                            <ul class="d-none data-locales">
+                                {% for mediaID in mediasByPosition[mediaRelation.position] %}
+                                    <li class="media-locale-data active" data-id="{{ mediaID }}"></li>
+                                {% endfor %}
+                            </ul>
+                            <div class="title-block col-8 my-auto">
+                                <div class="handle-item float-left text-center cursor" data-toggle="tooltip" title="{{ "Déplacer"|trans|striptags }}">
+                                    {{ 'far fa-arrows-alt'|fontawesome(null, 14, 'info') }}
+                                </div>
+                                {% set media = mediaRelation.media %}
+                                {% set extension = media.extension %}
+                                {% if extension in fileExtensions %}
+                                    <span class="file-icon d-inline-block" data-toggle="tooltip" title="{{ extension|upper }}">
+                                        {{ 'admin'|fileIcon(extension)|fontawesome(null, 15, 'dark') }}
+                                    </span>
+                                {% else %}
+                                    <a class="image-popup d-inline-block" href="{{ mediaRelation|thumb(null, {'path': true}) }}">
+                                        {{ mediaRelation|thumb(null, {'placeholder': true, 'width': 30, 'height': 30}) }}
+                                    </a>
+                                {% endif %}
+                                <small id="heading-{{ mediaRelation.id }}" class="ml-2">{% if mediaRelation.media.filename is defined %}{{ mediaRelation.media.filename }}{% endif %}</small>
+                                {% if media.categories|length > 0 %}
+                                    <span class="mytooltip tooltip-effect-4">
+                                        <small class="tooltip-item tooltip-categories ml-3">{{ "Catégories"|trans }}</small>
+                                        <span class="tooltip-content clearfix">
+                                            <span class="tooltip-text p-3">
+                                                <ul class="p-0 pl-3">
+                                                    {% for category in media.categories %}
+                                                        <li>{{ category.adminName }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </span>
+                                        </span>
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="col-4 text-right my-auto">
+                                {% if 'edit'|moduleActive(allModules) %}
+                                    <span data-toggle="tooltip" title="{{ "Éditer"|trans|striptags }}">
+                                        <span class="btn btn-info btn-circle cursor media-tab-content-loader"
+                                              data-path="{{ path('admin_mediarelations_edit', {
+                                                  'website': websiteId(),
+                                                  'mediaRelation': mediaRelation.id,
+                                                  'entityNamespace': class|url_encode,
+                                                  'entityId': entity.id }) }}"
+                                              data-toggle="collapse"
+                                              data-target="#collapse-{{ mediaRelation.id }}"
+                                              aria-expanded="false"
+                                              aria-controls="collapse-{{ mediaRelation.id }}">{{ 'fad fa-pencil-alt'|fontawesome(null, 14) }}
+                                        </span>
+                                    </span>
+                                {% endif %}
+                                {% if 'delete'|moduleActive(allModules) %}
+                                    <a href="{{ path('admin_mediarelation_delete', {
+                                        'website': websiteId(),
+                                        'mediaRelation': mediaRelation.id,
+                                        'entityNamespace': class|url_encode,
+                                        'entityId': entity.id}) }}"
+                                       data-target="#ui-media-relation-{{ mediaRelation.id }}"
+                                       class="btn btn-transparent btn-circle swal-delete-link"
+                                       data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}">
+                                        {{ 'fas fa-trash'|fontawesome(null, 14, 'dark') }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div id="collapse-{{ mediaRelation.id }}" class="parent-preloader collapse" aria-labelledby="heading-{{ mediaRelation.id }}" data-parent="#medias-accordion">
+                            {% include 'admin/include/stripe-preloader.html.twig' with {'preloaderId': 'media-preloader-' ~ entity.id, 'preloaderClass': 'inner-preloader radius-preloader'} %}
+                            <div class="card-body position-relative">
+                                <div class="progress medias-preloader-tab">
+                                    <div class="bg-stripe-loader"></div>
+                                    <div class="vertical-align">
+                                        <h4>{{ "Chargement en cours..."|trans }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+    </div>
+
+{% endif %}

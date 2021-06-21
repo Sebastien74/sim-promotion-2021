@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-03-13, 3:34 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS BLOCKLYN :
+    =====================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Blocklyngrunge";
+
+$fonts: (
+    'Blocklyn-Grunge': ('weight': bold, 'style': normal),
+    'Blocklyn-Grunge-Italic': ('weight': bold, 'style': italic)
+);
+
+@include font-face("Blocklyngrunge", $fonts);

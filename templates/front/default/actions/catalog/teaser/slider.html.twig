@@ -1,0 +1,80 @@
+{% trans_default_domain 'front_default' %}
+
+{% if posts %}
+
+    <div id="teaser-products-carousel-{{ teaser.slug }}"
+         class="carousel slide carousel-fade"
+         data-bs-interval="5000"
+         data-bs-autoplay="true"
+         data-bs-pause="hover"
+         data-bs-ride="carousel"
+         data-component="carousel-bootstrap">
+
+        {% if posts|length > 1 %}
+            <ol class="carousel-indicators d-none d-lg-inline-flex">
+                {% for post in posts %}
+                    <li data-bs-target="#teaser-products-carousel-{{ teaser.slug }}" data-bs-slide-to="{{ loop.index - 1 }}"{% if loop.first %} class="active"{% endif %}></li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        <div class="carousel-inner">
+
+            {% for post in posts %}
+
+                {% set product = post.entity is defined ? post.entity : null %}
+                {% set information = product.informations[0] is defined ? product.informations[0] : null %}
+                {% set address = information.addresses[0] is defined ? information.addresses[0] : null %}
+                {% set city = address.city is defined ? address.city : null %}
+                {% set mediaRelation = post.mediaRelation %}
+                {% set path = post.pageUrl and post.url
+                    ? path('front_catalogproduct_view', {'pageUrl': post.pageUrl, 'url': post.url})
+                    : path('front_catalogproduct_view_only', {'url': post.url}) %}
+
+                <div class="carousel-item{% if loop.first %} active{% endif %}">
+
+                    {{ mediaRelation|thumb(post.mediaConfig, {
+                        "btn_link": false,
+                        'popupGallery': false,
+                        'fullPopup': false,
+                        'placeholder': true,
+                        'lazyLoad': loop.first,
+                        'class': 'w-100' }) }}
+
+                    <div class="card bg-primary">
+                        <div class="card-body pt-4 pb-4 pe-3 ps-3 pe-md-5 ps-md-5">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-7 my-auto text-center text-md-start">
+                                    <h2 class="caption-title mb-0 fw-400">
+                                        {{ post.title|raw }}{% if city %} - <strong class="text-white fw-100">{{ city }}</strong>{% endif %}
+                                    </h2>
+                                </div>
+                                <div class="col-md-6 col-lg-5 text-center text-md-end pt-4 pt-md-0">
+                                    <div class="link-block w-100">
+                                        <a href="{{ path }}" class="btn btn-white hbtn hb-fill-right" data-bs-toggle="preloader">
+                                            {{ "Découvrir le programme"|trans|raw }}
+                                            {{ 'fal fa-chevron-right'|fontawesome(null, 11, 'ms-1') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+            {% if teaser.slug == 'main' %}
+                <div class="caption w-100">
+                    <div class="position-absolute bg-title pt-4 pb-4 ps-4 pe-4 ps-sm-5 pe-sm-5">
+                        <h1 class="text-white title m-0 fw-100">{{ "Construire votre espace"|trans|raw }}</h1>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+{% endif %}

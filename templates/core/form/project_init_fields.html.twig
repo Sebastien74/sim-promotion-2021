@@ -1,0 +1,46 @@
+{% trans_default_domain 'core_init' %}
+
+{% block _project_init_locale_widget %}
+    <div id="{{ id }}" class="row mt-2">
+        {% for choice in choices %}
+            <div class="col">
+                <input type="radio" class="btn-check" name="{{ full_name }}" value="{{ choice.value }}" id="{{ name ~ '_' ~ loop.index }}" autocomplete="off">
+                <label class="btn btn-white" for="{{ name ~ '_' ~ loop.index }}">
+                    <img src="{{ asset('/medias/icons/flags/' ~ choice.value ~ '.svg') }}"
+                         width="20" height="20"
+                         class="img-fluid lazyload"> <br>
+                    {{ choice.label }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block _project_init_locales_others_widget %}
+    <div id="{{ id }}" class="row mt-2">
+        {% for choice in choices %}
+            <div class="col">
+                <input type="checkbox" class="btn-check" name="{{ full_name }}" value="{{ choice.value }}" id="{{ name ~ '_' ~ loop.index }}" autocomplete="off">
+                <label class="btn btn-white" for="{{ name ~ '_' ~ loop.index }}">
+                    <img src="{{ asset('/medias/icons/flags/' ~ choice.value ~ '.svg') }}"
+                         width="20" height="20"
+                         class="img-fluid lazyload"> <br>
+                    {{ choice.label }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block _project_init_fonts_widget %}
+    <div id="{{ id }}" class="row mt-2">
+        {% for choice in choices %}
+            <div class="col-md-2 mb-3">
+                <input type="radio" class="btn-check" name="{{ full_name }}" value="{{ choice.value }}" id="{{ name ~ '_' ~ loop.index }}" autocomplete="off">
+                <label class="btn btn-white" for="{{ name ~ '_' ~ loop.index }}">
+                    {{ choice.label }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

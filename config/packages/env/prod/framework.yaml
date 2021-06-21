@@ -1,0 +1,5 @@
+framework:
+    disallow_search_engine_index: false #X-Robots-Tag: noindex if true
+
+#    session:
+#        cookie_domain: '%env(COOKIE_DOMAIN_PROD)%'

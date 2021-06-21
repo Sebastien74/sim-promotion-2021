@@ -1,0 +1,95 @@
+{% extends 'admin/base.html.twig' %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set durationTitle = app.request.get('duration') ? app.request.get('duration') : 7 %}
+{% set durationTitle = durationTitle ~ ' ' ~ "dernier jours"|trans %}
+{% if app.request.get('day') == 'yesterday' %}
+    {% set durationTitle = "Hier"|trans %}
+{% elseif app.request.get('day') == 'today' %}
+    {% set durationTitle = "Aujourd'hui"|trans %}
+{% elseif app.request.get('year') %}
+    {% set durationTitle = "Année"|trans ~ " " ~ app.request.get('year') %}
+{% endif %}
+
+{% set pageTitle = "Analytics: Toutes les données du site Web"|trans %}
+{% block title %}{{ pageTitle ~ "<span>" ~ durationTitle ~ "</span>" }}{% endblock %}
+{% block pageTitle %}{{ pageTitle ~ "<span>" ~ durationTitle ~ "</span>" }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-analytics', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" nonce="{{ csp_nonce() }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js" nonce="{{ csp_nonce() }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js" nonce="{{ csp_nonce() }}"></script>
+
+    {{ resources.encore_entry_js_files('admin-analytics', 'admin', 'Analytics') }}
+
+{% endblock %}
+
+{% block body %}
+
+{#    {{ dump() }}#}
+{#    {{ dump(users) }}#}
+{#    {{ dump(data) }}#}
+{#    {{ dump(extraData) }}#}
+
+{#    <div id="analytics-page" data-format-date="{{ formatDate }}">#}
+    <div id="analytics-page"
+         data-format-date="yyyy-mm-dd"
+         data-start="{{ startDate|date('Y-m-d') }}"
+         data-end="{{ endDate|date('Y-m-d') }}">
+
+        <div class="row">
+
+            <div class="col-md-6 mb-4">
+                {% include 'admin/page/seo/analytics/includes/global.html.twig' %}
+            </div>
+
+            <div class="col-md-3 mb-4">
+                {% include 'admin/page/seo/analytics/includes/actives.html.twig' %}
+            </div>
+
+            <div class="col-md-3 mb-4">
+                {% set screens = data['screens'] is defined ? data['screens'] : [] %}
+                {% include 'admin/page/seo/analytics/includes/chart-screens.html.twig' with {'data': screens} %}
+            </div>
+
+            <div class="col-md-3 mb-4">
+                {% set cities = data['cities'] is defined ? data['cities'] : [] %}
+                {% include 'admin/page/seo/analytics/includes/chart-cities.html.twig' with {'data': cities} %}
+            </div>
+
+            <div class="col-md-6 mb-4">
+                {% set countries = data['countries'] is defined ? data['countries'] : [] %}
+                {% include 'admin/page/seo/analytics/includes/chart-world-map.html.twig' with {'data': countries} %}
+            </div>
+
+            <div class="col-md-3 mb-4">
+                {% set countries = data['countries'] is defined ? data['countries'] : [] %}
+                {% include 'admin/page/seo/analytics/includes/chart-countries.html.twig' with {'data': countries} %}
+            </div>
+
+            <div class="col-9 mb-4">
+                {% set pages = data['pages'] is defined ? data['pages'] : [] %}
+                {% include 'admin/page/seo/analytics/includes/chart-pages.html.twig' with {'data': pages} %}
+            </div>
+
+            <div class="col-md-3 mb-4">
+                {% set browsers = data['browsers'] is defined ? data['browsers'] : [] %}
+                {% include 'admin/page/seo/analytics/includes/chart-browsers.html.twig' with {'data': browsers} %}
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

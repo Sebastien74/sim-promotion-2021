@@ -1,0 +1,1 @@
+import '../../../../scss/front/default/templates/contact.scss';

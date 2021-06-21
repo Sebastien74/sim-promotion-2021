@@ -1,0 +1,31 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'portfolio'|moduleActive(allModules) %}
+
+    {% set uri = app.request.uri %}
+    {% set active = '/portfolios/' in uri %}
+    {% set module = 'portfolio'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['portfolio'][app.user.locale] is defined ? i18nsModules['portfolio'][app.user.locale] : i18nsModules['portfolio']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['portfolio']['entity'].adminName %}
+
+    <li{% if active %} class="active"{% endif %}>
+        <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+            {{ i18nsModules['portfolio']['entity'].iconClass|iconHtml({'width': 17, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+        </a>
+        <ul aria-expanded="false" class="collapse{% if pageTag == 'portfolios' %} in{% endif %}">
+            <li>
+                <a href="{{ path('admin_portfoliocard_index', {"website": websiteId}) }}"{% if '/portfolios/cards/' in uri %} class="active"{% endif %} data-toggle="preloader">{{ "Liste des fiches"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_portfoliolisting_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Liste des portfolios"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_portfoliocategory_index', {"website": websiteId}) }}"{% if '/portfolios/categories/' in uri %} class="active"{% endif %} data-toggle="preloader">{{ "Liste des catégories"|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_portfolioteaser_index', {"website": websiteId}) }}"{% if '/portfolios/teasers/' in uri %} class="active"{% endif %} data-toggle="preloader">{{ "Configuration des teasers"|trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endif %}

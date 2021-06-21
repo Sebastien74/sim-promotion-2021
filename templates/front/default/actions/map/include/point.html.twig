@@ -1,0 +1,37 @@
+{% trans_default_domain 'front_default' %}
+
+{% set category = category is defined ? category : null %}
+{% set markerWidth = category ? category.markerWidth : 30 %}
+{% set markerHeight = category ? category.markerHeight : 30 %}
+{% set marker = marker ? marker : 'uploads/' ~ website.uploadDirname ~ '/marker-blue.svg' %}
+
+<div class="point"
+     data-id="{{ point.id }}"
+     data-category="{{ dataCategory }}"
+     data-marker="{{ asset(marker) }}"
+     data-marker-width="{{ markerWidth }}"
+     data-marker-height="{{ markerHeight }}"
+     data-latitude="{{ address.latitude }}"
+     data-longitude="{{ address.longitude }}"
+     data-media="{{ mediaPath }}"
+     data-title="{{ i18n and i18n.title ? i18n.title|unescape|raw : null }}"
+     data-body="{{ i18n and i18n.body ? i18n.body|unescape|raw : null }}"
+     data-link="{{ link and link.link ? link.link|unescape|raw : null }}"
+     data-link-label="{{ link and link.label ? link.label|unescape|raw : 'En savoir plus'|trans|raw }}"
+     data-link-label-icon="{{ 'En savoir plus'|trans|raw }}"
+     data-link-target="{{ link and link.targetBlank ? link.targetBlank : null }}"
+     data-name="{{ address.name|unescape|raw }}"
+     data-address="{{ address.address|unescape|raw }}"
+     data-zip-code="{{ address.zipCode|unescape|raw }}"
+     data-city="{{ address.city|unescape|raw }}"
+     data-department="{{ address.department|unescape|raw }}"
+     data-region="{{ address.region|unescape|raw }}"
+     data-country="{{ address.country|countryName }}"
+     data-google-map-url="{{ address.googleMapUrl }}"
+     data-google-map-direction-url="{{ address.googleMapDirectionUrl }}">
+    {% if point.phones|length > 0 %}
+        {% for phone in point.phones %}
+            <div class="phone" data-number="{{ phone.number }}" data-href="{{ phone.tagNumber }}"></div>
+        {% endfor %}
+    {% endif %}
+</div>

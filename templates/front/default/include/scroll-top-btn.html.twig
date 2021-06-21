@@ -1,0 +1,10 @@
+{% trans_default_domain 'front_default' %}
+
+<button id="scroll-top-btn"
+        class="btn btn-primary"
+        aria-label="{{ "Retourner en haut page"|trans|striptags }}"
+        data-bs-toggle="tooltip" title="{{ "Retourner en haut page"|trans|striptags }}"
+        data-placement="left">
+    <span class="d-none">{{ emt("Retourner en haut page"|trans|striptags) }}</span>
+    {{ 'fal fa-chevron-up'|fontawesome(null, 20) }}
+</button>

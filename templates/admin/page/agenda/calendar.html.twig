@@ -1,0 +1,55 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = "Calendrier"|trans|raw %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-agenda', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('admin-agenda', 'admin', 'Agenda') }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="entities-data" data-agenda="{{ agenda.id }}">
+        {% for data in entities %}
+            <span class="event"
+                  data-start="{{ data.publicationStart|date('Y-m-d') ~ 'T' ~ data.publicationStart|date('H:i:s') }}"
+                  data-end="{{ data.publicationEnd|date('Y-m-d') ~ 'T' ~ data.publicationEnd|date('H:i:s') }}"></span>
+        {% endfor %}
+    </div>
+
+    <div id="events-days-data" data-agenda="{{ agenda.id }}">
+        {% for day, id in eventsDaysData %}
+            <span class="event"
+                  data-id="{{ id }}"
+                  data-day="{{ day }}"></span>
+        {% endfor %}
+    </div>
+
+    <div id="agenda-calendar-edition" class="d-inline-block w-100">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-6 text-center text-md-left mb-3 mb-md-0">
+                        <h4 class="mb-0">{{ entity.agenda.adminName }}</h4>
+                    </div>
+                    <div class="col-sm-6 text-center text-md-right"></div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

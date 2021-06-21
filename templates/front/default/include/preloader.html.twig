@@ -1,0 +1,14 @@
+{% trans_default_domain 'front_default' %}
+
+<!-- #main-preloader -->
+<div id="main-preloader" class="front-preloader bg-secondary">
+    <div class="vertical-align">
+        {% if logos.preloader is defined and logos.preloader %}
+            {{ imgRender({'src': asset(logos.preloader), 'width': 200, 'height': 200, 'title': companyName, 'class': 'img-fluid', 'lazy': false}) }}
+        {% endif %}
+        <noscript>
+            <strong class="no-js text-white d-inline-block w-100">{{ emt("Pour vister ce site vous devez activer le JavaScript !!"|trans) }}</strong>
+        </noscript>
+    </div>
+</div>
+<!-- /#main-preloader -->

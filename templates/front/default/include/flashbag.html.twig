@@ -1,0 +1,7 @@
+{% trans_default_domain 'front_default' %}
+
+{% for alert, flashes in app.session.flashbag.all %}
+    {% for flash in flashes %}
+        {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": alert, "message": flash} only %}
+    {% endfor %}
+{% endfor %}

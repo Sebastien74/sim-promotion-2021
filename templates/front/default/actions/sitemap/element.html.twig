@@ -1,0 +1,25 @@
+{% trans_default_domain 'front_default' %}
+
+<li>
+
+    {% set entityObj = entity.entity %}
+    {% set children = group[entityObj.id] is defined ? group[entityObj.id] : [] %}
+    {% set title = entity.seo.titleH1 is defined and entity.seo.titleH1 ? entity.seo.titleH1 : (entity.seo.title is defined and entity.seo.title ? entity.seo.title : entityObj.adminName) %}
+    {% set haveUrl = entity.entity.infill is not defined or not entity.entity.infill %}
+    {% set url = not haveUrl and children[1] is defined ? children[1].url : entity.url %}
+
+    <a href="{{ url }}" title="{{ title }}" data-toggle="preloader">{{ title|unescape|raw }}</a>
+
+    {% if children %}
+        <ul class="ps-3">
+            {% for child in children %}
+                {% include 'front/' ~ websiteTemplate ~ '/actions/sitemap/element.html.twig' with {
+                    'websiteTemplate': websiteTemplate,
+                    'group': group,
+                    'entity': child
+                } only %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</li>

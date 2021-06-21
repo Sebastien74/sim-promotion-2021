@@ -1,0 +1,134 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-10-28, 5:03 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    TABLE :
+    =======
+
+    1 ) Variables
+    2 ) Core
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Variables
+-----------------------------------*/
+
+@import '../variables';
+
+/*-----------------------------------
+   2 ) Core
+-----------------------------------*/
+
+.table {
+
+    border: 0 !important;
+
+    tr {
+
+        th:last-child, td:last-child {
+            border: 0 !important;
+        }
+
+        th:last-child {
+            padding: 0;
+        }
+    }
+
+    tbody tr.odd {
+        background: $gray-300 !important;
+    }
+
+    tbody tr.even{
+        background: $gray-100 !important;
+    }
+
+    .disabled {
+        cursor: not-allowed;
+    }
+
+    .actions {
+
+        .inner {
+
+            display: inline-block;
+            background-color: $white;
+            border-top-right-radius: $card-border-radius;
+
+            i, svg {
+
+                font-size: 15px;
+
+                &.fa-save {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+
+    tr th {
+
+        border-top: 0 !important;
+
+        &:last-child {
+            background-color: $body-bg;
+        }
+
+        .actions {
+
+            display: inline-block;
+            width: 100%;
+
+            .inner {
+
+                padding: 2px 5px;
+                border-top-left-radius: $card-border-radius;
+
+                i, svg {
+
+                    font-size: 15px;
+
+                    &.fa-save {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+
+        .i18ns-row {
+            padding: .8rem 1rem 1rem;
+        }
+    }
+
+    tbody tr {
+
+        .edition {
+
+           .col-md-2.form-group {
+               min-width: 85px !important;
+               width: 85px;
+               flex: 0 0 85px;
+           }
+
+           .col-md-10.form-group {
+               min-width: calc(100% - 85px);
+               width: calc(100% - 85px);
+               flex: 0 0 calc(100% - 85px);
+           }
+        }
+
+        .actions {
+
+            padding: 0;
+            width: 45px;
+
+            .inner {
+                padding: 5px 0;
+                border-bottom-right-radius: $card-border-radius;
+            }
+        }
+    }
+}

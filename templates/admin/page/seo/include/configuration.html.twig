@@ -1,0 +1,38 @@
+{% trans_default_domain 'admin' %}
+
+<h4 class="card-subtitle mb-3">
+    <div class="row">
+        <div class="col-md-6 my-auto">{{ "fal fa-code"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Meta"|trans }}</div>
+        <div class="col-md-6 text-small text-right my-auto">{{ form_row(form.microData) }}</div>
+    </div>
+</h4>
+<div class="row">
+    {% include 'admin/core/form/i18ns.html.twig' with { 'i18ns': form.i18ns, 'disableTitle': true} %}
+</div>
+
+<h4 class="card-subtitle mb-3">{{ "fal fa-chart-line"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Analytics"|trans }}</h4>
+<div class="row">
+    {% include 'admin/page/api/google-i18ns.html.twig' with {'googleI18ns': form.website.api.google.googleI18ns} %}
+</div>
+
+<h4 class="card-subtitle mb-3">{{ "fab fa-facebook-square"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Facebook"|trans }}</h4>
+<div class="row">
+    {% include 'admin/page/api/facebook-i18ns.html.twig' with {'facebookI18ns': form.website.api.facebook.facebookI18ns} %}
+</div>
+
+<h4 class="card-subtitle mb-3">{{ "fal fa-plus-circle"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Autres"|trans }}</h4>
+<div class="row">
+    {{ form_row(form.website.api.custom.headScriptSeo) }}
+    {{ form_row(form.website.api.custom.topBodyScriptSeo) }}
+    {{ form_row(form.website.api.custom.bottomBodyScriptSeo) }}
+</div>
+
+{% set configurationActive = 'google-analytics'|moduleActive(allModules) %}
+
+{% if configurationActive %}
+    <h4 class="card-subtitle mb-3">{{ "fal fa-cog"|fontawesome(null, 14, 'info-darken mr-2') }}{{ "Configuration"|trans }}</h4>
+{% endif %}
+
+<div class="{% if configurationActive %}row{% else %}d-none{% endif %}">
+    {{ form_row(form.disabledIps) }}
+</div>

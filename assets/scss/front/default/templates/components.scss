@@ -1,0 +1,56 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-10-09, 8:55 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    TEMPLATE COMPONENTS :
+    =====================
+
+    1 ) Import
+    2 ) Core
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Import
+-----------------------------------*/
+
+@import "../utilities/mixins";
+@import "../variables";
+
+@import "../components/page";
+
+/*-----------------------------------
+   2 ) Core
+-----------------------------------*/
+
+#content-components {
+
+    .layout-zone {
+
+        margin-bottom: 0;
+
+        &.bg-zone {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        &.titleheader .layout-col {
+            padding: 0;
+        }
+    }
+
+    blockquote {
+        margin-top: 30px;
+    }
+}
+
+#content {
+    .layout-zone {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+}

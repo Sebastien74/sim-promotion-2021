@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2020
+    Created on : 2020-03-09, 10:59 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT MIXIN MARGIN :
+    ===================
+
+------------------------------------------------------------------ */
+
+@mixin appMargins($configs) {
+
+    @each $breakpoint, $config in $configs {
+
+        $axisX: map-get($config, "x");
+
+        @include mediaQuery(min-#{$breakpoint}) {
+
+            @each $axisBreakpoint, $size in map-get($config, "y") {
+                .mt-#{$axisBreakpoint} {
+                    margin-top: $size;
+                }
+                .mb-#{$axisBreakpoint} {
+                    margin-bottom: $size;
+                }
+                .mt-#{$axisBreakpoint}-neg {
+                    margin-top: -$size;
+                }
+                .mb-#{$axisBreakpoint}-neg {
+                    margin-bottom: -$size;
+                }
+                .pt-#{$axisBreakpoint} {
+                    padding-top: $size;
+                }
+                .pb-#{$axisBreakpoint} {
+                    padding-bottom: $size;
+                }
+            }
+
+            @each $axisBreakpoint, $size in map-get($config, "x") {
+                .ms-#{$axisBreakpoint} {
+                    margin-left: $size;
+                }
+                .me-#{$axisBreakpoint} {
+                    margin-right: $size;
+                }
+                .ms-#{$axisBreakpoint}-neg {
+                    margin-left: -$size;
+                }
+                .me-#{$axisBreakpoint}-neg {
+                    margin-right: -$size;
+                }
+                .ps-#{$axisBreakpoint} {
+                    padding-left: $size;
+                }
+                .pe-#{$axisBreakpoint} {
+                    padding-right: $size;
+                }
+            }
+        }
+    }
+}

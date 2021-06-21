@@ -1,0 +1,139 @@
+{% trans_default_domain 'front_default' %}
+
+{% set isInBox = isInBox is defined ? isInBox : true %}
+{% set website = website is defined and website ? website : (entity.website is defined and entity.website ? website()) %}
+{% set websiteTemplate = websiteTemplate is defined ? websiteTemplate : website.configuration.template %}
+{% set layout = entity.layout is defined and entity.layout ? entity.layout : null %}
+{% set hasCustomLayout = entity.customLayout is defined and entity.customLayout
+    and layout.zones is defined and layout.zones|length > 0 %}
+{% set i18n = i18n is defined ? i18n : (hasCustomLayout ? layout|layoutBlockType('text')|i18n : entity|i18n) %}
+
+{% set thumbConfiguration = thumbConfiguration is defined and thumbConfiguration ? thumbConfiguration : null %}
+{% set thumbPlaceholder = thumbPlaceholder is defined and thumbPlaceholder %}
+{% set mediaRelation = mediaRelation is defined ? mediaRelation : (hasCustomLayout ? layout|layoutBlockType('media')|mainMedia : entity|mainMedia) %}
+{% set mediaConfig = mediaRelation|thumbConfiguration(thumbConfiguration, thumbPlaceholder) %}
+{% set haveMedia = mediaRelation.media.filename is defined and mediaRelation.media.filename
+    or mediaRelation.filename is defined and mediaRelation.filename %}
+{% set i18nMedia = mediaRelation.filename is defined and mediaRelation.filename ? mediaRelation :
+    (hasCustomLayout ? layout|layoutBlockType('media')|mainMedia : entity|mainMedia) %}
+
+{% set fullSize = fullSize is defined and fullSize %}
+{% set class = class is defined and class ? class : null %}
+{% set colSize = colSize is defined and colSize ? colSize : null %}
+{% set showDate = showDate is defined ? showDate : false %}
+{% set showThumbnail = displayThumbnail is defined ? displayThumbnail : true %}
+{% set showCategory = displayCategory is defined and displayCategory and entity.category is defined %}
+{% set showLink = showLink is defined and showLink %}
+{% set mediaWidth = mediaWidth is defined and mediaWidth and mediaWidth > 0 ? mediaWidth : null  %}
+{% set mediaHeight = mediaHeight is defined and mediaHeight and mediaHeight > 0 ? mediaHeight : null  %}
+
+{% set title = hasCustomLayout ? layout|mainLayoutTitle : i18n.title %}
+{% set titleForce = 2 %}
+{% set titleAlignment = i18n.titleAlignment is defined and i18n.titleAlignment ? i18n.titleAlignment : 'text-start' %}
+{% set subTitle = i18n.subTitle is defined and i18n.subTitle ? i18n.subTitle : null %}
+{% set intro = i18n.intro is defined and i18n.intro ? i18n.intro : null %}
+{% set introAlignment = i18n.introductionAlignment is defined and i18n.introductionAlignment ? i18n.introductionAlignment : 'text-start' %}
+{% set body = i18n.body is defined and i18n.body ? i18n.body : null %}
+{% set bodyAlignment = i18n.bodyAlignment is defined and i18n.bodyAlignment ? i18n.bodyAlignment : 'text-start' %}
+{% set targetLink = targetLink is defined and targetLink ? targetLink : null %}
+{% if not targetLink %}
+    {% set targetLink = i18n.targetLink is defined and i18n.targetLink ? i18n.targetLink : (i18n.targetPage is defined ? website|i18nUrl(i18n.targetPage) : null) %}
+{% endif %}
+{% set i18nUrlObject = i18n.targetPage is defined and i18n.targetPage ? website|i18nUrl(i18n.targetPage, app.request.locale, true) : null %}
+{% set isOnline = i18nUrlObject.isOnline is not defined or i18nUrlObject.isOnline is defined and i18nUrlObject.isOnline %}
+{% set targetLabel = i18n.targetLabel is defined and i18n.targetLabel ? i18n.targetLabel : targetLink %}
+{% set targetAlignment = i18n.targetLabel is defined and i18n.targetLabel ? i18n.targetAlignment : 'text-start' %}
+{% set targetStyle = i18n.targetStyle is defined and i18n.targetStyle ? i18n.targetStyle : 'link' %}
+{% set newTab = i18n.newTab is defined and i18n.newTab ? i18n.newTab : false %}
+{% set externalLink = i18n.externalLink is defined and i18n.externalLink ? i18n.externalLink : false %}
+{% if 'btn' in targetStyle %}
+    {% set targetStyle = 'hbtn hb-fill-right btn ' ~ targetStyle %}
+{% endif %}
+
+<!-- .card-block -->
+<div class="card-block card h-100 {% if targetLink %} have-link{% endif %}{% if class %} {{ class }}{% endif %}">
+
+    {% if webmaster is defined %}
+        {% include 'core/webmaster-edit.html.twig' with webmaster only %}
+    {% endif %}
+
+    {% if i18nMedia and showThumbnail %}
+        {% set haveSize = mediaWidth > 0 and mediaHeight > 0 %}
+        {% if thumbConfiguration and not haveSize %}
+            {% set mediaConfig = i18nMedia|thumbConfiguration(thumbConfiguration) %}
+            {{ i18nMedia|thumb(mediaConfig, {'parentEntity': entity, 'targetLink': targetLink, 'isInBox': isInBox}) }}
+        {% else %}
+            {{ i18nMedia|thumb(mediaConfig, {'maxWidth': mediaWidth, 'maxHeight': mediaHeight, 'colSize': colSize, 'zoneFullSize': fullSize, 'parentEntity': entity, 'targetLink': targetLink, 'isInBox': isInBox}) }}
+        {% endif %}
+    {% endif %}
+
+    <div class="card-body d-flex flex-column h-100 position-relative ps-0 pe-0">
+
+        <div class="content-wrap row h-100">
+
+            <div class="col-12">
+
+                {% if title|striptags|length > 0 %}
+                    {% if targetLink and isOnline %}
+                        <a href="{{ targetLink }}" title="{{ title|striptags }}" data-toggle="preloader">
+                    {% endif %}
+                        <h{{ titleForce }} class="card-title title {{ titleAlignment }}">{{ title|unescape|raw }}</h{{ titleForce }}>
+                    {% if targetLink and isOnline %}
+                        </a>
+                    {% endif %}
+                {% endif %}
+
+                {% if subTitle|striptags|length > 0 %}
+                    <strong class="card-sub-title text-uppercase">{{ subTitle|unescape|raw }}</strong>
+                {% endif %}
+
+            </div>
+
+            {% if disabledContent is not defined %}
+
+                <div class="content col-12">
+
+                    {% if showDate %}
+                        <small class="date text-muted mb-4 d-inline-block">
+                            {% set publicationStart = entity.publicationStart is defined and entity.publicationStart
+                                ? entity.publicationStart : entity.createdAt %}
+                            {% set format = formatDate is defined ? formatDate : 'dd/MM' %}
+                            {{ publicationStart|localizedDate('none', 'none', app.request.locale, null, format) }}
+                        </small>
+                    {% endif %}
+
+                    {% if showCategory %}
+                        {% set i18nCategory = entity.category|i18n %}
+                        {% if i18nCategory and i18nCategory.title %}
+                            {% set titleCategory = i18n.title %}
+                            <h{{ titleForce + 1 }} class="news-category-title {{ titleAlignment }}">{{ i18nCategory.title|unescape|raw }}</h{{ titleForce + 1 }}>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if intro|striptags|length > 0 %}
+                        <p class="card-text introduction mt-3 text-bold {{ introAlignment }}">{{ intro|striptags|truncate(150) }}</p>
+                    {% endif %}
+
+                    {% if intro|striptags|length == 0 and body|striptags|length > 0 %}
+                        <p class="card-text body mt-3 {{ bodyAlignment }}">{{ body|striptags|truncate(150) }}</p>
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+            {% if showLink %}
+                <div class="col-12 d-flex align-items-end mt-4">
+                    <a href="{{ targetLink }}" class="link"
+                        {% if newTab %} target="_blank"{% else %} data-toggle="preloader"{% endif %}
+                        {% if externalLink %} rel="noopener noreferrer"{% endif %}>
+                        {{ emt("En savoir plus"|trans) }}{{ 'app/arrow-black.svg'|iconHtml({'class': "ms-2 primary"}) }}
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+<!-- \.card-block -->

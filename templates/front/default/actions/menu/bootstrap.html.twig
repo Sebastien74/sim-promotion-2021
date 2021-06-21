@@ -1,0 +1,109 @@
+{% trans_default_domain 'front_default' %}
+
+{% set template = configuration.template %}
+{% set links = tree.main is defined ? tree.main : [] %}
+
+{% if links %}
+
+    <!-- #main-navigation -->
+    <nav id="{{ menu.slug }}-navigation" class="navbar navbar-expand-lg pe-0 ps-0">
+
+        <div class="{% if menu.size == 'container' %}container{% else %}container-fluid{% endif %}">
+
+            {% if logo %}
+                <a class="navbar-brand p-0" href="{{ app.request.getSchemeAndHttpHost() }}" data-toggle="preloader">
+                    {{ imgRender({'src': logo, 'width': 80, 'height': 80, 'title': companyName, 'id': 'main-navigation-logo', 'only_html': true, 'lazy': false}) }}
+                </a>
+            {% endif %}
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navigation-nav" aria-controls="main-navigation-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span id="nav-toggler-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <div id="main-navigation-nav" class="collapse navbar-collapse">
+                <ul class="navbar-nav {{ alignment }}">
+
+                    {% set indexActive = masterRequest().requestUri == '' or masterRequest().requestUri == '/' %}
+                    {% if isMobile() or isTablet() %}
+                        <li class="nav-item text-center text-lg-start{% if indexActive %} active{% endif %}"{% if microDataActive %} itemscope="itemscope" itemtype="http://www.schema.org/SiteNavigationElement"{% endif %}>
+                            <a href="{{ path('front_index') }}" class="nav-link{% if indexActive %} active{% endif %}"{% if microDataActive %} itemprop="url"{% endif %} data-toggle="preloader">
+                                {% if microDataActive %}<span itemprop="name">{% endif %}{{ emt("Accueil"|trans|raw) }}{% if microDataActive %}</span>{% endif %}
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for link in links %}
+                        {% include 'front/' ~ template ~ '/actions/menu/main-element.html.twig' with {
+                            'link': link,
+                            'tree': tree,
+                            'dropdownItem': false,
+                            'template': template,
+                            'microDataActive': microDataActive } only %}
+                    {% endfor %}
+
+                    {% if haveRegistration and isMobile() or haveRegistration and isTablet() %}
+                        {% if not isUserFront(app.user) %}
+                            <li class="nav-item text-center text-lg-start"{% if microDataActive %} itemscope="itemscope" itemtype="http://www.schema.org/SiteNavigationElement"{% endif %}>
+                                <a href="{{ path('security_front_login') }}" class="nav-link"{% if microDataActive %} itemprop="url"{% endif %} data-toggle="preloader">
+                                    {% if microDataActive %}<span itemprop="name">{% endif %}{{ emt("Connectez-vous"|trans|raw) }}{% if microDataActive %}</span>{% endif %}
+                                </a>
+                            </li>
+                            <li class="nav-item text-center text-lg-start"{% if microDataActive %} itemscope="itemscope" itemtype="http://www.schema.org/SiteNavigationElement"{% endif %}>
+                                <a href="{{ path('security_front_register') }}" class="nav-link"{% if microDataActive %} itemprop="url"{% endif %} data-toggle="preloader">
+                                    {% if microDataActive %}<span itemprop="name">{% endif %}{{ emt("Inscrivez-vous"|trans|raw) }}{% if microDataActive %}</span>{% endif %}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item text-center text-lg-start">
+                                <a href="{{ path('security_logout') }}" class="nav-link" data-toggle="preloader">
+                                    {{ emt("Déconnectez-vous"|trans|raw) }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+
+                </ul>
+
+                {% if multiLingues and isMobile() or multiLingues and isTablet() %}
+                    {{ render_esi(controller('App\\Controller\\Front\\Module\\LocaleController::switcher', { 'website': website.id, 'class': 'ms-auto'|url_encode } )) }}
+                {% endif %}
+
+            </div>
+
+            {% if multiLingues and not isMobile() %}
+                {{ render_esi(controller('App\\Controller\\Front\\Module\\LocaleController::switcher', { 'website': website.id, 'class': 'ms-auto'|url_encode } )) }}
+            {% endif %}
+
+            {% if haveRegistration and not isMobile() or haveRegistration and not isTablet() %}
+                <ul class="navbar-nav ms-auto">
+                    {% if not isUserFront(app.user) %}
+                        <li class="ms-4"{% if microDataActive %} itemscope="itemscope" itemtype="http://www.schema.org/SiteNavigationElement"{% endif %}>
+                            <a href="{{ path('security_front_login') }}" class="btn btn-outline-primary hbtn hb-fill-right"{% if microDataActive %} itemprop="url"{% endif %} data-toggle="preloader">
+                                {% if microDataActive %}<span itemprop="name">{% endif %}{{ emt("Connectez-vous"|trans|raw) }}{% if microDataActive %}</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="ms-4"{% if microDataActive %} itemscope="itemscope" itemtype="http://www.schema.org/SiteNavigationElement"{% endif %}>
+                            <a href="{{ path('security_front_register') }}" class="btn btn-primary hbtn hb-fill-right"{% if microDataActive %} itemprop="url"{% endif %} data-toggle="preloader">
+                                {% if microDataActive %}<span itemprop="name">{% endif %}{{ emt("Inscrivez-vous"|trans|raw) }}{% if microDataActive %}</span>{% endif %}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="ms-4">
+                            <a href="{{ path('security_logout') }}" class="btn btn-primary hbtn hb-fill-right" data-toggle="preloader">
+                                {{ emt("Déconnectez-vous"|trans|raw) }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+
+        </div>
+
+    </nav>
+    <!-- \#main-navigation -->
+
+{% endif %}

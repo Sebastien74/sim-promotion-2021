@@ -1,0 +1,14 @@
+{% trans_default_domain 'front_default' %}
+
+<div id="website-alert" class="text-center">
+    <div class="pt-4 pb-4 inner position-relative bg-primary row">
+        <div class="col-11 my-auto">
+            <div class="message text-bold">{{ websiteAlertmessage|raw }}</div>
+        </div>
+        <div class="col-1 p-0 my-auto">
+            <span id="close-website-alert" data-path="{{ path('website_alert') }}">
+                {{ 'fal fa-times'|fontawesome(15, 15) }}
+            </span>
+        </div>
+    </div>
+</div>

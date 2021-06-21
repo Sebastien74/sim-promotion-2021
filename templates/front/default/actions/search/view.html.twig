@@ -1,0 +1,36 @@
+{% trans_default_domain 'front_default' %}
+
+<!-- .search-container -->
+<div class="search-container position-relative">
+
+    {% include 'core/webmaster-edit.html.twig' with {
+        'title': "Éditer le moteur de recherche"|trans([], 'front_webmaster'),
+        'role': 'ROLE_SEARCH_ENGINE',
+        'path': path('admin_search_edit', {'website': website.id, 'search': search.id})
+    } only %}
+
+    {% if resultsPage %}
+
+        {{ form_start(form, {'attr': {"id": "search-engine-form", "class": "search-engine-form", "novalidate": "novalidate"}}) }}
+            <div class="input-group mb-3">
+                {{ form_widget(form.search) }}
+                <div class="input-group-append">
+                    <button type="submit"
+                            class="cursor btn btn-outline-primary hbtn hb-fill-right"
+                            id="search-engine-submit"
+                            data-toggle="preloader">
+                        {{ 'fal fa-search'|fontawesome(15, 15, 'search me-2') }}
+                        {{ emt("Rechercher"|trans) }}
+                    </button>
+                </div>
+            </div>
+        {{ form_end(form) }}
+
+    {% else %}
+
+        {% include 'front/' ~ websiteTemplate ~ '/include/alert.html.twig' with {"alert": 'info', "message": emt("Aucune page de résultats configurée pour ce moteur de recherche !!"|trans|raw)} only %}
+
+    {% endif %}
+
+</div>
+<!-- \.search-container -->

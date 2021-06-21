@@ -1,0 +1,12 @@
+{% trans_default_domain 'front_default' %}
+
+<div class="card-block card h-100 have-link">
+    <div class="content-box position-relative">
+        <div class="box9" data-component="hover-effect">
+            {% block media %}{% endblock %}
+            <div class="box-content">
+                {% include 'front/' ~ websiteTemplate ~ '/include/hovereffect/buttons.html.twig' %}
+            </div>
+        </div>
+    </div>
+</div>

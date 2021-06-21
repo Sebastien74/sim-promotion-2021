@@ -1,0 +1,54 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set pageTitle = seo.title is defined and seo.title|striptags|truncate(40)|length > 0 ? "Référencement :"|trans ~ " " ~ seo.title|striptags|truncate(40) : "Référencement"|trans %}
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ resources.encore_absolute_link_tags('admin-seo', 'admin', true) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ resources.encore_entry_js_files('admin-seo', 'admin', 'Seo') }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="seo-edition">
+        <div class="row ajax-content">
+            <div class="col-md-4 mb-4">
+                <div class="card p-0">
+                    {% include 'admin/page/seo/include/filter-header.html.twig' %}
+                    <div id="seo-filter-categories" class="card-body pt-0">
+                        {% if entities is defined %}
+                            {% include 'admin/page/seo/include/filter-categories.html.twig' %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if entities is defined and seo.url.code is defined and seo.url.code %}
+                <div class="col-md-8 mb-4">
+                    <div class="row">
+                        <div id="preview-container" class="col-md-6">
+                            {% include 'admin/page/seo/include/preview.html.twig' %}
+                        </div>
+                        <div id="seo-form-container" class="col-md-6">
+                            {% include 'admin/page/seo/include/edition.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+            {% elseif seo.url.code is defined and not seo.url.code %}
+                <div class="col-md-8 mb-4">
+                    {% include 'admin/include/alert.html.twig' with {"alert": "info", "message": "Aucune URL configurée."|trans} only %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

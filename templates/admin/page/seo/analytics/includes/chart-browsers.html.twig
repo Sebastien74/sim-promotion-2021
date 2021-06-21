@@ -1,0 +1,81 @@
+{% trans_default_domain 'admin' %}
+
+{% set labels = {
+    "firefox": {
+        "title": "Firefox",
+        "icon": "fab fa-firefox"
+    },
+    "chrome": {
+        "title": "Chrome",
+        "icon": "fab fa-chrome"
+    },
+    "safari": {
+        "title": "Safari",
+        "icon": "fab fa-safari"
+    },
+    "edge": {
+        "title": "Edge",
+        "icon": "fab fa-edge"
+    },
+    "ie": {
+        "title": "IE",
+        "icon": "fab fa-internet-explorer"
+    },
+    "opera": {
+        "title": "Opera",
+        "icon": "fab fa-opera"
+    },
+    "undefined": {
+        "title": "N/C",
+        "icon": "fas fa-question-circle"
+    }}
+%}
+
+<div id="browsers-bars-card" class="card h-100 mb-0">
+    <div class="card-body">
+        <h4 class="card-title">{{ "Depuis quels navigateurs vos utilisateurs arrivent-ils ?"|trans }}</h4>
+        <div class="row h-100">
+            <div class="col-12 my-auto">
+                {% if data %}
+                    <ul id="browsers-bars" class="bars mt-4 reset">
+                        {% set count = 0 %}
+                        {% for browser, sessions in data %}
+                            {% for session in sessions %}
+                                {% set count = count + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for code, label in labels %}
+                            <li class="data mb-2">
+                                <small>{{ labels[code]['icon']|fontawesome(null, 12, 'dark mr-2') }}{{ labels[code]['title'] }}</small>
+                                {% set percent = 0 %}
+                                {% for browser, sessions in data %}
+                                    {% if browser == code %}
+                                        {% set percent = (sessions|length * 100) / count %}
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="progress" data-toggle="tooltip" title="{{ percent|round(2, 'common') }}%">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ percent|round(2, 'common') }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="mb-0 mt-5 mb-5 text-center">{{ "Aucune donnée"|trans }}</p>
+                {% endif %}
+            </div>
+            {% if data %}
+                <div class="w-100 mt-3 text-right"><small class="text-italic">{{ "Sessions par navigateur"|trans }}</small></div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/page/seo/analytics/includes/dates-range.html.twig' with {'route': 'toto'} %}
+            </div>
+            <div class="col-md-6 text-right">
+{#                <a href="">{{ "Vue d'ensemble"|trans }}{{ "fal fa-chevron-right"|fontawesome(null, 10, 'ml-2') }}</a>#}
+            </div>
+        </div>
+    </div>
+</div>

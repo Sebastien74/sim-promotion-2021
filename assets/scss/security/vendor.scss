@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2019-08-07, 9:43 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    SECURITY VENDOR :
+    =================
+
+    1 ) Breakpoints
+    2 ) Colors
+    3 ) Imports
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Breakpoints
+-----------------------------------*/
+
+$xs: 320px;
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$xxl: 1600px;
+
+/*-----------------------------------
+   2 ) Colors
+-----------------------------------*/
+
+$primary: #410c2c;
+$info: $primary;
+$danger: #b84d57;
+$danger-color: #b84d57;
+$success: #5D7808;
+$ribbon-danger-bookmark: $primary;
+$ribbon-danger-color: #fff;
+
+/*-----------------------------------
+   3 ) Imports
+-----------------------------------*/
+
+@import "~bootstrap/scss/bootstrap";
+
+@import 'core/app';
+@import 'core/preloader';
+@import 'core/ribbon';
+@import 'core/form';

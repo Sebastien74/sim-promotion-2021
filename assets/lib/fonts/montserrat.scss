@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+/* --------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-11-06, 9:45 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FONTS MONTSERRAT :
+    ========================
+
+-------------------------------------------------------- */
+
+@import "../../scss/vendor/mixin/fonts";
+
+$fontFamily: "Montserrat", sans-serif;
+
+$fonts: (
+    'Montserrat-Thin': ('weight': 100, 'style': normal),
+    'Montserrat-ThinItalic': ('weight': 100, 'style': italic),
+    'Montserrat-ExtraLight': ('weight': 200, 'style': normal),
+    'Montserrat-ExtraLightItalic': ('weight': 200, 'style': italic),
+    'Montserrat-Light': ('weight': 300, 'style': normal),
+    'Montserrat-LightItalic': ('weight': 300, 'style': italic),
+    'Montserrat-Regular': ('weight': 400, 'style': normal),
+    'Montserrat-Italic': ('weight': 400, 'style': italic),
+    'Montserrat-Medium': ('weight': 500, 'style': normal),
+    'Montserrat-MediumItalic': ('weight': 500, 'style': italic),
+    'Montserrat-SemiBold': ('weight': 600, 'style': normal),
+    'Montserrat-SemiBoldItalic': ('weight': 600, 'style': italic),
+    'Montserrat-Bold': ('weight': 700, 'style': normal),
+    'Montserrat-BoldItalic': ('weight': 700, 'style': italic),
+    'Montserrat-ExtraBold': ('weight': 800, 'style': normal),
+    'Montserrat-ExtraBoldItalic': ('weight': 800, 'style': italic),
+    'Montserrat-Black': ('weight': 900, 'style': normal),
+    'Montserrat-BlackItalic': ('weight': 900, 'style': italic),
+);
+
+@include font-face("Montserrat", $fonts);

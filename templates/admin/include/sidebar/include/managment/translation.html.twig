@@ -1,0 +1,47 @@
+{% trans_default_domain 'admin' %}
+
+{% if 'translation'|moduleActive(allModules) or is_granted('ROLE_INTERNAL') %}
+
+    {% set uri = app.request.uri %}
+    {% set transDomains = website.configuration.transDomains ? website.configuration.transDomains : [] %}
+    {% set active = '/translations/' in uri %}
+    {% set module = 'translation'|moduleActive(allModules, true) %}
+    {% set i18n = i18nsModules['translation'][app.user.locale] is defined ? i18nsModules['translation'][app.user.locale] : i18nsModules['translation']['fr'] %}
+    {% set title = i18n.placeholder is defined and i18n.placeholder|striptags|length > 0 ? i18n.placeholder : i18nsModules['translation']['entity'].adminName %}
+
+    {% if is_granted('ROLE_INTERNAL') %}
+
+        <li{% if active %} class="active"{% endif %}>
+            <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="false">
+                {{ i18nsModules['translation']['entity'].iconClass|iconHtml({'width': 15, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+            </a>
+            <ul aria-expanded="false" class="collapse{% if active %} in{% endif %}">
+                <li class="pt-3 pr-3 d-inline-block w-100">
+                    {% include 'admin/page/translation/translation-search.html.twig' %}
+                </li>
+                {% for transDomain in transDomains %}
+                    <li><a href="{{ path('admin_translationsdomain_edit', {"website": websiteId, 'translationdomain': transDomain.id}) }}" data-toggle="preloader">{{ transDomain.adminName }}</a></li>
+                {% endfor %}
+                <li><a href="{{ path('admin_translationdomain_index', {"website": websiteId}) }}" data-toggle="preloader">{{ "Groupes de traductions"|trans }}</a></li>
+            </ul>
+        </li>
+
+    {% else %}
+
+        <li{% if '/translations/' in uri %} class="active"{% endif %}>
+            <a class="has-arrow{% if active %} active{% endif %}" href="javascript:void(0)" aria-expanded="{% if active %}true{% else %}false{% endif %}">
+                {{ i18nsModules['translation']['entity'].iconClass|iconHtml({'width': 15, 'height': 15, 'class': 'white mr-3'}) }}{{ title|raw }}
+            </a>
+            <ul aria-expanded="false" class="collapse{% if active %} in{% endif %}{% if transDomains|length == 0 %} pb-3{% endif %}">
+                <li class="pt-3 pr-3 d-inline-block w-100">
+                    {% include 'admin/page/translation/translation-search.html.twig' %}
+                </li>
+                {% for transDomain in transDomains %}
+                    <li><a href="{{ path('admin_translationsdomain_edit', {"website": websiteId, 'translationdomain': transDomain.id}) }}" data-toggle="preloader">{{ transDomain.adminName }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+
+    {% endif %}
+
+{% endif %}

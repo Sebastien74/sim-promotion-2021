@@ -1,0 +1,218 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Copyright  : 2019
+    Created on : 2019-10-16, 7:39 PM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    FRONT FORM COMPONENT :
+    =====================
+
+------------------------------------------------------------------ */
+
+html body form .form-field-none {
+    height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    min-height: 0 !important;
+    border: none !important;
+}
+
+.form-container {
+
+    .layout-col > .row {
+        margin: 0;
+    }
+
+    label {
+        margin-bottom: 3px;
+        padding-left: 15px;
+    }
+}
+
+form {
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control,
+    .choices__inner,
+    .is-focused .choices__inner,
+    .is-open .choices__inner, {
+        border: 2px solid $primary;
+        border-radius: $input-border-radius !important;
+        box-shadow: none !important;
+        padding: 0.375rem 1.5rem;
+    }
+
+    .choices__placeholder {
+        font-size: rem(16px);
+        color: $gray-600;
+        opacity: 1;
+    }
+
+    .choices__item--selectable {
+        padding-right: 10px;
+    }
+
+    .is-invalid .choices__inner {
+        border: 2px solid $danger;
+    }
+
+    .choices__input {
+        padding: 8px 10px 8px 10px;
+        width: 100%;
+    }
+
+    .form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: $gray-600;
+        opacity: 1; /* Firefox */
+    }
+
+    .form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: $gray-600;
+    }
+
+    .form-control::-ms-input-placeholder { /* Microsoft Edge */
+        color: $gray-600;
+    }
+
+    .layout-col {
+
+        &.ps-sm {
+            padding-left: 15px !important;
+        }
+
+        &.pe-sm {
+            padding-right: 15px !important;
+        }
+    }
+
+    .layout-block {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    .form-check-inline {
+        .custom-control {
+            margin-right: 15px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .invalid-feedback .badge {
+        padding: 2px 6px 2px;
+    }
+
+    .choice-group {
+        padding-left: 0;
+    }
+
+    input.datepicker {
+        display: inline-block !important;
+    }
+
+    .date-group, .choice-group {
+        legend {
+            padding: 0;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    .date-group {
+        select {
+            max-width: 33.3333333%;
+        }
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        border-color: $primary;
+        background-color: $primary;
+    }
+
+    .select2-selection--single {
+        height: 38px;
+        border: 1px solid #ced4da;
+        border-radius: $input-border-radius;
+        line-height: 22px;
+    }
+
+    .invalid-feedback {
+
+        margin-bottom: 0.25rem;
+
+        .badge {
+            background: $danger;
+            color: $white;
+            font-size: 11px;
+            text-transform: capitalize !important;
+            padding: 2px 6px 2px;
+            border-radius: $border-radius;
+            float: left;
+            margin-right: 5px;
+            margin-top: 3px;
+        }
+    }
+
+    .btn {
+        svg {
+            margin-top: -3px;
+            min-width: 20px;
+        }
+    }
+}
+
+.datepicker-picker {
+
+    .datepicker-dropdown .datepicker-picker {
+        border-radius: 0;
+    }
+
+    .datepicker-main {
+        padding: rem(15px);
+        background-color: $gray-100;
+    }
+
+    .datepicker-cell.focused:not(.selected) {
+        background-color: $gray-300;
+    }
+
+    .datepicker-header .datepicker-controls {
+
+        padding: 10px;
+        background-color: $secondary;
+
+        .button {
+            background-color: $primary;
+        }
+
+        .prev-btn {
+            margin-right: 3px;
+        }
+
+        .next-btn {
+            margin-left: 3px;
+        }
+    }
+}
+
+.form-loader {
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: transparentize($white, .2);
+
+    i.ai, svg {
+        width: 60px !important;
+        height: 60px !important;
+        opacity: .7;
+    }
+}

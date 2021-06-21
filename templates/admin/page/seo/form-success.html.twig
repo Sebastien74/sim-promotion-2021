@@ -1,0 +1,69 @@
+{% extends "admin/base.html.twig" %}
+
+{% trans_default_domain 'admin' %}
+
+{% import 'core/src-macro.html.twig' as resources %}
+
+{% set transDomain = interface.name is defined and interface.name
+    ? 'entity_' ~ interface.name : NULL %}
+{% set title = 'plural'|trans([], transDomain) and 'plural'|trans([], transDomain) != 'plural'
+    ? 'plural'|trans([], transDomain) : 'Index'|trans ~ " " ~ interface.name  %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block pageTitle %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="entities-index" class="card d-inline-block w-100 no-export">
+
+        <table class="table table-striped mb-0 data-table" data-length="100">
+            <thead>
+                <tr>
+                    <th>{{ "Formulaire"|trans }}</th>
+                    <th>{{ "Infos"|trans }}</th>
+                    <th class="text-right">{{ "Action"|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entity in pagination %}
+                    <tr>
+                        <td class="align-middle">
+                            {% if entity.form %}
+                                {{ entity.form.adminName }}
+                            {% elseif entity.stepForm %}
+                                {{ entity.stepForm.adminName }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            <ul class="infos-list reset text-italic">
+                                <li><small><b class="font-weight-600">{{ "Créé le :"|trans }}</b>{{ entity.createdAt|localizedDate('none', 'none', app.request.locale, null, "cccc dd MMMM Y hh:mm") }}</small></li>
+                                <li><small><b class="font-weight-600">{{ "URL :"|trans }}</b>{{ entity.url }}</small></li>
+                            </ul>
+                        </td>
+                        <td class="text-right align-middle">
+                            {% if routeExist('admin_' ~ interface['name'] ~ '_delete') and 'delete'|moduleActive(allModules) %}
+                                <span class="btn text-center">
+                                    <a href="{{ path('admin_' ~ interface['name'] ~ '_delete', {"website": websiteId(), 'formsuccess': entity.id}) }}"
+                                       data-toggle="tooltip" title="{{ "Supprimer"|trans|striptags }}"
+                                       data-target="#entity-row-{{ entity.id }}"
+                                       class="text-dark swal-delete-link">
+                                        {{ "fas fa-trash"|fontawesome(null, 14, 'dark') }}
+                                    </a>
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,5 @@
+add: 'Add quotation'
+adminName: 'Quotation (EC International)'
+delete: 'Delete quotation'
+plural: Quotations
+singular: 'Quotation (EC International)'

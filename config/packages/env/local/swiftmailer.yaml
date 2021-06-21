@@ -1,0 +1,8 @@
+swiftmailer:
+    delivery_addresses: ['fournier.sebastien@outlook.com', 'sebastien@felix-creation.fr', 'sebastien.fournier.felix@gmail.com']
+    spool: { type: 'memory' }
+    transport: '%env(SWIFT_TRANSPORT_LOCAL)%'
+    username: '%env(SWIFT_USERNAME_LOCAL)%'
+    password: '%env(SWIFT_PASSWORD_LOCAL)%'
+    host: '%env(SWIFT_HOST_LOCAL)%'
+    port: '%env(SWIFT_PORT_LOCAL)%'

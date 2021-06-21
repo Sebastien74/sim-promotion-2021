@@ -1,0 +1,30 @@
+{% set website = website is defined ? website ? website(true) %}
+{% set configuration = website.configuration %}
+{% set customAdmin = configuration.adminTheme is not empty %}
+
+<!-- #recaptcha -->
+<div id="recaptcha" class="d-none">
+    <span class="logo cursor">
+        {% if customAdmin %}
+            <img src="{{ asset('build/vendor/images/lazy-point.svg', 'vendor') }}"
+                 data-src="{{ asset('build/vendor/images/felix-captcha.svg', 'vendor') }}"
+                 width="65" height="74"
+                 class="img-fluid lazyload"
+                 alt="Agence Félix"
+                 title="Agence Félix" />
+        {% else %}
+            {{ 'fad fa-shield-alt'|fontawesome(null, 51) }}
+        {% endif %}
+    </span>
+    <div class="content">
+        <div class="w-100 float-left{% if not customAdmin %} vertical-align{% endif %}">
+            <span class="d-inline-block w-100">CAPTCHA protection</span>
+        </div>
+        <div class="w-100 float-left">
+            {% if customAdmin %}
+                <a href="https://www.felix-creation.fr/" target="_blank" rel="noopener noreferrer">Agence Félix</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- /#recaptcha -->

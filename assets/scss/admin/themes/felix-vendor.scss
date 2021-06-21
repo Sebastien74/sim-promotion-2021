@@ -1,0 +1,177 @@
+@charset "UTF-8";
+
+/* -----------------------------------------------------------------
+
+    Created on : 2020-11-21, 10:20:46 AM
+    Author     : Sébastien FOURNIER <contact@sebastien-fournier.com>
+
+    CLOUDS THEME :
+    =============
+
+    1 ) Core Imports
+    2 ) Core
+        a - Color
+        b - Typography
+        c - Card
+        d - Modal
+        e - Link
+    3 ) Custom
+    4 ) Import Vendor
+
+------------------------------------------------------------------ */
+
+/*-----------------------------------
+   1 ) Core Imports
+-----------------------------------*/
+
+@import "../variables";
+
+/*-----------------------------------
+   2 ) Core
+-----------------------------------*/
+
+/*-- a - Color --*/
+
+$body-bg: #f2f6f9 !global;
+
+$theme-color: #410c2c !global;
+$theme-color-alt: $theme-color !global;
+$white: #fff !global;
+$info-darken: #410c2c !global;
+$info-darken-dark: #240618 !global;
+$info: #793a65 !global;
+$info-light: #ecd9e9 !global;
+$danger: #a71d2a !global;
+$danger-light: #e46571 !global;
+$sidebar: $white !global;
+$sidebar-alt: #f9f9f9 !global;
+$sidebar-text: #8d97ad !global;
+$sidebar-icons: #787f91 !global;
+$right-sidebar-bg: $info-darken-dark !global;
+
+$gray-100: #f8f9fa !global;
+$gray-200: #e9ecef !global;
+$gray-300: #dee2e6 !global;
+$gray-400: #ced4da !global;
+$gray-500: #adb5bd !global;
+$gray-600: #6c757d !global;
+$gray-700: #4F5467 !global;
+$gray-800: #343a40 !global;
+$gray-900: #212529 !global;
+$black: #000 !global;
+
+$blue: $info !global;
+$indigo: #6610f2 !global;
+$purple: #ab8ce4 !global;
+$pink: #e83e8c !global;
+$red: #dc3545 !global;
+$orange: #fb9678 !global;
+$yellow: #ff671b !global;
+$green: #09B884 !global;
+$teal: #20c997 !global;
+$cyan: $info !global;
+$primary: #fb9678 !global;
+$text-muted: $gray-600 !global;
+
+$colors: (
+    blue: $blue,
+    indigo: $indigo,
+    purple: $purple,
+    pink: $pink,
+    red: $red,
+    orange: $orange,
+    yellow: $yellow,
+    green: $green,
+    teal: $teal,
+    cyan: $cyan,
+    white: $white,
+    gray: $gray-600,
+    gray-dark: $gray-800
+);
+
+$theme-colors: (
+    primary: $orange,
+    secondary: $gray-100,
+    success: $green,
+    info: $blue,
+    warning: $yellow,
+    danger: $red,
+    light: $gray-100,
+    cyan: $cyan,
+    dark: $gray-800,
+    purple: $purple,
+    white: $white
+);
+
+/*-- a - Typography --*/
+
+$font-family: 'Firasans', sans-serif !global;
+$font-family-sans-serif: $font-family !global;
+$headings-font-family: $font-family !global;
+
+/*-- b - Card --*/
+
+$card-cap-bg: $theme-color !global;
+$card-cap-color: $info-light !global;
+$card-cap-btn-outline: $white !global;
+$card-cap-bg-subtitle: $theme-color !global;
+$card-cap-color-subtitle: $info-light !global;
+
+/*-- c - Modal --*/
+
+$modal-border-color: $theme-color !global;
+$modal-border-btn: $theme-color !global;
+
+/*-- d - Link --*/
+
+$link-hover-color: $theme-color !global;
+$nav-pills-link-active-color: $white !global;
+$nav-pills-link-active-bg: $theme-color !global;
+$pagination-color: $theme-color !global;
+$pagination-hover-color: $theme-color !global;
+$pagination-active-bg: $info !global;
+$pagination-active-border-color: $info !global;
+$dropdown-link-active-bg: $theme-color !global;
+$dropdown-link-active-color: $white !global;
+
+/*-----------------------------------
+   3 ) Custom
+-----------------------------------*/
+
+#index-search-form {
+
+    ::placeholder {
+        color: $white;
+        opacity: .7;
+    }
+
+    :-ms-input-placeholder {
+        color: $white;
+        opacity: .7;
+    }
+
+    ::-ms-input-placeholder {
+        color: $white;
+        opacity: .7;
+    }
+
+    #index_search_search {
+        color: $white;
+    }
+
+    #index-search-submit svg {
+        fill: $white;
+    }
+}
+
+.card-subtitle {
+    .custom-control-label::before {
+        border-color: $info-light !important;
+    }
+}
+
+/*-----------------------------------
+   4 ) Import Vendor
+-----------------------------------*/
+
+@import '../vendor';

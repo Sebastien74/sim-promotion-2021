@@ -1,0 +1,40 @@
+{% trans_default_domain 'admin' %}
+
+<div id="countries-donuts-card" class="card h-100 mb-0">
+    <div class="card-body">
+        <h4 class="card-title">{{ "Dans quels pays vos utilisateurs se trouvent-ils ?"|trans }}</h4>
+        <div class="row h-100">
+            <div class="col-12 my-auto">
+                {% if data %}
+                    <div id="countries-donuts" class="donuts" data-formatter="%">
+                        {% set count = 0 %}
+                        {% for name, values in data %}
+                            {% for session in values.sessions %}
+                                {% set count = count + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for name, values in data %}
+                            {% set percent = (values.sessions|length * 100) / count %}
+                            <span class="data" data-label="{{ name|capitalize }}" data-value="{{ percent|round(3, 'common') }}"></span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="mb-0 mt-5 mb-5 text-center">{{ "Aucune donnée"|trans }}</p>
+                {% endif %}
+            </div>
+            {% if data %}
+                <div class="w-100 text-right"><small class="text-italic">{{ "Sessions par pays"|trans }}</small></div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/page/seo/analytics/includes/dates-range.html.twig' with {'route': 'toto'} %}
+            </div>
+            <div class="col-md-6 text-right">
+{#                <a href="">{{ "Vue d'ensemble"|trans }}{{ "fal fa-chevron-right"|fontawesome(null, 10, 'ml-2') }}</a>#}
+            </div>
+        </div>
+    </div>
+</div>

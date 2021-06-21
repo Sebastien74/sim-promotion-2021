@@ -1,0 +1,73 @@
+{% trans_default_domain 'front_default' %}
+
+{% if title|striptags|length > 0 %}
+    {% include 'front/' ~ websiteTemplate ~ '/blocks/titleheader/default.html.twig' with {
+        'block': product,
+        'fullSize': true,
+        'page': page,
+        'pageTitle': title,
+        'template': websiteTemplate,
+        'thumbConfiguration': null } %}
+{% endif %}
+
+<div id="product-view" class="container pt-5 pb-5">
+
+    <div class="row">
+
+        <div class="col-lg-7">
+
+{#            {% if product.category and product.category.displayCategory %}#}
+{#                {% set i18nCategory = product.category|i18n %}#}
+{#                {% if i18nCategory and i18nCategory.title %}#}
+{#                    {% set titleCategory = i18n.title %}#}
+{#                    <h{{ titleForce + 1 }} class="news-category-title {{ titleAlignment }}">{{ i18nCategory.title|unescape|raw }}</h{{ titleForce + 1 }}>#}
+{#                {% endif %}#}
+{#            {% endif %}#}
+
+{#            {% if product.category and not product.category.hideDate or not product.category %}#}
+                <small class="date text-muted mb-4 d-inline-block w-100">
+{#                    {% set format = product.category ? product.category.formatDate : 'dd/MM/Y' %}#}
+{#                    {{ emt("Publié le"|trans) }} {{ product.publicationStart|localizedDate('none', 'none', app.request.locale, null, format) }}#}
+                    {{ emt("Publié le"|trans) }} 10/12/2020
+                </small>
+{#            {% endif %}#}
+
+            {% if intro|striptags|length > 0 %}
+                <p class="introduction text-bold {{ introAlignment }}">{{ intro|unescape|raw|nl2br }}</p>
+            {% endif %}
+
+            {% if body|striptags|length > 0 %}
+                <div class="body {{ bodyAlignment }}">{{ body|unescape|raw }}</div>
+            {% endif %}
+
+            {% if i18nVideo %}
+                <div class="video">{{ i18nVideo|video }}</div>
+            {% endif %}
+
+            {% if link.link is defined and link.link %}
+                <!-- .link-block -->
+                <div class="link-block mt-4 {{ linkAlignment }}">
+                    <a href="{{ link.link }}"
+                       class="{{ linkStyle }}"
+                            {% if link.targetBlank %} target="_blank"{% else %} data-bs-toggle="preloader"{% endif %}>
+                        {{ link.label|unescape|raw }}
+                    </a>
+                </div>
+                <!-- .link-block -->
+            {% endif %}
+
+            <a href="{{ path('front_index', {'url': website|i18nUrl(page)}) }}" class="link mt-5">
+                {{ emt("Retourner à la liste des produits"|trans) }}{{ "fal fa-chevron-right"|fontawesome(null, 8, 'ms-2') }}
+            </a>
+
+        </div>
+
+        <div class="col-lg-5">
+            <div class="carousel-wrap">
+                {% include 'front/' ~ websiteTemplate ~ '/actions/catalog/include/carousel.html.twig' %}
+            </div>
+        </div>
+
+    </div>
+
+</div>

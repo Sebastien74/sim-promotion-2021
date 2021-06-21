@@ -1,0 +1,59 @@
+{% trans_default_domain 'front_default' %}
+
+{% if breadcrumbs|length > 0 and website.configuration.breadcrumb %}
+
+    {% set website = website is defined and website ? website : website() %}
+    {% set websiteTemplate = website.configuration.template %}
+    {% set microDataActive = website.seoConfiguration.microData %}
+
+    <!-- .breadcrumb -->
+    {% if microDataActive %}
+        <ol id="breadcrumb" class="breadcrumb w-100 mb-0 pe-4 ps-4 bg-light"
+            itemscope itemtype="https://schema.org/BreadcrumbList">
+            {% for item in breadcrumbs %}
+                {% if not loop.last %}
+                    <li itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem"
+                        class="breadcrumb-item item-{{ loop.index }}{% if itemClass is defined and itemClass|length %} {{ itemClass }}{% endif %}">
+                        {% if not loop.last and item.url is defined and item.url %}
+                            <a itemprop="url"
+                               {% if not loop.first %}
+                                    itemscope
+                                    itemtype="https://schema.org/WebPage"
+                                    itemid="{{ app.request.getSchemeAndHttpHost() ~ item.url }}"
+                               {% endif %}
+                               href="{{ app.request.getSchemeAndHttpHost() ~ item.url }}"
+                               data-position="{{ loop.index }}"
+                               data-toggle="preloader">
+                        {% endif %}
+                                <span itemprop="name" class="{% if loop.last %} active{% else %}text-muted{% endif %}">{{ item.title|striptags }}</span>
+                        {% if not loop.last and item.url is defined and item.url %}
+                            </a>
+                        {% endif %}
+                        <meta itemprop="position" content="{{ loop.index }}" />
+                        {{ 'fal fa-chevron-right'|fontawesome(10, 10, 'separator') }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    {% else %}
+        <ol id="breadcrumb" class="breadcrumb w-100 mb-0 pe-4 ps-4 bg-light">
+            {% for item in breadcrumbs %}
+                {% if not loop.last %}
+                    <li class="breadcrumb-item{% if itemClass is defined and itemClass|length %} {{ itemClass }}{% endif %}">
+                        {% if not loop.last and item.url is defined and item.url %}
+                            <a href="{{ app.request.getSchemeAndHttpHost() ~ item.url }}" data-toggle="preloader">
+                        {% endif %}
+                                <span class="{% if loop.last %} active{% else %}text-muted{% endif %}">{{ item.title|striptags }}</span>
+                        {% if not loop.last and item.url is defined and item.url %}
+                            </a>
+                        {% endif %}
+                        {{ 'fal fa-chevron-right'|fontawesome(10, 10, 'separator') }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    {% endif %}
+    <!-- \.breadcrumb -->
+
+{% endif %}

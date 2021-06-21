@@ -1,0 +1,178 @@
+{% trans_default_domain 'admin' %}
+
+{% set args = {'website': websiteId(), (interfaceName): entity.id} %}
+{% if interface.masterField is defined and interface.masterField != 'configuration' and interface.masterField != 'website' %}
+    {% set args = args|merge({(interface.masterField): interface.masterFieldId}) %}
+{% endif %}
+
+{% if interface.configuration.uniqueLocale is defined and interface.configuration.uniqueLocale %}
+    {% set entitylocale = masterRequestGet('entitylocale') ? masterRequestGet('entitylocale') : interface.website.configuration.locale %}
+    {% set args = args|merge({"entitylocale": entitylocale}) %}
+{% endif %}
+
+{% set infoUrl = infoUrl is defined and infoUrl %}
+{% set hasInFill = entity.inFill is defined and entity.inFill %}
+{% set isDeletable = entity.deletable is defined and entity.deletable or entity.deletable is not defined %}
+{% set hasWebmaster = entity.webmaster is defined and entity.webmaster %}
+{% set children = tree[entity.id] is defined ? tree[entity.id] : [] %}
+
+<li class="dd-item dd3-item parent-row{% if children and collapsedAdminTrees %} dd-collapsed{% endif %}{% if hasWebmaster and not is_granted('ROLE_INTERNAL') %} d-none{% endif %}"
+    data-id="{{ entity.id }}"
+    data-level="{{ entity.level }}"
+    data-position="{{ entity.position }}">
+
+    <div class="dd-handle dd3-handle">{{ 'fal fa-arrows'|fontawesome(null, 12, 'info') }}</div>
+
+    <div class="dd3-content">
+
+        <span class="title">
+            {% if entity.webmaster is defined and entity.webmaster %}
+                <span class="mr-2" data-toggle="tooltip" title="{{ "Webmaster"|trans|striptags }}">{{ 'fas fa-star'|fontawesome(null, 13, 'info') }}</span>
+            {% endif %}
+            {% if entity.isSecure is defined and entity.isSecure %}
+                <span class="mr-2" data-toggle="tooltip" title="{{ "Page sécurisée"|trans|striptags }}">{{ 'fas fa-lock-alt'|fontawesome(null, 13, 'info') }}</span>
+            {% endif %}
+            {% if infoUrl %}
+                {% set entityI18n = entity.i18n is defined ? entity.i18n : null %}
+                {% set page = entityI18n.targetPage is defined and entityI18n.targetPage ? entityI18n.targetPage : null %}
+                {% set url = page ? page.website|i18nUrl(page, masterRequest().get('entitylocale'), true) : null %}
+                {% set color = entity.i18n.targetPage is not defined or url.isOnline is defined and url.isOnline or entityI18n.targetLink is defined and entityI18n.targetLink ? 'success' : 'light' %}
+                {% set tooltipTitle = entity.i18n.targetPage is not defined or url.isOnline is defined and url.isOnline ? "Page publiée"|trans : "Page non publiée"|trans %}
+                <span class="mr-1 info-url" data-toggle="tooltip" title="{{ tooltipTitle|striptags }}">{{ 'fas fa-circle'|fontawesome(null, 10, color) }}</span>
+            {% endif %}
+            {% if entity.adminName is defined and entity.adminName %}{{ entity.adminName|striptags|truncate(35) }}{% endif %}
+        </span>
+
+        {% if children %}
+            <div class="btn-collapsed-group d-inline-block ml-2">
+                <button class="btn btn-sm btn-transparent collapse-btn{% if collapsedAdminTrees %} d-none{% endif %}"
+                        data-action="collapse"
+                        data-toggle="tooltip"
+                        title="{{ "Emplier"|trans }}"
+                        aria-label="{{ "Emplier"|trans|striptags }}"
+                        type="button">
+                    {{ 'fal fa-arrow-alt-to-top'|fontawesome(17, 17, 'dark') }}
+                </button>
+                <button class="btn btn-sm btn-transparent expand-btn{% if not collapsedAdminTrees %} d-none{% endif %}"
+                        data-action="expand" data-toggle="tooltip"
+                        title="{{ "Déplier"|trans }}"
+                        aria-label="{{ "Déplier"|trans|striptags }}"
+                        type="button">
+                    {{ 'fal fa-arrow-alt-to-bottom'|fontawesome(17, 17, 'dark') }}
+                </button>
+            </div>
+        {% endif %}
+
+        <div class="float-right">
+
+            {% if entity.urls is defined and not hasInFill %}
+                {% include 'admin/core/include/urls-status.html.twig' with {"allLocales": allLocales} %}
+            {% endif %}
+
+            {% if routeExist('admin_' ~ interfaceName ~ '_layout') and 'edit'|moduleActive(allModules) %}
+                <span data-toggle="preloader" class="mr-2 btn-circle-wrap">
+                    <a href="{{ path('admin_' ~ interfaceName ~ '_layout', args) }}"
+                       data-toggle="tooltip" title="{{ "Mise en page"|trans|striptags }}"
+                       aria-label="{{ "Mise en page"|trans|striptags }}"
+                       class="btn btn-info btn-circle btn-layout">
+                        {{ 'fad fa-pencil-alt'|fontawesome(null, 15) }}
+                    </a>
+                </span>
+            {% endif %}
+
+            {% if routeExist('admin_' ~ interfaceName ~ '_edit') and 'edit'|moduleActive(allModules) %}
+                <span data-toggle="preloader" class="mr-2 btn-circle-wrap">
+                    <a href="{{ path('admin_' ~ interfaceName ~ '_edit', args) }}"
+                       data-toggle="tooltip" title="{{ "Éditer"|trans|striptags }}"
+                       aria-label="{{ "Éditer"|trans|striptags }}"
+                       class="btn btn-info btn-circle btn-edit">
+                        {{ 'fad fa-pencil-alt'|fontawesome(null, 15) }}
+                    </a>
+                </span>
+            {% endif %}
+
+            {% if routeExist('admin_' ~ interfaceName ~ '_show') and not hasInFill %}
+                <span data-toggle="preloader" class="d-none d-sm-inline-block">
+                    <a href="{{ path('admin_' ~ interfaceName ~ '_show', args) }}"
+                       class="btn btn-transparent btn-circle"
+                       data-toggle="tooltip" title="{{ "Afficher les données"|trans|striptags }}"
+                       aria-label="{{ "Afficher les données"|trans|striptags }}">
+                        {{ 'fal fa-info'|fontawesome(null, 15) }}
+                    </a>
+                </span>
+            {% endif %}
+
+            {% if interfaceName == 'page' and routeExist('admin_' ~ interfaceName ~ '_duplicate') and 'edit'|moduleActive(allModules) and not hasInFill %}
+                <button class="btn btn-transparent btn-circle duplicate-btn d-none d-sm-inline-block"
+                        aria-label="{{ "Dupliquer"|trans|striptags }}"
+                        data-toggle="tooltip" title="{{ "Dupliquer"|trans|striptags }}"
+                        data-path="{{ path('admin_' ~ interfaceName ~ '_duplicate', {'website': websiteId(), (interfaceName): entity.id, 'refresh': true}) }}">
+                    {{ 'far fa-copy'|fontawesome(18, 18) }}
+                </button>
+            {% endif %}
+
+            {% if interfaceName == 'folder' and 'edit'|moduleActive(allModules) %}
+                {% if entity.medias|length > 0 %}
+                    <span class="btn-zip mr-2 btn-circle-wrap">
+                        <a href="{{ path('admin_folder_zip', args) }}"
+                           aria-label="{{ "Télécharger les fichiers du dossier"|trans|striptags }}"
+                           data-toggle="tooltip" title="{{ "Télécharger les fichiers du dossier"|trans|striptags }}" class="btn btn-circle btn-dark">
+                            {{ 'fal fa-file-archive'|fontawesome(null, 15) }}
+                        </a>
+                    </span>
+                {% endif %}
+            {% endif %}
+
+            {% if customRoute and routeExist(customRoute) and is_granted(customRole) %}
+                <a href="{{ path(customRoute, args) }}"
+                   data-toggle="tooltip" title="{{ customTitle|striptags }}"
+                   aria-label="{{ customTitle|trans|striptags }}"
+                   class="btn btn-info btn-circle mr-2{% if customClass %} {{ customClass }}{% endif %}"
+                   data-target="{{ targetAjax }}"
+                   data-target-loader="{{ targetLoader }}">
+                    {{ customIcon|fontawesome(null, 15) }}
+                </a>
+            {% endif %}
+
+            {% if isDeletable and routeExist('admin_' ~ interfaceName ~ '_delete') and 'delete'|moduleActive(allModules) %}
+                <div class="delete-pack-control custom-checkbox d-none d-sm-inline-block"
+                     data-toggle="tooltip" title="{{ "Cocher pour supprimer"|trans|striptags }}">
+                    <input class="custom-control-input delete-pack"
+                           id="delete-pack-{{ entity.id }}"
+                           data-path="{{ path('admin_' ~ interfaceName ~ '_delete', args) }}"
+                           type="checkbox">
+                    <label class="custom-control-label" for="delete-pack-{{ entity.id }}"></label>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% if children %}
+        <ol class="dd-list">
+            {% for child in children %}
+                {% include 'admin/core/include/tree-element.html.twig' with {
+                    'collapsedAdminTrees': collapsedAdminTrees,
+                    'tree': tree,
+                    'entity': child,
+                    'allModules': allModules,
+                    'allLocales': allLocales,
+                    'interface': interface,
+                    "namespace": namespace,
+                    "interfaceName": interfaceName,
+                    'customTitle': customTitle,
+                    'customIcon': customIcon,
+                    'customClass': customClass,
+                    'customBtn': customBtn,
+                    'targetLoader': targetLoader,
+                    'targetAjax': targetAjax,
+                    'customRoute': customRoute,
+                    'customRole': customRole,
+                    'infoUrl': infoUrl
+                } only %}
+            {% endfor %}
+        </ol>
+    {% endif %}
+
+</li>

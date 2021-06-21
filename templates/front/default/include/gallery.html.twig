@@ -1,0 +1,57 @@
+{% trans_default_domain 'front_default' %}
+
+{% set medias = gallery|i18nMedias %}
+{% set nbrColumn = nbrColumn is defined ? nbrColumn : 3 %}
+{% set popup = entity.popup is defined ? entity.popup : true %}
+{% set imgClass = popup ? 'img-gallery-' ~ entity.id : null %}
+
+{% if medias|length > 1 %}
+
+    <!-- .gallery -->
+    <div id="gallery-{{ slug ~ '-' ~ entity.id }}"
+         data-class="{{ imgClass }}"
+         data-columns="{{ nbrColumn }}"
+         class="card-columns position-relative column-{{ nbrColumn }}{% if popup %} popup-gallery{% endif %}">
+
+        {% for media in medias %}
+
+            <div class="grid-item">
+
+                {{ media|thumb(null, {'popupGallery': popup, 'class': imgClass, 'colSize': nbrColumn}) }}
+
+                {% set i18nMedia = media.i18n %}
+
+                {% if i18nMedia %}
+
+                    {% set mediaTitle = i18nMedia.title %}
+                    {% set mediaTitleForce = i18nMedia.titleForce ? i18nMedia.titleForce : 2 %}
+                    {% set mediaTitleAlignment = i18nMedia.titleAlignment ? i18nMedia.titleAlignment : 'text-start' %}
+                    {% set mediaIntro = i18nMedia.introduction %}
+                    {% set mediaIntroAlignment = i18nMedia.introductionAlignment ? i18nMedia.introductionAlignment : 'text-start' %}
+                    {% set mediaBody = i18nMedia.body %}
+                    {% set mediaBodyAlignment = i18nMedia.bodyAlignment ? i18nMedia.bodyAlignment : 'text-start' %}
+
+                    {% if mediaTitle|striptags|length > 0 or mediaIntro|striptags|length > 0 or mediaBody|striptags|length > 0 %}
+                        <div class="card-body">
+                            {% if mediaTitle|striptags|length > 0 %}
+                                <h{{ mediaTitleForce }} class="card-title {{ mediaTitleAlignment }}">{{ mediaTitle|unescape|raw }}</h{{ mediaTitleForce }}>
+                            {% endif %}
+                            {% if mediaIntro|striptags|length > 0 %}
+                                <p class="card-text introduction text-bold {{ mediaIntroAlignment }}">{{ mediaIntro|unescape|raw }}</p>
+                            {% endif %}
+                            {% if mediaIntro|striptags|length > 0 %}
+                                <div class="card-text body {{ mediaBodyAlignment }}">{{ mediaBody|unescape|raw }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+    <!-- \.gallery -->
+
+{% endif %}
